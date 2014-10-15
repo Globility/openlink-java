@@ -37,11 +37,11 @@ public class OpenlinkClientTest extends XmlTest {
 	protected Logger logger = Logger.getLogger("net.gltd.gtms");
 
 	private static final String USERNAME = "leon";
-	private static final String PASSWORD = "leon";
+	private static final String PASSWORD = "Pa55w0rd";
 	private static final String RESOURCE = "office";
 
-	private static final String DOMAIN = "derek.gltd.local";
-	private static final String HOST = "derek.gltd.local";
+	private static final String DOMAIN = "lokidev.gltd.net";
+	private static final String HOST = "lokidev.gltd.net";
 
 	private static final String SYSTEM = "vmstsp";
 
@@ -61,6 +61,7 @@ public class OpenlinkClientTest extends XmlTest {
 		logger = GtmsLog.initializeConsoleLogger("net.gltd.gtms", GtmsLog.DEFAULT_DEBUG_CONVERSION_PATTERN, "DEBUG");
 		logger.debug("INIT");
 		client = new OpenlinkClient(USERNAME, PASSWORD, RESOURCE, DOMAIN, HOST);
+		client.addCallListener(this.getCallListener());
 		client.setDebug(true);
 		client.connect();
 	}
@@ -72,6 +73,19 @@ public class OpenlinkClientTest extends XmlTest {
 			client.disconnect();
 		}
 		LogManager.shutdown();
+	}
+
+	public CallListener getCallListener() {
+		return new CallListener() {
+			@Override
+			public void callEvent(Collection<Call> calls) {
+				try {
+					logger.debug("CALL EVENT: " + marshal(calls));
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		};
 	}
 
 	public boolean isConnected() {
@@ -183,7 +197,7 @@ public class OpenlinkClientTest extends XmlTest {
 			Assert.assertNotNull(result);
 			Collection<Subscription> subs = this.client.getSubscriptions(i);
 			Assert.assertFalse(subs.isEmpty());
-			logger.debug("SUBSCRIPTION" + i.getId() + " ID: " + result.getSubId());
+			logger.debug("SUBSCRIPTION " + i.getId() + " ID: " + result.getSubId());
 		} catch (Exception e) {
 			e.printStackTrace();
 			Assert.fail(e.getMessage());
@@ -202,7 +216,7 @@ public class OpenlinkClientTest extends XmlTest {
 			Assert.assertNotNull(result);
 			this.client.unsubscribe(i);
 			Collection<Subscription> subs = this.client.getSubscriptions(i);
-			Assert.assertTrue(subs.isEmpty());
+			Assert.assertTrue(subs.isEmpty()); // Not sure if a bug in Openfire's caching strategy which prevents subscriptions from removing correctly
 		} catch (Exception e) {
 			e.printStackTrace();
 			Assert.fail(e.getMessage());
@@ -223,13 +237,13 @@ public class OpenlinkClientTest extends XmlTest {
 			Assert.assertFalse(subs.isEmpty());
 			this.client.unsubscribe(i);
 			subs = this.client.getSubscriptions(i);
-			Assert.assertTrue(subs.isEmpty());
+			Assert.assertTrue(subs.isEmpty()); // Not sure if a bug in Openfire's caching strategy which prevents subscriptions from removing correctly
 		} catch (Exception e) {
 			e.printStackTrace();
 			Assert.fail(e.getMessage());
 		}
 	}
-	
+
 	@Test
 	public void makeCall() {
 		try {
@@ -249,6 +263,7 @@ public class OpenlinkClientTest extends XmlTest {
 			Thread.sleep(10000);
 
 			this.client.requestAction(SYSTEM_AND_DOMAIN, call, CallAction.ClearCall, null, null);
+			Thread.sleep(2000);
 		} catch (Exception e) {
 			e.printStackTrace();
 			Assert.fail(e.getMessage());

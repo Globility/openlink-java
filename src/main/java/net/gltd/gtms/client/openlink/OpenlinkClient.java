@@ -3,7 +3,7 @@ package net.gltd.gtms.client.openlink;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import java.util.Collections;
 import java.util.Set;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Handler;
@@ -50,6 +50,7 @@ import org.xmpp.extension.pubsub.PubSubManager;
 import org.xmpp.extension.pubsub.PubSubNode;
 import org.xmpp.extension.pubsub.PubSubService;
 import org.xmpp.extension.pubsub.Subscription;
+import org.xmpp.extension.pubsub.event.Event;
 import org.xmpp.im.RosterEvent;
 import org.xmpp.im.RosterListener;
 import org.xmpp.stanza.MessageEvent;
@@ -76,6 +77,8 @@ public class OpenlinkClient {
 
 	private XmppSession xmppSession;
 	private Jid jid;
+
+	private Collection<CallListener> callListeners = new ArrayList<CallListener>();;
 
 	public OpenlinkClient(String username, String password, String resource, String domain, String host) {
 		this.username = username;
@@ -182,13 +185,10 @@ public class OpenlinkClient {
 				}
 			}
 		});
+
 		// Listen for messages
-		xmppSession.addMessageListener(new MessageListener() {
-			@Override
-			public void handle(MessageEvent e) {
-				// Handle outgoing or incoming message
-			}
-		});
+		xmppSession.addMessageListener(getCallStatusMessageListener());
+
 		// Listen for roster pushes
 		xmppSession.getRosterManager().addRosterListener(new RosterListener() {
 			@Override
@@ -217,6 +217,49 @@ public class OpenlinkClient {
 
 	}
 
+	private MessageListener getCallStatusMessageListener() {
+		return new MessageListener() {
+			@Override
+			public void handle(MessageEvent e) {
+				logger.debug("MESSAGE EVENT: " + e);
+				// Handle outgoing or incoming message
+
+				if (e.isIncoming() && e.getMessage() != null) {
+
+					Event event = e.getMessage().getExtension(Event.class);
+					logger.debug("EVENT: " + event);
+					if (event != null) {
+						for (Item item : event.getItems()) {
+							logger.debug("ITEM: " + item);
+							if (item.getPayload() instanceof CallStatus) {
+								CallStatus callStatus = (CallStatus) item.getPayload();
+								logger.debug("CALLSTATUS: " + callStatus.toString());
+								for (CallListener listener : callListeners) {
+									listener.callEvent(callStatus);
+								}
+
+							}
+						}
+					}
+				}
+			}
+		};
+	}
+
+	public Collection<CallListener> getCallListeners() {
+		return Collections.unmodifiableCollection(callListeners);
+	}
+
+	public void addCallListener(CallListener listener) {
+		if (listener != null) {
+			callListeners.add(listener);
+		}
+	}
+
+	public void removeCallListener(CallListener listener) {
+		callListeners.remove(listener);
+	}
+
 	public void disconnect() {
 		if (xmppSession != null) {
 			try {
@@ -238,7 +281,7 @@ public class OpenlinkClient {
 		Command command = iqResult.getExtension(Command.class);
 		if (command != null) {
 			IoData ioData = command.getExtension(IoData.class);
-			if (ioData != null) {
+			if (ioData != null && ioData.getOut() != null) {
 				Profiles profiles = ioData.getOut().getExtension(Profiles.class);
 				if (profiles != null) {
 					result = profiles.getProfiles();
@@ -259,7 +302,7 @@ public class OpenlinkClient {
 		Command command = iqResult.getExtension(Command.class);
 		if (command != null) {
 			IoData ioData = command.getExtension(IoData.class);
-			if (ioData != null) {
+			if (ioData != null && ioData.getOut() != null) {
 				Interests interests = ioData.getOut().getExtension(Interests.class);
 				if (interests != null) {
 					result = interests.getInterests();
@@ -280,7 +323,7 @@ public class OpenlinkClient {
 		Command command = iqResult.getExtension(Command.class);
 		if (command != null) {
 			IoData ioData = command.getExtension(IoData.class);
-			if (ioData != null) {
+			if (ioData != null && ioData.getOut() != null) {
 				Features features = ioData.getOut().getExtension(Features.class);
 				if (features != null) {
 					result = features.getFeatures();
@@ -296,11 +339,11 @@ public class OpenlinkClient {
 		if (pubSubService != null) {
 			PubSubNode pubSubNode = pubSubService.getNode(interest.getId());
 			if (pubSubNode != null) {
-				if (pubSubNode.getSubscriptions().isEmpty()) {
-					result = pubSubNode.subscribe();
-				} else {
-					result = pubSubNode.getSubscriptions().iterator().next();
-				}
+				// if (pubSubNode.getSubscriptions().isEmpty()) {
+				result = pubSubNode.subscribe();
+				// } else {
+				// result = pubSubNode.getSubscriptions().iterator().next();
+				// }
 			}
 		}
 		return result;
@@ -351,7 +394,7 @@ public class OpenlinkClient {
 		Command command = iqResult.getExtension(Command.class);
 		if (command != null) {
 			IoData ioData = command.getExtension(IoData.class);
-			if (ioData != null) {
+			if (ioData != null && ioData.getOut() != null) {
 				CallStatus callStatus = ioData.getOut().getExtension(CallStatus.class);
 				if (callStatus != null) {
 					result = callStatus.getCalls();
@@ -379,7 +422,7 @@ public class OpenlinkClient {
 		Command command = iqResult.getExtension(Command.class);
 		if (command != null) {
 			IoData ioData = command.getExtension(IoData.class);
-			if (ioData != null) {
+			if (ioData != null && ioData.getOut() != null) {
 				CallStatus callStatus = ioData.getOut().getExtension(CallStatus.class);
 				if (callStatus != null) {
 					result = callStatus.getCalls();
