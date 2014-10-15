@@ -1,0 +1,185 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>net.gltd.gtms.client</groupId>
+	<artifactId>openlink-java</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
+	<name>Openlink Java Client Library</name>
+	<description>Openlink Java Client Library</description>
+	<url>https://github.com/Globility/openlink-java</url>
+	<inceptionYear>2014</inceptionYear>
+	<licenses>
+		<license>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+	<packaging>jar</packaging>
+	<organization>
+		<name>Globility</name>
+		<url>http://www.globility.co.uk</url>
+	</organization>
+	<developers>
+		<developer>
+			<id>leonroy</id>
+			<name>Leon Roy</name>
+			<email>leon adot roy at gmail somedot com</email>
+			<url>http://www.leonroy.com</url>
+			<organization>Globility</organization>
+			<organizationUrl>http://www.globility.co.uk</organizationUrl>
+			<roles>
+				<role>architect</role>
+				<role>developer</role>
+			</roles>
+		</developer>
+	</developers>
+	<issueManagement>
+		<system>JIRA</system>
+		<url>http://jira.gltd.net</url>
+	</issueManagement>
+	<scm>
+		<connection>scm:git:git://github.com/Globility/openlink-java.git</connection>
+		<developerConnection>scm:git:git@github.com:Globility/openlink-java.git</developerConnection>
+		<url>https://github.com/Globility/openlink-java</url>
+	</scm>
+	<distributionManagement>
+		<!-- Publish the versioned releases here -->
+		<repository>
+			<id>nexus-releases</id>
+			<name>Nexus Releases</name>
+			<url>http://repo.gltd.net/nexus/content/repositories/releases</url>
+		</repository>
+		<!-- Publish the versioned releases here -->
+		<snapshotRepository>
+			<id>nexus-snapshots</id>
+			<name>Nexus Snapshots</name>
+			<url>http://repo.gltd.net/nexus/content/repositories/snapshots</url>
+		</snapshotRepository>
+	</distributionManagement>
+	<!-- download artifacts from this repo -->
+	<repositories>
+		<repository>
+			<id>nexus</id>
+			<name>GLTD Public Repository</name>
+			<url>http://repo.gltd.net/nexus/content/groups/public</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+	<!-- download plugins from this repo -->
+	<pluginRepositories>
+		<pluginRepository>
+			<id>nexus</id>
+			<name>GLTD Plugin Repository</name>
+			<url>http://repo.gltd.net/nexus/content/groups/public</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</pluginRepository>
+	</pluginRepositories>
+	<dependencies>
+		<!-- Test -->
+		<dependency>
+			<groupId>org.testng</groupId>
+			<artifactId>testng</artifactId>
+			<version>6.8.1</version>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- Log -->
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.17</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- GTMS -->
+		<dependency>
+			<groupId>net.gltd.gtms</groupId>
+			<artifactId>gtmsutil</artifactId>
+			<version>1.2.0-SNAPSHOT</version>
+		</dependency>
+
+		<!-- Babbler -->
+		<dependency>
+			<groupId>rocks.xmpp</groupId>
+			<artifactId>xmpp-client</artifactId>
+			<version>0.4.0-SNAPSHOT</version>
+		</dependency>
+
+		<dependency>
+			<groupId>rocks.xmpp</groupId>
+			<artifactId>xmpp-core</artifactId>
+			<version>0.4.0-SNAPSHOT</version>
+			<scope>test</scope>
+			<type>test-jar</type>
+		</dependency>
+		<dependency>
+			<groupId>rocks.xmpp</groupId>
+			<artifactId>xmpp-client</artifactId>
+			<version>0.4.0-SNAPSHOT</version>
+			<scope>test</scope>
+			<type>test-jar</type>
+		</dependency>
+
+
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.2.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.igniterealtime.openfire</groupId>
+			<artifactId>openfire</artifactId>
+			<version>3.6.4</version>
+			<scope>test</scope>
+		</dependency>
+
+	</dependencies>
+	<build>
+		<finalName>${project.artifactId}</finalName>
+		<plugins>
+			<plugin>
+				<artifactId>maven-release-plugin</artifactId>
+				<configuration>
+					<tagBase>https://svn.gltd.net/gtms-project/gtms-client/tags</tagBase>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.3.2</version>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.2</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>test-jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<powermock.version>1.4.6</powermock.version>
+		<smack.version>4.0.4</smack.version>
+	</properties>
+
+</project>

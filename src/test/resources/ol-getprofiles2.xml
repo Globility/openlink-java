@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<iq id="Fteoy-4" to="gary@garyvms.gltd.local/Smack" from="vmstsp.garyvms.gltd.local"
+	type="result">
+	<command xmlns="http://jabber.org/protocol/commands" sessionid="21123"
+		node="http://xmpp.org/protocol/openlink:01:00:00#get-profiles" status="completed">
+		<iodata xmlns="urn:xmpp:tmp:io-data" type="output">
+			<out>
+				<profiles xmlns="http://xmpp.org/protocol/openlink:01:00:00/profiles">
+					<profile id="gary_office" device="vmstsp" default="true"
+						online="true" label="Office line">
+						<actions>
+							<action id="ClearConnection" label="ClearConnection" />
+							<action id="ClearCall" label="ClearCall" />
+							<action id="AddThirdParty" label="AddThirdParty" />
+							<action id="RemoveThirdParty" label="RemoveThirdParty" />
+							<action id="MuteParty" label="MuteParty" />
+							<action id="UnMuteParty" label="UnMuteParty" />
+							<action id="StartVoiceDrop" label="StartVoiceDrop" />
+							<action id="StopVoiceDrop" label="StopVoiceDrop" />
+							<action id="JoinCall" label="JoinCall" />
+							<action id="SendDigit" label="SendDigit" />
+						</actions>
+					</profile>
+					<profile id="gary_sip" online="true" label="SIP line">
+						<actions>
+							<action id="SendDigit" label="SendDigit" />
+						</actions>
+					</profile>
+					<profile id="gary_sip2" online="true" label="SIP line">
+						<actions>
+						</actions>
+					</profile>
+					<profile id="gary_sip3" online="true" label="SIP line">
+					</profile>
+				</profiles>
+			</out>
+		</iodata>
+	</command>
+</iq>
