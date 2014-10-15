@@ -3,6 +3,7 @@ package net.gltd.gtms.client.openlink;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Handler;
@@ -44,12 +45,18 @@ import org.xmpp.TcpConnection;
 import org.xmpp.XmppContext;
 import org.xmpp.XmppException;
 import org.xmpp.XmppSession;
+import org.xmpp.extension.pubsub.Item;
+import org.xmpp.extension.pubsub.PubSubManager;
+import org.xmpp.extension.pubsub.PubSubNode;
+import org.xmpp.extension.pubsub.PubSubService;
+import org.xmpp.extension.pubsub.Subscription;
 import org.xmpp.im.RosterEvent;
 import org.xmpp.im.RosterListener;
 import org.xmpp.stanza.MessageEvent;
 import org.xmpp.stanza.MessageListener;
 import org.xmpp.stanza.PresenceEvent;
 import org.xmpp.stanza.PresenceListener;
+import org.xmpp.stanza.StanzaException;
 import org.xmpp.stanza.client.IQ;
 import org.xmpp.stanza.client.Presence;
 
@@ -94,7 +101,7 @@ public class OpenlinkClient {
 		XmppContext.getDefault().registerExtension(GetInterests.class, GetInterests.GetInterestsIn.class);
 		XmppContext.getDefault().registerExtension(MakeCall.class, MakeCall.MakeCallIn.class,
 				MakeCall.MakeCallIn.MakeCallFeature.class);
-		
+
 		XmppContext.getDefault().registerExtension(RequestAction.class, RequestAction.RequestActionIn.class);
 
 		XmppContext.getDefault().registerExtension(GetProfiles.class, GetProfiles.GetProfilesIn.class);
@@ -283,18 +290,49 @@ public class OpenlinkClient {
 		return result;
 	}
 
-	// public void subscribe(String to, Interest interest) {
-	//
-	// }
-	//
-	// public void unsubscribe(String to, Interest interest) {
-	//
-	// }
+	public Subscription subscribe(Interest interest) throws XmppException {
+		Subscription result = null;
+		PubSubService pubSubService = this.getPubSubService();
+		if (pubSubService != null) {
+			PubSubNode pubSubNode = pubSubService.getNode(interest.getId());
+			if (pubSubNode != null) {
+				if (pubSubNode.getSubscriptions().isEmpty()) {
+					result = pubSubNode.subscribe();
+				} else {
+					result = pubSubNode.getSubscriptions().iterator().next();
+				}
+			}
+		}
+		return result;
+	}
 
-	// public Collection<Subscription> getSubscriptions(String to, Interest interest) {
-	// Collection<Subscription> result = new ArrayList<Subscription>();
-	// return result;
-	// }
+	public void unsubscribe(Interest interest) throws XmppException {
+		PubSubService pubSubService = this.getPubSubService();
+		if (pubSubService != null) {
+			PubSubNode pubSubNode = pubSubService.getNode(interest.getId());
+			if (pubSubNode != null) {
+				for (Subscription subscription : pubSubNode.getSubscriptions()) {
+					logger.debug("UNSUBSCRIBE: ID: " + pubSubNode.getId() + " SUBID: " + subscription.getSubId());
+					try {
+						pubSubNode.unsubscribe(subscription.getSubId());
+					} catch (StanzaException sex) {
+						logger.error("UNSUBSCRIBE: ID: " + pubSubNode.getId() + " SUBID: " + subscription.getSubId()
+								+ " FAILED: " + sex.getMessage());
+					}
+				}
+			}
+		}
+	}
+
+	public Collection<Subscription> getSubscriptions(Interest interest) throws XmppException {
+		Collection<Subscription> result = new ArrayList<Subscription>();
+		PubSubService pubSubService = this.getPubSubService();
+		if (pubSubService != null) {
+			PubSubNode pubSubNode = pubSubService.getNode(interest.getId());
+			result = pubSubNode.getSubscriptions();
+		}
+		return result;
+	}
 
 	public Collection<Call> makeCall(String to, Interest interest, String destination, Set<MakeCallFeature> features)
 			throws XmppException {
@@ -352,8 +390,14 @@ public class OpenlinkClient {
 		return result;
 	}
 
-	public String getPubsubAddress() {
-		return "pubsub" + this.domain;
+	public PubSubService getPubSubService() throws XmppException {
+		PubSubManager pubSubManager = xmppSession.getExtensionManager(PubSubManager.class);
+		if (pubSubManager != null) {
+			if (pubSubManager.getPubSubServices().size() > 0) {
+				return pubSubManager.getPubSubServices().iterator().next();
+			}
+		}
+		return null;
 	}
 
 }

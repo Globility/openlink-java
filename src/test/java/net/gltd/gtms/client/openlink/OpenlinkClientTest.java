@@ -28,6 +28,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.xmpp.XmlTest;
+import org.xmpp.extension.pubsub.Subscription;
 import org.xmpp.stanza.client.IQ;
 import org.xmpp.stanza.client.Message;
 
@@ -36,11 +37,11 @@ public class OpenlinkClientTest extends XmlTest {
 	protected Logger logger = Logger.getLogger("net.gltd.gtms");
 
 	private static final String USERNAME = "leon";
-	private static final String PASSWORD = "Pa55w0rd";
+	private static final String PASSWORD = "leon";
 	private static final String RESOURCE = "office";
 
-	private static final String DOMAIN = "lokidev.gltd.net";
-	private static final String HOST = "lokidev.gltd.net";
+	private static final String DOMAIN = "derek.gltd.local";
+	private static final String HOST = "derek.gltd.local";
 
 	private static final String SYSTEM = "vmstsp";
 
@@ -172,14 +173,63 @@ public class OpenlinkClientTest extends XmlTest {
 
 	@Test
 	public void subscribeInterest() {
-
+		try {
+			Assert.assertTrue(isConnected());
+			Profile p = getPrimaryProfile(SYSTEM_AND_DOMAIN);
+			Assert.assertNotNull(p);
+			Interest i = getPrimaryInterest(SYSTEM_AND_DOMAIN, p.getId());
+			Assert.assertNotNull(i);
+			Subscription result = this.client.subscribe(i);
+			Assert.assertNotNull(result);
+			Collection<Subscription> subs = this.client.getSubscriptions(i);
+			Assert.assertFalse(subs.isEmpty());
+			logger.debug("SUBSCRIPTION" + i.getId() + " ID: " + result.getSubId());
+		} catch (Exception e) {
+			e.printStackTrace();
+			Assert.fail(e.getMessage());
+		}
 	}
 
 	@Test
 	public void unsubscribeInterest() {
-
+		try {
+			Assert.assertTrue(isConnected());
+			Profile p = getPrimaryProfile(SYSTEM_AND_DOMAIN);
+			Assert.assertNotNull(p);
+			Interest i = getPrimaryInterest(SYSTEM_AND_DOMAIN, p.getId());
+			Assert.assertNotNull(i);
+			Subscription result = this.client.subscribe(i);
+			Assert.assertNotNull(result);
+			this.client.unsubscribe(i);
+			Collection<Subscription> subs = this.client.getSubscriptions(i);
+			Assert.assertTrue(subs.isEmpty());
+		} catch (Exception e) {
+			e.printStackTrace();
+			Assert.fail(e.getMessage());
+		}
 	}
 
+	@Test
+	public void getSubscriptions() {
+		try {
+			Assert.assertTrue(isConnected());
+			Profile p = getPrimaryProfile(SYSTEM_AND_DOMAIN);
+			Assert.assertNotNull(p);
+			Interest i = getPrimaryInterest(SYSTEM_AND_DOMAIN, p.getId());
+			Assert.assertNotNull(i);
+			Subscription result = this.client.subscribe(i);
+			Assert.assertNotNull(result);
+			Collection<Subscription> subs = this.client.getSubscriptions(i);
+			Assert.assertFalse(subs.isEmpty());
+			this.client.unsubscribe(i);
+			subs = this.client.getSubscriptions(i);
+			Assert.assertTrue(subs.isEmpty());
+		} catch (Exception e) {
+			e.printStackTrace();
+			Assert.fail(e.getMessage());
+		}
+	}
+	
 	@Test
 	public void makeCall() {
 		try {
