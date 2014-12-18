@@ -10,6 +10,13 @@ import net.gltd.gtms.extension.openlink.callstatus.CallFeature;
 import net.gltd.gtms.extension.openlink.callstatus.CallStatus;
 import net.gltd.gtms.extension.openlink.callstatus.CallerCallee;
 import net.gltd.gtms.extension.openlink.callstatus.Participant;
+import net.gltd.gtms.extension.openlink.callstatus.action.AddThirdParty;
+import net.gltd.gtms.extension.openlink.callstatus.action.AnswerCall;
+import net.gltd.gtms.extension.openlink.callstatus.action.ClearCall;
+import net.gltd.gtms.extension.openlink.callstatus.action.ClearConnection;
+import net.gltd.gtms.extension.openlink.callstatus.action.RemoveThirdParty;
+import net.gltd.gtms.extension.openlink.callstatus.action.SendDigits;
+import net.gltd.gtms.extension.openlink.callstatus.action.StartVoiceDrop;
 import net.gltd.util.log.GtmsLog;
 import net.gltd.util.xml.XmlUtil;
 
@@ -27,7 +34,9 @@ public class CallStatusTest extends XmlTest {
 	protected Logger logger = Logger.getLogger("net.gltd.gtms");
 
 	public CallStatusTest() throws JAXBException, XMLStreamException {
-		super(Message.class, CallStatus.class, Call.class, CallerCallee.class, CallFeature.class, Participant.class);
+		super(Message.class, CallStatus.class, Call.class, CallerCallee.class, CallFeature.class, Participant.class,
+				AddThirdParty.class, RemoveThirdParty.class, ClearCall.class, AnswerCall.class, ClearConnection.class,
+				SendDigits.class, StartVoiceDrop.class);
 	}
 
 	@Before

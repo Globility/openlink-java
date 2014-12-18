@@ -6,13 +6,17 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+import net.gltd.gtms.extension.openlink.callstatus.action.CallAction;
+import net.gltd.gtms.extension.openlink.callstatus.action.ClearCall;
+
 @XmlRootElement(name = "call")
 @XmlType(propOrder = { "id", "profile", "interest", "changed", "state", "direction", "duration", "caller", "called",
-		"participants", "features", "actions" })
+		"participants", "features", "actions", "actiony" })
 public class Call {
 
 	@XmlElement(required = true)
@@ -36,8 +40,12 @@ public class Call {
 	@XmlElement
 	private CallerCallee called;
 
+	@XmlElementRef
+	private ClearCall actiony = new ClearCall();
+	
 	@XmlElementWrapper(name = "actions")
-	private Set<CallAction> actions = new HashSet<Call.CallAction>();
+	@XmlElementRef
+	private Set<CallAction> actions = new HashSet<CallAction>();
 
 	@XmlElementWrapper(name = "features")
 	@XmlElement(name = "feature")
@@ -59,10 +67,6 @@ public class Call {
 
 	public enum CallState {
 		CallOriginated, CallDelivered, CallEstablished, CallFailed, CallConferenced, CallBusy, CallHeld, CallHeldElsewhere, CallTransferring, CallTransferred, ConnectionBusy, ConnectionCleared, CallMissed
-	}
-
-	public enum CallAction {
-		AnswerCall, ClearConference, ClearConnection, ClearCall, ConferenceCall, ConsultationCall, StartVoiceDrop, StopVoiceDrop, HoldCall, PrivateCall, PublicCall, IntercomTransfer, JoinCall, RetrieveCall, TransferCall, SingleStepTransfer, SendDigits, SendDigit, AddThirdParty, RemoveThirdParty, ConnectSpeaker, DisconnectSpeaker
 	}
 
 	public String getId() {

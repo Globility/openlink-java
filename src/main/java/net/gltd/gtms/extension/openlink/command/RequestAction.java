@@ -11,7 +11,6 @@ import net.gltd.gtms.client.openlink.OpenlinkNamespaces;
 import net.gltd.gtms.extension.command.Command;
 import net.gltd.gtms.extension.iodata.IoData;
 import net.gltd.gtms.extension.iodata.IoData.IoDataType;
-import net.gltd.gtms.extension.openlink.callstatus.Call.CallAction;
 
 @XmlRootElement(name = "command")
 public class RequestAction extends Command {
@@ -59,7 +58,7 @@ public class RequestAction extends Command {
 		private String interest;
 
 		@XmlElement
-		private CallAction action;
+		private RequestActionAction action;
 
 		@XmlElement
 		private String call;
@@ -78,11 +77,11 @@ public class RequestAction extends Command {
 			this.interest = interest;
 		}
 
-		public CallAction getAction() {
+		public RequestActionAction getAction() {
 			return action;
 		}
 
-		public void setAction(CallAction action) {
+		public void setAction(RequestActionAction action) {
 			this.action = action;
 		}
 
@@ -110,6 +109,10 @@ public class RequestAction extends Command {
 			this.value2 = value2;
 		}
 
+	}
+
+	public enum RequestActionAction {
+		AnswerCall, ClearConference, ClearConnection, ClearCall, ConferenceCall, ConsultationCall, StartVoiceDrop, StopVoiceDrop, HoldCall, PrivateCall, PublicCall, IntercomTransfer, JoinCall, RetrieveCall, TransferCall, SingleStepTransfer, SendDigits, SendDigit, AddThirdParty, RemoveThirdParty, ConnectSpeaker, DisconnectSpeaker
 	}
 
 }

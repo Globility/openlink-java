@@ -6,8 +6,8 @@ import java.util.Set;
 
 import net.gltd.gtms.extension.command.Command;
 import net.gltd.gtms.extension.command.Command.Status;
-import net.gltd.gtms.extension.command.Note.NoteType;
 import net.gltd.gtms.extension.command.Note;
+import net.gltd.gtms.extension.command.Note.NoteType;
 import net.gltd.gtms.extension.openlink.callstatus.Call;
 import net.gltd.gtms.extension.openlink.callstatus.Call.CallDirection;
 import net.gltd.gtms.extension.openlink.callstatus.Call.CallState;
@@ -16,6 +16,13 @@ import net.gltd.gtms.extension.openlink.callstatus.CallStatus;
 import net.gltd.gtms.extension.openlink.callstatus.CallerCallee;
 import net.gltd.gtms.extension.openlink.callstatus.Participant;
 import net.gltd.gtms.extension.openlink.callstatus.Participant.ParticipantType;
+import net.gltd.gtms.extension.openlink.callstatus.action.AddThirdParty;
+import net.gltd.gtms.extension.openlink.callstatus.action.AnswerCall;
+import net.gltd.gtms.extension.openlink.callstatus.action.ClearCall;
+import net.gltd.gtms.extension.openlink.callstatus.action.ClearConnection;
+import net.gltd.gtms.extension.openlink.callstatus.action.RemoveThirdParty;
+import net.gltd.gtms.extension.openlink.callstatus.action.SendDigits;
+import net.gltd.gtms.extension.openlink.callstatus.action.StartVoiceDrop;
 import net.gltd.gtms.extension.openlink.features.Feature;
 import net.gltd.gtms.extension.openlink.features.Features;
 import net.gltd.gtms.extension.openlink.interests.Interest;
@@ -50,12 +57,13 @@ public class OpenlinkTestHelper {
 		call.setState(CallState.CallConferenced);
 		call.setChanged("state");
 
-		call.getActions().add(Call.CallAction.AddThirdParty);
-		call.getActions().add(Call.CallAction.RemoveThirdParty);
-		call.getActions().add(Call.CallAction.ClearCall);
-		call.getActions().add(Call.CallAction.ClearConnection);
-		call.getActions().add(Call.CallAction.SendDigits);
-		call.getActions().add(Call.CallAction.StartVoiceDrop);
+		call.getActions().add(new AddThirdParty());
+		call.getActions().add(new RemoveThirdParty());
+		call.getActions().add(new ClearCall());
+		call.getActions().add(new AnswerCall());
+		call.getActions().add(new ClearConnection());
+		call.getActions().add(new SendDigits());
+		call.getActions().add(new StartVoiceDrop());
 
 		CallerCallee caller = new CallerCallee();
 		caller.setName("Brian Broker");

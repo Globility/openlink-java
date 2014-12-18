@@ -19,7 +19,6 @@ import net.gltd.gtms.extension.command.Command;
 import net.gltd.gtms.extension.command.Note;
 import net.gltd.gtms.extension.iodata.IoData;
 import net.gltd.gtms.extension.openlink.callstatus.Call;
-import net.gltd.gtms.extension.openlink.callstatus.Call.CallAction;
 import net.gltd.gtms.extension.openlink.callstatus.CallFeature;
 import net.gltd.gtms.extension.openlink.callstatus.CallStatus;
 import net.gltd.gtms.extension.openlink.callstatus.CallerCallee;
@@ -30,6 +29,7 @@ import net.gltd.gtms.extension.openlink.command.GetProfiles;
 import net.gltd.gtms.extension.openlink.command.MakeCall;
 import net.gltd.gtms.extension.openlink.command.MakeCall.MakeCallIn.MakeCallFeature;
 import net.gltd.gtms.extension.openlink.command.RequestAction;
+import net.gltd.gtms.extension.openlink.command.RequestAction.RequestActionAction;
 import net.gltd.gtms.extension.openlink.features.Feature;
 import net.gltd.gtms.extension.openlink.features.Features;
 import net.gltd.gtms.extension.openlink.interests.Interest;
@@ -119,7 +119,7 @@ public class OpenlinkClient {
 	}
 
 	/**
-	 * When set disables connection encryption and enables the Smack debugger.
+	 * When set disables connection encryption and enables the debugger.
 	 * 
 	 * @param debug
 	 */
@@ -261,7 +261,7 @@ public class OpenlinkClient {
 	}
 
 	public void disconnect() {
-		if (xmppSession != null) {
+		if (xmppSession != null && isConnected()) {
 			try {
 				xmppSession.close();
 			} catch (IOException e) {
@@ -402,10 +402,9 @@ public class OpenlinkClient {
 			}
 		}
 		return result;
-
 	}
 
-	public Collection<Call> requestAction(String to, Call call, CallAction action, String value1, String value2)
+	public Collection<Call> requestAction(String to, Call call, RequestActionAction action, String value1, String value2)
 			throws XmppException {
 		Collection<Call> result = new ArrayList<Call>();
 

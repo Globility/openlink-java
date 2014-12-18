@@ -9,8 +9,8 @@ import net.gltd.gtms.extension.command.Command;
 import net.gltd.gtms.extension.command.Note;
 import net.gltd.gtms.extension.iodata.IoData;
 import net.gltd.gtms.extension.openlink.callstatus.Call;
-import net.gltd.gtms.extension.openlink.callstatus.Call.CallAction;
 import net.gltd.gtms.extension.openlink.callstatus.CallStatus;
+import net.gltd.gtms.extension.openlink.command.RequestAction.RequestActionAction;
 import net.gltd.gtms.extension.openlink.features.Feature;
 import net.gltd.gtms.extension.openlink.features.Features;
 import net.gltd.gtms.extension.openlink.interests.Interest;
@@ -36,18 +36,18 @@ public class OpenlinkClientTest extends XmlTest {
 
 	protected Logger logger = Logger.getLogger("net.gltd.gtms");
 
-	private static final String USERNAME = "leon";
+	private static final String USERNAME = "betty.bidder";
 	private static final String PASSWORD = "Pa55w0rd";
 	private static final String RESOURCE = "office";
 
-	private static final String DOMAIN = "lokidev.gltd.net";
-	private static final String HOST = "lokidev.gltd.net";
+	private static final String DOMAIN = "mas-analec.gltd.net";
+	private static final String HOST = "mas-analec.gltd.net";
 
-	private static final String SYSTEM = "vmstsp";
+	private static final String SYSTEM = "avaya2";
 
 	private static final String SYSTEM_AND_DOMAIN = SYSTEM + "." + DOMAIN;
 
-	private static final String DESTINATION = "3807";
+	private static final String DESTINATION = "50203";
 
 	private OpenlinkClient client = null;
 
@@ -59,10 +59,9 @@ public class OpenlinkClientTest extends XmlTest {
 	@Before
 	public void initialize() throws Exception {
 		logger = GtmsLog.initializeConsoleLogger("net.gltd.gtms", GtmsLog.DEFAULT_DEBUG_CONVERSION_PATTERN, "DEBUG");
-		logger.debug("INIT");
 		client = new OpenlinkClient(USERNAME, PASSWORD, RESOURCE, DOMAIN, HOST);
-		client.addCallListener(this.getCallListener());
 		client.setDebug(true);
+		client.addCallListener(this.getCallListener());
 		client.connect();
 	}
 
@@ -237,6 +236,7 @@ public class OpenlinkClientTest extends XmlTest {
 			Assert.assertFalse(subs.isEmpty());
 			this.client.unsubscribe(i);
 			subs = this.client.getSubscriptions(i);
+			logger.debug("SUBSCRIPTIONS: SIZE: " + subs.size());
 			Assert.assertTrue(subs.isEmpty()); // Not sure if a bug in Openfire's caching strategy which prevents subscriptions from removing correctly
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -253,6 +253,7 @@ public class OpenlinkClientTest extends XmlTest {
 			Interest i = getPrimaryInterest(SYSTEM_AND_DOMAIN, p.getId());
 			Assert.assertNotNull(i);
 			Collection<Call> calls = this.client.makeCall(SYSTEM_AND_DOMAIN, i, DESTINATION, null);
+			Thread.sleep(1000);
 			Assert.assertNotNull(calls);
 			Assert.assertTrue(calls.size() > 0);
 			for (Call c : calls) {
@@ -261,8 +262,7 @@ public class OpenlinkClientTest extends XmlTest {
 			Call call = calls.iterator().next();
 			logger.debug(XmlUtil.formatXml(marshal(calls)));
 			Thread.sleep(10000);
-
-			this.client.requestAction(SYSTEM_AND_DOMAIN, call, CallAction.ClearCall, null, null);
+			this.client.requestAction(SYSTEM_AND_DOMAIN, call, RequestActionAction.ClearCall, null, null);
 			Thread.sleep(2000);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -289,7 +289,7 @@ public class OpenlinkClientTest extends XmlTest {
 			Call call = calls.iterator().next();
 			Thread.sleep(10000);
 
-			calls = this.client.requestAction(SYSTEM_AND_DOMAIN, call, CallAction.ClearCall, null, null);
+			calls = this.client.requestAction(SYSTEM_AND_DOMAIN, call, RequestActionAction.ClearCall, null, null);
 			Assert.assertNotNull(calls);
 			Assert.assertTrue(calls.size() > 0);
 			for (Call c : calls) {

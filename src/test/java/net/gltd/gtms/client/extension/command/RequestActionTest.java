@@ -7,8 +7,8 @@ import junit.framework.Assert;
 import net.gltd.gtms.extension.command.Command;
 import net.gltd.gtms.extension.command.Note;
 import net.gltd.gtms.extension.iodata.IoData;
-import net.gltd.gtms.extension.openlink.callstatus.Call.CallAction;
 import net.gltd.gtms.extension.openlink.command.RequestAction;
+import net.gltd.gtms.extension.openlink.command.RequestAction.RequestActionAction;
 import net.gltd.util.log.GtmsLog;
 import net.gltd.util.xml.XmlUtil;
 
@@ -46,7 +46,7 @@ public class RequestActionTest extends XmlTest {
 	public void testCommand() throws XMLStreamException, JAXBException {
 		RequestAction gi = new RequestAction();
 		gi.getIn().setInterest("leon_office_vmstsp_default");
-		gi.getIn().setAction(CallAction.AddThirdParty);
+		gi.getIn().setAction(RequestActionAction.AddThirdParty);
 		gi.getIn().setCall(RandomStringUtils.randomNumeric(12));
 		gi.getIn().setValue1("6001");
 		gi.getIn().setValue2("somevalue");
