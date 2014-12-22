@@ -10,6 +10,7 @@ import net.gltd.gtms.extension.openlink.features.Feature;
 import net.gltd.gtms.extension.openlink.features.Features;
 import net.gltd.gtms.extension.openlink.profiles.Action;
 import net.gltd.util.log.GtmsLog;
+import net.gltd.util.xml.XmlUtil;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -56,7 +57,7 @@ public class FeaturesTest extends XmlTest {
 
 		String xml = marshal(m);
 		Assert.assertNotNull(xml);
-		logger.debug(marshal(fs));
+		logger.debug(XmlUtil.formatXml(marshal(fs)));
 
 		Assert.assertTrue(xml.contains("<features xmlns=\"" + OpenlinkNamespaces.NS_OPENLINK_FEATURES
 				+ "\"><feature id=\""));

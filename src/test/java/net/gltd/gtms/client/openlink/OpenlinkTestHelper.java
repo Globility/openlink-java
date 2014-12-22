@@ -27,6 +27,8 @@ import net.gltd.gtms.extension.openlink.features.Feature;
 import net.gltd.gtms.extension.openlink.features.Features;
 import net.gltd.gtms.extension.openlink.interests.Interest;
 import net.gltd.gtms.extension.openlink.interests.Interests;
+import net.gltd.gtms.extension.openlink.originatorref.OriginatorRef;
+import net.gltd.gtms.extension.openlink.originatorref.Property;
 import net.gltd.gtms.extension.openlink.profiles.Action;
 import net.gltd.gtms.extension.openlink.profiles.Profile;
 import net.gltd.gtms.extension.openlink.profiles.Profiles;
@@ -46,7 +48,7 @@ public class OpenlinkTestHelper {
 		callStatus.getCalls().add(getCall());
 		return callStatus;
 	}
-	
+
 	public static Call getCall() {
 
 		Call call = new Call();
@@ -95,9 +97,37 @@ public class OpenlinkTestHelper {
 		p1.setTimestamp(new Date().toString());
 		call.getParticipants().add(p1);
 		
+//		Property pr1 = new Property();
+//		pr1.setId("universal-callid");
+//		pr1.setValue(RandomStringUtils.randomAlphanumeric(10));
+//		call.getoriginatorRef().add(pr1);
+//		
+//		Property pr2 = new Property();
+//		pr2.setId("platform-callid");
+//		pr2.setValue(RandomStringUtils.randomAlphanumeric(10));
+//		call.getoriginatorRef().add(pr2);
+		
+		call.setOriginatorRef(getOriginatorRef());
+		
 		return call;
 	}
 
+	public static OriginatorRef getOriginatorRef() {
+		OriginatorRef ref = new OriginatorRef();
+		
+		Property p1 = new Property();
+		p1.setId("universal-callid");
+		p1.setValue(RandomStringUtils.randomAlphanumeric(10));
+		ref.add(p1);
+		
+		Property p2 = new Property();
+		p2.setId("platform-callid");
+		p2.setValue(RandomStringUtils.randomAlphanumeric(10));
+		ref.add(p2);
+		
+		return ref;
+	}
+	
 	public static Interests getInterests(int numInterests) {
 		Interests is = new Interests();
 		for (int i = 0; i < numInterests; i++) {
@@ -144,18 +174,17 @@ public class OpenlinkTestHelper {
 		c.setNote(getNote());
 		return c;
 	}
-	
+
 	public static Note getNote(String value, NoteType type) {
 		Note n = new Note();
 		n.setValue(value);
 		n.setType(type);
 		return n;
 	}
-	
+
 	public static Note getNote() {
 		return getNote(RandomStringUtils.randomAlphanumeric(20), NoteType.INFO);
 	}
-	
 
 	public static Action getAction() {
 		Action a = new Action();

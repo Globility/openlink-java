@@ -5,18 +5,19 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+import net.gltd.gtms.client.openlink.OpenlinkNamespaces;
 import net.gltd.gtms.extension.openlink.callstatus.action.CallAction;
-import net.gltd.gtms.extension.openlink.callstatus.action.ClearCall;
+import net.gltd.gtms.extension.openlink.originatorref.Property;
 
 @XmlRootElement(name = "call")
-@XmlType(propOrder = { "id", "profile", "interest", "changed", "state", "direction", "duration", "caller", "called",
-		"participants", "features", "actions", "actiony" })
+@XmlType(propOrder = { "id", "profile", "interest", "originatorRef", "changed", "state", "direction", "duration",
+		"caller", "called", "participants", "features", "actions" })
 public class Call {
 
 	@XmlElement(required = true)
@@ -40,11 +41,8 @@ public class Call {
 	@XmlElement
 	private CallerCallee called;
 
-	@XmlElementRef
-	private ClearCall actiony = new ClearCall();
-	
 	@XmlElementWrapper(name = "actions")
-	@XmlElementRef
+	@XmlAnyElement
 	private Set<CallAction> actions = new HashSet<CallAction>();
 
 	@XmlElementWrapper(name = "features")
@@ -61,6 +59,10 @@ public class Call {
 	@XmlElement
 	private String interest;
 
+	@XmlElementWrapper(name = "originator-ref", namespace = OpenlinkNamespaces.NS_OPENLINK_ORIGINATORREF)
+	@XmlElement(name = "property", namespace = OpenlinkNamespaces.NS_OPENLINK_ORIGINATORREF)
+	private Collection<Property> originatorRef = new HashSet<Property>();
+	
 	public enum CallDirection {
 		Outgoing, Incoming
 	}
@@ -165,4 +167,22 @@ public class Call {
 		this.interest = interest;
 	}
 
+	public Collection<Property> getoriginatorRef() {
+		return originatorRef;
+	}
+
+	public void setOriginatorRef(Collection<Property> originatorRef) {
+		this.originatorRef = originatorRef;
+	}
+
+//	public OriginatorRef getOriginatorRef() {
+//		return originatorRef;
+//	}
+//
+//	public void setOriginatorRef(OriginatorRef originatorRef) {
+//		this.originatorRef = originatorRef;
+//	}
+
+	
+	
 }

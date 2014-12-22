@@ -16,6 +16,7 @@ import net.gltd.gtms.client.openlink.OpenlinkNamespaces;
 import net.gltd.gtms.extension.command.Command;
 import net.gltd.gtms.extension.iodata.IoData;
 import net.gltd.gtms.extension.iodata.IoData.IoDataType;
+import net.gltd.gtms.extension.openlink.originatorref.Property;
 
 import org.xmpp.Jid;
 
@@ -58,7 +59,7 @@ public class MakeCall extends Command {
 
 	@XmlAccessorType(XmlAccessType.FIELD)
 	@XmlRootElement(name = "in", namespace = "")
-	@XmlType(name = "", propOrder = { "jidAsString", "interest", "destination", "features" })
+	@XmlType(name = "", propOrder = { "jidAsString", "interest", "destination", "originatorRef", "features" })
 	public static class MakeCallIn {
 		@XmlTransient
 		private Jid jid;
@@ -68,6 +69,10 @@ public class MakeCall extends Command {
 
 		@XmlElement
 		private String destination;
+
+		@XmlElementWrapper(name = "originator-ref", namespace = OpenlinkNamespaces.NS_OPENLINK_ORIGINATORREF)
+		@XmlElement(name = "property", namespace = OpenlinkNamespaces.NS_OPENLINK_ORIGINATORREF)
+		private Collection<Property> originatorRef;
 
 		@XmlElementWrapper(name = "features")
 		@XmlElement(name = "feature")
@@ -104,6 +109,14 @@ public class MakeCall extends Command {
 
 		public void setDestination(String destination) {
 			this.destination = destination;
+		}
+
+		public Collection<Property> getOriginatorRef() {
+			return originatorRef;
+		}
+
+		public void setOriginatorRef(Collection<Property> originatorRef) {
+			this.originatorRef = originatorRef;
 		}
 
 		public Collection<MakeCall.MakeCallIn.MakeCallFeature> getFeatures() {

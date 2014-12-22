@@ -1,0 +1,92 @@
+<message from="pubsub.mas-analec.gltd.net" to="betty.bidder@mas-analec.gltd.net"
+	id="AI50202AV50202-BETTY.BIDDER__betty.bidder@mas-analec.gltd.net__G2iER">
+	<event xmlns="http://jabber.org/protocol/pubsub#event">
+		<items node="AI50202AV50202-BETTY.BIDDER">
+			<item id="Cu634RNKgqLg9Yl">
+				<callstatus xmlns="http://xmpp.org/protocol/openlink:01:00:00#call-status"
+					busy="false">
+					<call>
+						<id>AVA#10585#10000000292#AI50202AV50202-BETTY.BIDDER</id>
+						<site type="AVAYA">testDB</site>
+						<profile>AV50202-BETTY.BIDDER</profile>
+						<originator-ref xmlns="http://xmpp.org/protocol/openlink:01:00:00#originator-ref">
+							<property id="universal-callid">
+								<value>09999105851418922357</value>
+							</property>
+							<property id="platform-callid">
+								<value>ABCDEFGHIJKLMNOP1234</value>
+							</property>
+						</originator-ref>
+						<interest>AI50202AV50202-BETTY.BIDDER</interest>
+						<changed>State</changed>
+						<state>ConnectionCleared</state>
+						<direction>Outgoing</direction>
+						<caller>
+							<number>50202</number>
+							<name>50202</name>
+						</caller>
+						<called>
+							<number destination="50203">50203</number>
+							<name>50203</name>
+						</called>
+						<duration>0</duration>
+						<features>
+							<feature id="Conference">true</feature>
+							<feature id="Callback">true</feature>
+						</features>
+						<actions>
+							<ClearConnection />
+							<ClearCall />
+							<AddThirdParty />
+						</actions>
+						<participants>
+							<participant jid="betty.bidder@mas-analec.gltd.net"
+								type="Active" direction="Outgoing" timestamp="Thu Dec 18 17:04:57 GMT 2014" />
+							<participant jid="brian.broker@mas-analec.gltd.net"
+								type="Inactive" direction="Incoming" timestamp="Thu Dec 18 17:05:08 GMT 2014" />
+						</participants>
+					</call>
+					<call>
+						<id>AVA#12810#10000000285#AI50202AV50202-BETTY.BIDDER</id>
+						<site type="AVAYA">testDB</site>
+						<profile>AV50202-BETTY.BIDDER</profile>
+						<originator-ref xmlns="http://xmpp.org/protocol/openlink:01:00:00#originator-ref">
+							<property id="universal-callid">
+								<value>09999128101418918835</value>
+							</property>
+							<property id="platform-callid">
+								<value>1234ABCDEFGHIJKLMNOP</value>
+							</property>
+						</originator-ref>
+						<interest>AI50202AV50202-BETTY.BIDDER</interest>
+						<changed>State</changed>
+						<state>CallFailed</state>
+						<direction>Unknown</direction>
+						<caller>
+							<number>50202</number>
+							<name>50202</name>
+						</caller>
+						<called>
+							<number></number>
+							<name></name>
+						</called>
+						<duration>0</duration>
+						<actions>
+							<ClearConnection />
+						</actions>
+						<participants>
+							<participant jid="betty.bidder@mas-analec.gltd.net"
+								direction="Outgoing" timestamp="Thu Dec 18 16:08:15 GMT 2014" />
+						</participants>
+					</call>
+				</callstatus>
+			</item>
+		</items>
+	</event>
+	<headers xmlns="http://jabber.org/protocol/shim">
+		<header name="pubsub#subid">96wi52eoqyq8r2MbudV37QFK3LkPHD4RKsoeAm8d
+		</header>
+		<header name="pubsub#subid">2iH5M197z37yimSqhaDspJbAA3Yx94P3H941EXO5
+		</header>
+	</headers>
+</message>

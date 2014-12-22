@@ -25,6 +25,8 @@ public class OpenlinkNamespaces {
 	
 	public static final String NS_OPENLINK_REQUESTACTION = "http://xmpp.org/protocol/openlink:01:00:00#request-action";
 
+	public static final String NS_OPENLINK_ORIGINATORREF = "http://xmpp.org/protocol/openlink:01:00:00#originator-ref";
+	
 	private OpenlinkNamespaces() {
 	};
 

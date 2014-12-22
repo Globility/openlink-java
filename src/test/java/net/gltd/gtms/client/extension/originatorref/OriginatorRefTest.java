@@ -1,8 +1,4 @@
-package net.gltd.gtms.client.extension.openlink.callstatus;
-
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.List;
+package net.gltd.gtms.client.extension.originatorref;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.stream.XMLStreamException;
@@ -49,7 +45,6 @@ import net.gltd.gtms.extension.openlink.profiles.Action;
 import net.gltd.gtms.extension.openlink.profiles.Profile;
 import net.gltd.gtms.extension.openlink.profiles.Profiles;
 import net.gltd.util.log.GtmsLog;
-import net.gltd.util.string.StringUtil;
 import net.gltd.util.xml.XmlUtil;
 
 import org.apache.log4j.LogManager;
@@ -57,29 +52,27 @@ import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.xmpp.Jid;
 import org.xmpp.XmlTest;
-import org.xmpp.extension.pubsub.Item;
 import org.xmpp.extension.pubsub.event.Event;
 import org.xmpp.extension.shim.Header;
 import org.xmpp.extension.shim.Headers;
 import org.xmpp.stanza.client.IQ;
 import org.xmpp.stanza.client.Message;
 
-public class CallStatusTest extends XmlTest {
+public class OriginatorRefTest extends XmlTest {
 
 	protected Logger logger = Logger.getLogger("net.gltd.gtms");
 
-	public CallStatusTest() throws JAXBException, XMLStreamException {
-		super(OriginatorRef.class, Property.class, Headers.class, Header.class, Event.class, Command.class, Note.class, Message.class, IQ.class,
-				IoData.class, Profiles.class, Profile.class, Action.class, Interests.class, Interest.class,
-				Features.class, Feature.class, CallStatus.class, Call.class, CallerCallee.class, CallFeature.class,
-				Participant.class, CallAction.class, AddThirdParty.class, AnswerCall.class, ClearCall.class,
-				ClearConnection.class, ConferenceFail.class, ConnectSpeaker.class, ConsultationCall.class,
-				DisconnectSpeaker.class, HoldCall.class, IntercomTransfer.class, JoinCall.class, PrivateCall.class,
-				PublicCall.class, RemoveThirdParty.class, RetrieveCall.class, SendDigit.class, SendDigits.class,
-				SingleStepTransfer.class, RemoveThirdParty.class, SendDigits.class, StartVoiceDrop.class,
-				StopVoiceDrop.class, TransferCall.class);
+	public OriginatorRefTest() throws JAXBException, XMLStreamException {
+		super(OriginatorRef.class, Property.class, Headers.class, Header.class, Event.class, Command.class, Note.class,
+				Message.class, IQ.class, IoData.class, Profiles.class, Profile.class, Action.class, Interests.class,
+				Interest.class, Features.class, Feature.class, CallStatus.class, Call.class, CallerCallee.class,
+				CallFeature.class, Participant.class, CallAction.class, AddThirdParty.class, AnswerCall.class,
+				ClearCall.class, ClearConnection.class, ConferenceFail.class, ConnectSpeaker.class,
+				ConsultationCall.class, DisconnectSpeaker.class, HoldCall.class, IntercomTransfer.class,
+				JoinCall.class, PrivateCall.class, PublicCall.class, RemoveThirdParty.class, RetrieveCall.class,
+				SendDigit.class, SendDigits.class, SingleStepTransfer.class, RemoveThirdParty.class, SendDigits.class,
+				StartVoiceDrop.class, StopVoiceDrop.class, TransferCall.class);
 	}
 
 	@Before
@@ -93,52 +86,33 @@ public class CallStatusTest extends XmlTest {
 	}
 
 	@Test
-	public void testCallStatus() throws XMLStreamException, JAXBException {
-		CallStatus cs = OpenlinkTestHelper.getCallStatus();
-		Assert.assertNotNull(cs);
+	public void testOriginatorRefMarshal() throws XMLStreamException, JAXBException {
+		OriginatorRef ref = OpenlinkTestHelper.getOriginatorRef();
+		Assert.assertNotNull(ref);
 
-		Message m = new Message(Jid.valueOf("leon@example.com"));
-		m.getExtensions().add(cs);
-
-		String xml = marshal(m);
+		String xml = marshal(ref);
 		Assert.assertNotNull(xml);
 		logger.debug("XML : " + XmlUtil.formatXml(xml));
 
-		Assert.assertTrue(xml
-				.contains("<callstatus xmlns=\"http://xmpp.org/protocol/openlink:01:00:00#call-status\" busy=\"false\">"));
-		Assert.assertTrue(xml.contains("<state>CallConferenced</state>"));
-		Assert.assertTrue(xml.contains("<RemoveThirdParty>"));
-		Assert.assertTrue(xml.contains("<ClearCall>"));
 	}
 
 	@Test
-	public void testCallStatusUnmarshal() throws FileNotFoundException, XMLStreamException, JAXBException,
-			IOException {
-		String xmlIn = StringUtil.readFileAsString("ol-callstatus.xml");
+	public void testOriginatorRefUnMarshal() throws XMLStreamException, JAXBException {
+		String xmlIn = "<originator-ref xmlns=\"http://xmpp.org/protocol/openlink:01:00:00#originator-ref\">"
+				+ "<property id=\"universal-callid\"><value>wFQ22tr5rc</value></property>"
+				+ "<property id=\"platform-callid\"><value>Dmde2MALM7</value></property>" + "</originator-ref>";
 
-		Message message = unmarshal(xmlIn, Message.class);
+		OriginatorRef ref = unmarshal(xmlIn, OriginatorRef.class);
 
-		String xmlOut = marshal(message);
+		String xmlOut = marshal(ref);
 		Assert.assertNotNull(xmlOut);
 		logger.debug(XmlUtil.formatXml(xmlOut));
 
-		Event e = message.getExtension(Event.class);
-		Assert.assertNotNull(e);
-		List<Item> items = e.getItems();
-		Assert.assertNotNull(items);
-		Assert.assertFalse(items.isEmpty());
+		Assert.assertEquals(2, ref.getProperties().size());
 
-		Item i = items.get(0);
-		Assert.assertTrue(i.getPayload() instanceof CallStatus);
-		CallStatus cs = (CallStatus) i.getPayload();
+		Assert.assertEquals("wFQ22tr5rc", ref.getPropertyById("universal-callid").getValue());
+		Assert.assertEquals("Dmde2MALM7", ref.getPropertyById("platform-callid").getValue());
 
-		Assert.assertTrue(cs.getCalls().size() == 2);
-
-		Call c = cs.getCalls().iterator().next();
-
-		Assert.assertNotNull(c);
-
-		Assert.assertEquals("AI50202AV50202-BETTY.BIDDER", c.getInterest());
 	}
 
 }

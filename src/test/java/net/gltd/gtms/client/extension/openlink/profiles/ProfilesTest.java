@@ -23,12 +23,8 @@ import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.xmpp.Jid;
-import org.xmpp.TestXmppSession;
 import org.xmpp.XmlTest;
-import org.xmpp.extension.hashes.HashManager;
 import org.xmpp.stanza.client.IQ;
-import org.xmpp.stanza.client.Message;
 
 public class ProfilesTest extends XmlTest {
 
@@ -83,7 +79,9 @@ public class ProfilesTest extends XmlTest {
 		Assert.assertNotNull(c);
 		IoData iod = c.getExtension(IoData.class);
 		Assert.assertNotNull(iod);
+		logger.debug("CLAZZ: " + iod.getOut().getExtension());
 		Profiles ps = iod.getOut().getExtension(Profiles.class);
+		
 		Assert.assertNotNull(ps);
 
 		Assert.assertEquals(2, ps.size());

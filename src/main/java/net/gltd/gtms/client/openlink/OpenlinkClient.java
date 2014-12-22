@@ -23,6 +23,28 @@ import net.gltd.gtms.extension.openlink.callstatus.CallFeature;
 import net.gltd.gtms.extension.openlink.callstatus.CallStatus;
 import net.gltd.gtms.extension.openlink.callstatus.CallerCallee;
 import net.gltd.gtms.extension.openlink.callstatus.Participant;
+import net.gltd.gtms.extension.openlink.callstatus.action.AddThirdParty;
+import net.gltd.gtms.extension.openlink.callstatus.action.AnswerCall;
+import net.gltd.gtms.extension.openlink.callstatus.action.CallAction;
+import net.gltd.gtms.extension.openlink.callstatus.action.ClearCall;
+import net.gltd.gtms.extension.openlink.callstatus.action.ClearConnection;
+import net.gltd.gtms.extension.openlink.callstatus.action.ConferenceFail;
+import net.gltd.gtms.extension.openlink.callstatus.action.ConnectSpeaker;
+import net.gltd.gtms.extension.openlink.callstatus.action.ConsultationCall;
+import net.gltd.gtms.extension.openlink.callstatus.action.DisconnectSpeaker;
+import net.gltd.gtms.extension.openlink.callstatus.action.HoldCall;
+import net.gltd.gtms.extension.openlink.callstatus.action.IntercomTransfer;
+import net.gltd.gtms.extension.openlink.callstatus.action.JoinCall;
+import net.gltd.gtms.extension.openlink.callstatus.action.PrivateCall;
+import net.gltd.gtms.extension.openlink.callstatus.action.PublicCall;
+import net.gltd.gtms.extension.openlink.callstatus.action.RemoveThirdParty;
+import net.gltd.gtms.extension.openlink.callstatus.action.RetrieveCall;
+import net.gltd.gtms.extension.openlink.callstatus.action.SendDigit;
+import net.gltd.gtms.extension.openlink.callstatus.action.SendDigits;
+import net.gltd.gtms.extension.openlink.callstatus.action.SingleStepTransfer;
+import net.gltd.gtms.extension.openlink.callstatus.action.StartVoiceDrop;
+import net.gltd.gtms.extension.openlink.callstatus.action.StopVoiceDrop;
+import net.gltd.gtms.extension.openlink.callstatus.action.TransferCall;
 import net.gltd.gtms.extension.openlink.command.GetFeatures;
 import net.gltd.gtms.extension.openlink.command.GetInterests;
 import net.gltd.gtms.extension.openlink.command.GetProfiles;
@@ -34,6 +56,7 @@ import net.gltd.gtms.extension.openlink.features.Feature;
 import net.gltd.gtms.extension.openlink.features.Features;
 import net.gltd.gtms.extension.openlink.interests.Interest;
 import net.gltd.gtms.extension.openlink.interests.Interests;
+import net.gltd.gtms.extension.openlink.originatorref.Property;
 import net.gltd.gtms.extension.openlink.profiles.Action;
 import net.gltd.gtms.extension.openlink.profiles.Profile;
 import net.gltd.gtms.extension.openlink.profiles.Profiles;
@@ -51,6 +74,8 @@ import org.xmpp.extension.pubsub.PubSubNode;
 import org.xmpp.extension.pubsub.PubSubService;
 import org.xmpp.extension.pubsub.Subscription;
 import org.xmpp.extension.pubsub.event.Event;
+import org.xmpp.extension.shim.Header;
+import org.xmpp.extension.shim.Headers;
 import org.xmpp.im.RosterEvent;
 import org.xmpp.im.RosterListener;
 import org.xmpp.stanza.MessageEvent;
@@ -61,6 +86,9 @@ import org.xmpp.stanza.StanzaException;
 import org.xmpp.stanza.client.IQ;
 import org.xmpp.stanza.client.Presence;
 
+/**
+ * XmppClient class has all the XMPP specific logic for Openlink functions.
+ */
 public class OpenlinkClient {
 	private static final Logger logger = Logger.getLogger(OpenlinkClient.class);
 
@@ -98,8 +126,20 @@ public class OpenlinkClient {
 	protected void registerExtensions() {
 		XmppContext.getDefault().registerExtension(Command.class, Note.class);
 		XmppContext.getDefault().registerExtension(IoData.class);
+
+		XmppContext.getDefault().registerExtension(Headers.class, Header.class);
+
+		XmppContext.getDefault().registerExtension(Event.class);
+
+		XmppContext.getDefault().registerExtension(CallAction.class, AddThirdParty.class, AnswerCall.class,
+				ClearCall.class, ClearConnection.class, ConferenceFail.class, ConnectSpeaker.class,
+				ConsultationCall.class, DisconnectSpeaker.class, HoldCall.class, IntercomTransfer.class,
+				JoinCall.class, PrivateCall.class, PublicCall.class, RemoveThirdParty.class, RetrieveCall.class,
+				SendDigit.class, SendDigits.class, SingleStepTransfer.class, RemoveThirdParty.class, SendDigits.class,
+				StartVoiceDrop.class, StopVoiceDrop.class, TransferCall.class);
+
 		XmppContext.getDefault().registerExtension(Call.class, CallerCallee.class, CallFeature.class, CallStatus.class,
-				Participant.class);
+				Participant.class, Property.class);
 		XmppContext.getDefault().registerExtension(GetFeatures.class, GetFeatures.GetFeaturesIn.class);
 		XmppContext.getDefault().registerExtension(GetInterests.class, GetInterests.GetInterestsIn.class);
 		XmppContext.getDefault().registerExtension(MakeCall.class, MakeCall.MakeCallIn.class,
@@ -131,6 +171,11 @@ public class OpenlinkClient {
 		}
 	}
 
+	/**
+	 * Returns true if connection online and authenticated.
+	 * 
+	 * @return true or false.
+	 */
 	public boolean isConnected() {
 		if (getXmppSession() != null && getXmppSession().getStatus() == XmppSession.Status.AUTHENTICATED) {
 			return true;
@@ -138,6 +183,9 @@ public class OpenlinkClient {
 		return false;
 	}
 
+	/**
+	 * Get XMPP (Babbler) connection object.
+	 */
 	public XmppSession getXmppSession() {
 		return xmppSession;
 	}
@@ -159,14 +207,27 @@ public class OpenlinkClient {
 		globalLogger.addHandler(consoleHandler);
 	}
 
+	/**
+	 * Gets the JID sans resource.
+	 * 
+	 * @return bare JID.
+	 */
 	public String getBareJid() {
 		return this.username + "@" + this.domain;
 	}
 
+	/**
+	 * Gets the full JID.
+	 * 
+	 * @return full JID.
+	 */
 	public String getFullJid() {
 		return this.username + "@" + this.domain + "/" + this.resource;
 	}
 
+	/**
+	 * Connect to the server.
+	 */
 	public void connect() {
 		Connection tcpConnection = new TcpConnection(this.host, this.PORT);
 		xmppSession = new XmppSession(this.domain, tcpConnection);
@@ -246,20 +307,35 @@ public class OpenlinkClient {
 		};
 	}
 
+	/**
+	 * Returns the list of call listeners.
+	 * @return call listener.
+	 */
 	public Collection<CallListener> getCallListeners() {
 		return Collections.unmodifiableCollection(callListeners);
 	}
 
+	/**
+	 * Add a call listener to listen to call events. See {@link CallListener}.
+	 * @param listener call listener.
+	 */
 	public void addCallListener(CallListener listener) {
 		if (listener != null) {
 			callListeners.add(listener);
 		}
 	}
 
+	/**
+	 * Remove call listener.
+	 * @param listener call listener.
+	 */
 	public void removeCallListener(CallListener listener) {
 		callListeners.remove(listener);
 	}
 
+	/**
+	 * Disconnect from the server
+	 */
 	public void disconnect() {
 		if (xmppSession != null && isConnected()) {
 			try {
@@ -270,6 +346,13 @@ public class OpenlinkClient {
 		}
 	}
 
+	/**
+	 * Implements 'http://xmpp.org/protocol/openlink:01:00:00#get-profiles'.
+	 *
+	 * @param to
+	 *            Openlink XMPP component.
+	 * @return collection of user's profiles.
+	 */
 	public Collection<Profile> getProfiles(String to) throws XmppException {
 		Collection<Profile> result = new ArrayList<Profile>();
 
@@ -291,6 +374,15 @@ public class OpenlinkClient {
 		return result;
 	}
 
+	/**
+	 * Implements 'http://xmpp.org/protocol/openlink:01:00:00#get-interests'.
+	 *
+	 * @param to
+	 *            Openlink XMPP component.
+	 * @param profile
+	 *            User's profile.
+	 * @return collection of user's interests.
+	 */
 	public Collection<Interest> getInterests(String to, Profile profile) throws XmppException {
 		Collection<Interest> result = new ArrayList<Interest>();
 
@@ -312,6 +404,15 @@ public class OpenlinkClient {
 		return result;
 	}
 
+	/**
+	 * Implements 'http://xmpp.org/protocol/openlink:01:00:00#get-features'.
+	 *
+	 * @param to
+	 *            Openlink XMPP component.
+	 * @param profile
+	 *            User's profile.
+	 * @return collection of features.
+	 */
 	public Collection<Feature> getFeatures(String to, Profile profile) throws XmppException, JAXBException {
 		Collection<Feature> result = new ArrayList<Feature>();
 
@@ -333,6 +434,15 @@ public class OpenlinkClient {
 		return result;
 	}
 
+	/**
+	 * Subscribe to user interest.
+	 * 
+	 * @param userId
+	 *            user id.
+	 * @param interest
+	 *            user interest.
+	 * @return new subscription.
+	 */
 	public Subscription subscribe(Interest interest) throws XmppException {
 		Subscription result = null;
 		PubSubService pubSubService = this.getPubSubService();
@@ -349,6 +459,12 @@ public class OpenlinkClient {
 		return result;
 	}
 
+	/**
+	 * Unsubscribe from user interest.
+	 * 
+	 * @param interest
+	 *            user interest.
+	 */
 	public void unsubscribe(Interest interest) throws XmppException {
 		PubSubService pubSubService = this.getPubSubService();
 		if (pubSubService != null) {
@@ -367,6 +483,13 @@ public class OpenlinkClient {
 		}
 	}
 
+	/**
+	 * Implements 'http://www.xmpp.org/extensions/xep-0060.html#entity-subscriptions'.
+	 *
+	 * @param interest
+	 *            the Openlink interest/pubsub node.
+	 * @return collection of subscriptions.
+	 */
 	public Collection<Subscription> getSubscriptions(Interest interest) throws XmppException {
 		Collection<Subscription> result = new ArrayList<Subscription>();
 		PubSubService pubSubService = this.getPubSubService();
@@ -377,8 +500,23 @@ public class OpenlinkClient {
 		return result;
 	}
 
-	public Collection<Call> makeCall(String to, Interest interest, String destination, Set<MakeCallFeature> features)
-			throws XmppException {
+	/**
+	 * Implements 'http://xmpp.org/protocol/openlink:01:00:00#make-call'.
+	 * 
+	 * @param to
+	 *            Openlink XMPP component.
+	 * @param interest
+	 *            the Openlink interest.
+	 * @param destination
+	 *            destination to be dialled.
+	 * @param features
+	 *            features to be associated with the call.
+	 * @param originatorRef
+	 *            collection to associate with the call.
+	 * @return Collection of calls made as a result of the request.
+	 */
+	public Collection<Call> makeCall(String to, Interest interest, String destination, Set<MakeCallFeature> features,
+			Set<Property> originatorRef) throws XmppException {
 		Collection<Call> result = new ArrayList<Call>();
 
 		MakeCall mc = new MakeCall();
@@ -387,6 +525,9 @@ public class OpenlinkClient {
 		mc.getIn().setJid(this.jid.asBareJid());
 		if (features != null) {
 			mc.getIn().setFeatures(features);
+		}
+		if (originatorRef != null) {
+			mc.getIn().setOriginatorRef(originatorRef);
 		}
 		IQ iq = new IQ(Jid.valueOf(to), IQ.Type.SET, mc);
 		IQ iqResult = xmppSession.query(iq);
@@ -404,6 +545,21 @@ public class OpenlinkClient {
 		return result;
 	}
 
+	/**
+	 * Implements 'http://xmpp.org/protocol/openlink:01:00:00#request-action'.
+	 * 
+	 * @param to
+	 *            Openlink XMPP component.
+	 * @param call
+	 *            the Openlink Call object.
+	 * @param action
+	 *            the RequestAction action to execute.
+	 * @param value1
+	 *            RequestAction value1.
+	 * @param value2
+	 *            RequestAction value2.
+	 * @return Collection of calls made as a result of the request.
+	 */
 	public Collection<Call> requestAction(String to, Call call, RequestActionAction action, String value1, String value2)
 			throws XmppException {
 		Collection<Call> result = new ArrayList<Call>();
