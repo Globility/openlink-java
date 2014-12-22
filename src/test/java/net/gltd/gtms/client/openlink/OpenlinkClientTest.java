@@ -66,18 +66,18 @@ public class OpenlinkClientTest extends XmlTest {
 
 	protected Logger logger = Logger.getLogger("net.gltd.gtms");
 
-	private static final String USERNAME = "betty.bidder";
-	private static final String PASSWORD = "Pa55w0rd";
-	private static final String RESOURCE = "office";
+	private static final String USERNAME = "random_user";
+	private static final String PASSWORD = "PassW0rd";
+	private static final String RESOURCE = "my_resource";
 
-	private static final String DOMAIN = "mas-analec.gltd.net";
-	private static final String HOST = "mas-analec.gltd.net";
+	private static final String DOMAIN = "domain.example.com";
+	private static final String HOST = "domain.example.com";
 
-	private static final String SYSTEM = "avaya2";
+	private static final String SYSTEM = "xmppcomponentnode";
 
 	private static final String SYSTEM_AND_DOMAIN = SYSTEM + "." + DOMAIN;
 
-	private static final String DESTINATION = "50203";
+	private static final String DESTINATION = "12345";
 
 	private OpenlinkClient client = null;
 
