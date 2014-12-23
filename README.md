@@ -12,8 +12,7 @@ The OpenlinkJava library itself is comprised of three main files: `openlink-java
 
 If managing your own dependencies simply use `openlink-java` otherwise use `openlink-java-jar-with-dependencies.jar`.
 
-More information about Babbler can be found in the [Javadoc](http://sco0ter.bitbucket.org/babbler/apidocs/index.html) and [Babbler General Documentation](http://docs.xmpp.rocks/). But the short 
-summary is to simply drop the files into your application and use  OpenlinkClient.java to invoke your Openlink commands.
+More information about Babbler can be found in the [Javadoc](http://sco0ter.bitbucket.org/babbler/apidocs/index.html) and [Babbler General Documentation](http://docs.xmpp.rocks/). But the short summary is to simply drop the files into your application and use  OpenlinkClient.java to invoke your Openlink commands.
  
 The `Babbler Java` library is referenced by instantiating `OpenlinkClientTest` with the necessary XMPP parameters and then calling connect.
 

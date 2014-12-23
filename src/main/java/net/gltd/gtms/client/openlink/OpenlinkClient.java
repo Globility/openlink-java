@@ -87,7 +87,11 @@ import org.xmpp.stanza.client.IQ;
 import org.xmpp.stanza.client.Presence;
 
 /**
- * XmppClient class has all the XMPP specific logic for Openlink functions.
+ * The OpenlinkClient has all the XMPP specific logic for Openlink functionality including profiles, interests,
+ * features, make-call and request action.
+ * 
+ * In addition it exposes helpers for pubsub functionality such as subscribe/unsubscribe and get the list of
+ * subscriptions.
  */
 public class OpenlinkClient {
 	private static final Logger logger = Logger.getLogger(OpenlinkClient.class);
@@ -309,6 +313,7 @@ public class OpenlinkClient {
 
 	/**
 	 * Returns the list of call listeners.
+	 * 
 	 * @return call listener.
 	 */
 	public Collection<CallListener> getCallListeners() {
@@ -317,7 +322,9 @@ public class OpenlinkClient {
 
 	/**
 	 * Add a call listener to listen to call events. See {@link CallListener}.
-	 * @param listener call listener.
+	 * 
+	 * @param listener
+	 *            call listener.
 	 */
 	public void addCallListener(CallListener listener) {
 		if (listener != null) {
@@ -327,7 +334,9 @@ public class OpenlinkClient {
 
 	/**
 	 * Remove call listener.
-	 * @param listener call listener.
+	 * 
+	 * @param listener
+	 *            call listener.
 	 */
 	public void removeCallListener(CallListener listener) {
 		callListeners.remove(listener);
