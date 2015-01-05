@@ -12,7 +12,6 @@ import net.gltd.gtms.extension.iodata.IoData;
 import net.gltd.gtms.extension.openlink.command.MakeCall;
 import net.gltd.gtms.extension.openlink.originatorref.Property;
 import net.gltd.util.log.GtmsLog;
-import net.gltd.util.xml.XmlUtil;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.log4j.LogManager;
@@ -20,10 +19,11 @@ import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.xmpp.Jid;
-import org.xmpp.XmlTest;
-import org.xmpp.stanza.client.IQ;
-import org.xmpp.stanza.client.Message;
+
+import rocks.xmpp.core.Jid;
+import rocks.xmpp.core.XmlTest;
+import rocks.xmpp.core.stanza.model.client.IQ;
+import rocks.xmpp.core.stanza.model.client.Message;
 
 public class MakeCallTest extends XmlTest {
 
@@ -86,7 +86,7 @@ public class MakeCallTest extends XmlTest {
 
 		String xml = marshal(iq);
 		Assert.assertNotNull(xml);
-		logger.debug(XmlUtil.formatXml(xml));
+		logger.debug(xml);
 
 		// Assert.assertTrue(xml.contains("<iodata xmlns=\"urn:xmpp:tmp:io-data\" type=\"output\">"));
 

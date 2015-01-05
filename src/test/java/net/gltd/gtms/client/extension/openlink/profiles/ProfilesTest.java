@@ -23,8 +23,9 @@ import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.xmpp.XmlTest;
-import org.xmpp.stanza.client.IQ;
+
+import rocks.xmpp.core.XmlTest;
+import rocks.xmpp.core.stanza.model.client.IQ;
 
 public class ProfilesTest extends XmlTest {
 
@@ -57,7 +58,7 @@ public class ProfilesTest extends XmlTest {
 
 		String xml = marshal(ps);
 		Assert.assertNotNull(xml);
-		logger.debug(XmlUtil.formatXml(marshal(ps)));
+		logger.debug(marshal(ps));
 
 		Assert.assertTrue(xml.contains("<profiles xmlns=\"" + OpenlinkNamespaces.NS_OPENLINK_PROFILES
 				+ "\"><profile id=\""));
@@ -73,7 +74,7 @@ public class ProfilesTest extends XmlTest {
 
 		String xmlOut = marshal(iq);
 		Assert.assertNotNull(xmlOut);
-		logger.debug(XmlUtil.formatXml(marshal(iq)));
+		logger.debug(marshal(iq));
 		
 		Command c = iq.getExtension(Command.class);
 		Assert.assertNotNull(c);

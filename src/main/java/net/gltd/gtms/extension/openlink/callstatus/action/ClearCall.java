@@ -4,5 +4,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "ClearCall")
 public class ClearCall extends CallAction {
-
+	@Override
+	public String getId() {
+		return "ClearCall";
+	}
+	
 }

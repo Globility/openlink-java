@@ -1,0 +1,1756 @@
+
+2015-01-05 13:44:28,213 DEBUG OpenlinkClient
+(net.gltd.gtms.client.openlink.OpenlinkClient:
+<init>
+	:140) - Client Initialized with JID:
+	betty.bidder@mas-analec.gltd.net/office
+	2015-01-05 13:44:28,346 DEBUG OpenlinkClient
+	(net.gltd.gtms.client.openlink.OpenlinkClient:getSessionConfiguration:179)
+	- CONSOLE LOGGING: ENABLED
+	2015-01-05 13:44:29,163 DEBUG OpenlinkClient
+	(net.gltd.gtms.client.openlink.OpenlinkClient$3:sessionStatusChanged:303)
+	- CONNECTION EV: CONNECTING :
+	rocks.xmpp.core.session.XmppSession@29871db1 : null
+	OUT: <?xml version="1.0" encoding="UTF-8"?>
+	<stream:stream xml:lang="en" to="mas-analec.gltd.net"
+		version="1.0" xmlns="jabber:client" xmlns:stream="http://etherx.jabber.org/streams">
+		IN : <?xml version='1.0' encoding='UTF-8'?>
+		<stream:stream xmlns:stream="http://etherx.jabber.org/streams"
+			xmlns="jabber:client" from="mas-analec.gltd.net" id="9ade2422"
+			xml:lang="en" version="1.0">
+			<stream:features>
+				<starttls xmlns="urn:ietf:params:xml:ns:xmpp-tls"></starttls>
+				<mechanisms xmlns="urn:ietf:params:xml:ns:xmpp-sasl">
+					<mechanism>DIGEST-MD5</mechanism>
+					<mechanism>PLAIN</mechanism>
+					<mechanism>ANONYMOUS</mechanism>
+					<mechanism>CRAM-MD5</mechanism>
+				</mechanisms>
+				<compression xmlns="http://jabber.org/features/compress">
+					<method>zlib</method>
+				</compression>
+				<auth xmlns="http://jabber.org/features/iq-auth" />
+				<register xmlns="http://jabber.org/features/iq-register" />
+			</stream:features>
+			2015-01-05 13:44:29,242 DEBUG OpenlinkClient
+			(net.gltd.gtms.client.openlink.OpenlinkClient$3:sessionStatusChanged:303)
+			- CONNECTION EV: CONNECTED :
+			rocks.xmpp.core.session.XmppSession@29871db1 : null
+			2015-01-05 13:44:29,243 DEBUG OpenlinkClient
+			(net.gltd.gtms.client.openlink.OpenlinkClient$3:sessionStatusChanged:303)
+			- CONNECTION EV: AUTHENTICATING :
+			rocks.xmpp.core.session.XmppSession@29871db1 : null
+			OUT:
+			<auth xmlns="urn:ietf:params:xml:ns:xmpp-sasl" mechanism="DIGEST-MD5"></auth>
+			IN :
+			<challenge xmlns="urn:ietf:params:xml:ns:xmpp-sasl">cmVhbG09Im1hcy1hbmFsZWMuZ2x0ZC5uZXQiLG5vbmNlPSIvR3VmSHBKRThpeEhpdjVKYXZQWi9LYm1LL0xZVnllSjFyMW5KZlFXIixxb3A9ImF1dGgiLGNoYXJzZXQ9dXRmLTgsYWxnb3JpdGhtPW1kNS1zZXNz
+			</challenge>
+			OUT:
+			<response xmlns="urn:ietf:params:xml:ns:xmpp-sasl">Y2hhcnNldD11dGYtOCx1c2VybmFtZT0iYmV0dHkuYmlkZGVyIixyZWFsbT0ibWFzLWFuYWxlYy5nbHRkLm5ldCIsbm9uY2U9Ii9HdWZIcEpFOGl4SGl2NUphdlBaL0tibUsvTFlWeWVKMXIxbkpmUVciLG5jPTAwMDAwMDAxLGNub25jZT0ieWc1dTBETVVhUmlIR2szZnR0RnNWdVFPdGxOU1dnWmJ3WW9uZDJwUSIsZGlnZXN0LXVyaT0ieG1wcC9tYXMtYW5hbGVjLmdsdGQubmV0IixtYXhidWY9NjU1MzYscmVzcG9uc2U9M2NjOWQwMDc3ZjM0ZTRjZTU1ZTE4YThiNDkyMDc4YzgscW9wPWF1dGg=
+			</response>
+			IN :
+			<success xmlns="urn:ietf:params:xml:ns:xmpp-sasl">cnNwYXV0aD05MGQ4NGZjZmRjZjI3ZWNlYjk3ODY5Y2Y3MDA0ZWEwZA==
+			</success>
+			OUT: <?xml version="1.0" encoding="UTF-8"?>
+			<stream:stream xml:lang="en" to="mas-analec.gltd.net"
+				version="1.0" xmlns="jabber:client" xmlns:stream="http://etherx.jabber.org/streams">
+				IN : <?xml version='1.0' encoding='UTF-8'?>
+				<stream:stream xmlns:stream="http://etherx.jabber.org/streams"
+					xmlns="jabber:client" from="mas-analec.gltd.net" id="9ade2422"
+					xml:lang="en" version="1.0">
+					<stream:features>
+						<compression xmlns="http://jabber.org/features/compress">
+							<method>zlib</method>
+						</compression>
+						<bind xmlns="urn:ietf:params:xml:ns:xmpp-bind" />
+						<session xmlns="urn:ietf:params:xml:ns:xmpp-session" />
+					</stream:features>
+					OUT:
+					<iq id="eff09ce2-aa4e-4988-bc40-ce11b2401940" type="set">
+						<bind xmlns="urn:ietf:params:xml:ns:xmpp-bind">
+							<resource>office</resource>
+						</bind>
+					</iq>
+					IN :
+					<iq id="eff09ce2-aa4e-4988-bc40-ce11b2401940" to="mas-analec.gltd.net/9ade2422"
+						type="result">
+						<bind xmlns="urn:ietf:params:xml:ns:xmpp-bind">
+							<jid>betty.bidder@mas-analec.gltd.net/office</jid>
+						</bind>
+					</iq>
+					OUT:
+					<iq id="3f13c236-9697-4bb2-863b-a981c8320099" type="set">
+						<session xmlns="urn:ietf:params:xml:ns:xmpp-session"></session>
+					</iq>
+					IN :
+					<iq id="3f13c236-9697-4bb2-863b-a981c8320099" to="betty.bidder@mas-analec.gltd.net/office"
+						type="result">
+						<session xmlns="urn:ietf:params:xml:ns:xmpp-session"></session>
+					</iq>
+					OUT:
+					<iq id="71ac3fdf-d012-4e7d-8696-467bf2a88692" type="get">
+						<query xmlns="jabber:iq:roster"></query>
+					</iq>
+					IN :
+					<iq id="71ac3fdf-d012-4e7d-8696-467bf2a88692" to="betty.bidder@mas-analec.gltd.net/office"
+						type="result">
+						<query xmlns="jabber:iq:roster"></query>
+					</iq>
+					2015-01-05 13:44:29,426 DEBUG OpenlinkClient
+					(net.gltd.gtms.client.openlink.OpenlinkClient$3:sessionStatusChanged:303)
+					- CONNECTION EV: AUTHENTICATED :
+					rocks.xmpp.core.session.XmppSession@29871db1 : null
+					2015-01-05 13:44:29,444 DEBUG gtms
+					(net.gltd.gtms.client.openlink.OpenlinkClientTest:isConnected:132)
+					- CONNECTED: true
+					2015-01-05 13:44:29,444 DEBUG gtms
+					(net.gltd.gtms.client.openlink.OpenlinkClientTest:isConnected:132)
+					- CONNECTED: true
+					OUT:
+					<presence>
+						<c xmlns="http://jabber.org/protocol/caps" hash="sha-1"
+							node="http://xmpp.rocks" ver="u/Y0BceR78aPU4ref3rexN+1s8o="></c>
+					</presence>
+					OUT:
+					<iq id="24134529-8702-4ccb-bbdc-600c7395005a" to="avaya2.mas-analec.gltd.net"
+						type="set">
+						<command xmlns="http://jabber.org/protocol/commands"
+							action="execute" node="http://xmpp.org/protocol/openlink:01:00:00#get-profiles">
+							<iodata xmlns="urn:xmpp:tmp:io-data" type="input">
+								<in>
+									<jid xmlns="http://jabber.org/protocol/commands">betty.bidder@mas-analec.gltd.net</jid>
+								</in>
+							</iodata>
+						</command>
+					</iq>
+					IN :
+					<iq from="mas-analec.gltd.net" id="133-750"
+						to="betty.bidder@mas-analec.gltd.net/office" type="get">
+						<query xmlns="http://jabber.org/protocol/disco#info"></query>
+					</iq>
+					OUT:
+					<iq from="betty.bidder@mas-analec.gltd.net/office" id="133-750"
+						to="mas-analec.gltd.net" type="result">
+						<query xmlns="http://jabber.org/protocol/disco#info">
+							<identity category="client" type="pc"></identity>
+							<feature var="http://jabber.org/protocol/bytestreams"></feature>
+							<feature var="http://jabber.org/protocol/caps"></feature>
+							<feature var="http://jabber.org/protocol/disco#info"></feature>
+							<feature var="http://jabber.org/protocol/disco#items"></feature>
+							<feature var="http://jabber.org/protocol/ibb"></feature>
+							<feature var="http://jabber.org/protocol/rsm"></feature>
+							<feature var="http://jabber.org/protocol/si"></feature>
+							<feature var="http://jabber.org/protocol/si/profile/file-transfer"></feature>
+							<feature var="jabber:iq:last"></feature>
+							<feature var="jabber:iq:oob"></feature>
+							<feature var="jabber:iq:version"></feature>
+							<feature var="jabber:x:oob"></feature>
+							<feature var="jid\20escaping"></feature>
+							<feature var="urn:xmpp:hash-function-text-names:md5"></feature>
+							<feature var="urn:xmpp:hash-function-text-names:sha-1"></feature>
+							<feature var="urn:xmpp:hash-function-text-names:sha-256"></feature>
+							<feature var="urn:xmpp:hash-function-text-names:sha-384"></feature>
+							<feature var="urn:xmpp:hash-function-text-names:sha-512"></feature>
+							<feature var="urn:xmpp:hashes:1"></feature>
+							<feature var="urn:xmpp:ping"></feature>
+							<feature var="urn:xmpp:time"></feature>
+							<feature var="vcard-temp"></feature>
+						</query>
+					</iq>
+					IN :
+					<iq from="avaya2.mas-analec.gltd.net" id="24134529-8702-4ccb-bbdc-600c7395005a"
+						to="betty.bidder@mas-analec.gltd.net/office" type="result">
+						<command xmlns="http://jabber.org/protocol/commands"
+							action="execute" node="http://xmpp.org/protocol/openlink:01:00:00#get-profiles"
+							status="completed">
+							<iodata xmlns="urn:xmpp:tmp:io-data" type="output">
+								<out>
+									<profiles xmlns="http://xmpp.org/protocol/openlink:01:00:00/profiles">
+										<profile id="AV50202-BETTY.BIDDER" device="avaya.50202"
+											default="true" online="true" label="avaya">
+											<actions>
+												<action id="RetrieveCall" label="RetrieveCall"></action>
+												<action id="ConsultationCall" label="ConsultationCall"></action>
+												<action id="SingleStepTransfer" label="SingleStepTransfer"></action>
+												<action id="TransferCall" label="TransferCall"></action>
+												<action id="ConferenceCall" label="ConferenceCall"></action>
+												<action id="SendDigit" label="SendDigit"></action>
+												<action id="DeflectCall" label="DeflectCall"></action>
+												<action id="ClearConnection" label="ClearConnection"></action>
+												<action id="ClearCall" label="ClearCall"></action>
+												<action id="JoinCall" label="JoinCall"></action>
+												<action id="HoldCall" label="HoldCall"></action>
+												<action id="AnswerCall" label="AnswerCall"></action>
+											</actions>
+										</profile>
+									</profiles>
+								</out>
+							</iodata>
+						</command>
+					</iq>
+					2015-01-05 13:44:29,461 DEBUG gtms
+					(net.gltd.gtms.client.openlink.OpenlinkClientTest:isConnected:132)
+					- CONNECTED: true
+					OUT:
+					<iq id="036c2dc5-9313-4b03-b7c8-e22cc3d5d3cd" to="avaya2.mas-analec.gltd.net"
+						type="set">
+						<command xmlns="http://jabber.org/protocol/commands"
+							action="execute" node="http://xmpp.org/protocol/openlink:01:00:00#get-profiles">
+							<iodata xmlns="urn:xmpp:tmp:io-data" type="input">
+								<in>
+									<jid xmlns="http://jabber.org/protocol/commands">betty.bidder@mas-analec.gltd.net</jid>
+								</in>
+							</iodata>
+						</command>
+					</iq>
+					IN :
+					<iq from="avaya2.mas-analec.gltd.net" id="036c2dc5-9313-4b03-b7c8-e22cc3d5d3cd"
+						to="betty.bidder@mas-analec.gltd.net/office" type="result">
+						<command xmlns="http://jabber.org/protocol/commands"
+							action="execute" node="http://xmpp.org/protocol/openlink:01:00:00#get-profiles"
+							status="completed">
+							<iodata xmlns="urn:xmpp:tmp:io-data" type="output">
+								<out>
+									<profiles xmlns="http://xmpp.org/protocol/openlink:01:00:00/profiles">
+										<profile id="AV50202-BETTY.BIDDER" device="avaya.50202"
+											default="true" online="true" label="avaya">
+											<actions>
+												<action id="TransferCall" label="TransferCall"></action>
+												<action id="SingleStepTransfer" label="SingleStepTransfer"></action>
+												<action id="ClearConnection" label="ClearConnection"></action>
+												<action id="ConsultationCall" label="ConsultationCall"></action>
+												<action id="ClearCall" label="ClearCall"></action>
+												<action id="RetrieveCall" label="RetrieveCall"></action>
+												<action id="SendDigit" label="SendDigit"></action>
+												<action id="ConferenceCall" label="ConferenceCall"></action>
+												<action id="JoinCall" label="JoinCall"></action>
+												<action id="HoldCall" label="HoldCall"></action>
+												<action id="DeflectCall" label="DeflectCall"></action>
+												<action id="AnswerCall" label="AnswerCall"></action>
+											</actions>
+										</profile>
+									</profiles>
+								</out>
+							</iodata>
+						</command>
+					</iq>
+					OUT:
+					<iq id="127eab89-65e6-4695-80f7-392be6233970" to="avaya2.mas-analec.gltd.net"
+						type="set">
+						<command xmlns="http://jabber.org/protocol/commands"
+							action="execute" node="http://xmpp.org/protocol/openlink:01:00:00#get-interests">
+							<iodata xmlns="urn:xmpp:tmp:io-data" type="input">
+								<in xmlns="http://jabber.org/protocol/commands">
+									<profile>AV50202-BETTY.BIDDER</profile>
+								</in>
+							</iodata>
+						</command>
+					</iq>
+					IN :
+					<iq from="avaya2.mas-analec.gltd.net" id="127eab89-65e6-4695-80f7-392be6233970"
+						to="betty.bidder@mas-analec.gltd.net/office" type="result">
+						<command xmlns="http://jabber.org/protocol/commands"
+							action="execute" node="http://xmpp.org/protocol/openlink:01:00:00#get-interests"
+							status="completed">
+							<iodata xmlns="urn:xmpp:tmp:io-data" type="output">
+								<out>
+									<interests
+										xmlns="http://xmpp.org/protocol/openlink:01:00:00/interests">
+										<interest id="AI50202AV50202-BETTY.BIDDER" type="DirectoryNumber"
+											label="50202" default="true" value="AV50202-BETTY.BIDDER"></interest>
+									</interests>
+								</out>
+							</iodata>
+						</command>
+					</iq>
+					OUT:
+					<iq id="d747c447-0185-434a-976f-76452c093d65" type="get">
+						<query xmlns="http://jabber.org/protocol/disco#items"></query>
+					</iq>
+					IN :
+					<iq id="d747c447-0185-434a-976f-76452c093d65" to="betty.bidder@mas-analec.gltd.net/office"
+						type="result">
+						<query xmlns="http://jabber.org/protocol/disco#items">
+							<item jid="avaya2.mas-analec.gltd.net" name="avaya"></item>
+							<item jid="pubsub.mas-analec.gltd.net" name="Publish-Subscribe service"></item>
+							<item jid="conference.mas-analec.gltd.net" name="Public Chatrooms"></item>
+							<item jid="proxy.mas-analec.gltd.net" name="Socks 5 Bytestreams Proxy"></item>
+						</query>
+					</iq>
+					OUT:
+					<iq id="c44ab701-63b6-44f5-8364-1c6550d5b79a" to="avaya2.mas-analec.gltd.net"
+						type="get">
+						<query xmlns="http://jabber.org/protocol/disco#info"></query>
+					</iq>
+					IN :
+					<iq from="avaya2.mas-analec.gltd.net" id="c44ab701-63b6-44f5-8364-1c6550d5b79a"
+						to="betty.bidder@mas-analec.gltd.net/office" type="result">
+						<query xmlns="http://jabber.org/protocol/disco#info">
+							<identity category="component" type="command-list" name="avaya"></identity>
+							<feature var="http://jabber.org/protocol/commands"></feature>
+							<feature var="http://jabber.org/protocol/disco#info"></feature>
+							<feature var="http://xmpp.org/protocol/openlink:01:00:00"></feature>
+							<feature
+								var="http://xmpp.org/protocol/openlink:01:00:00#originator-ref"></feature>
+							<feature var="http://xmpp.org/protocol/openlink:01:00:00#tsc"></feature>
+							<feature var="urn:xmpp:ping"></feature>
+						</query>
+					</iq>
+					OUT:
+					<iq id="7a6380be-3859-452a-bac1-044db9563406" to="pubsub.mas-analec.gltd.net"
+						type="get">
+						<query xmlns="http://jabber.org/protocol/disco#info"></query>
+					</iq>
+					IN :
+					<iq from="pubsub.mas-analec.gltd.net" id="7a6380be-3859-452a-bac1-044db9563406"
+						to="betty.bidder@mas-analec.gltd.net/office" type="result">
+						<query xmlns="http://jabber.org/protocol/disco#info">
+							<identity category="pubsub" type="service"
+								name="Publish-Subscribe service"></identity>
+							<feature var="http://jabber.org/protocol/disco#info"></feature>
+							<feature var="http://jabber.org/protocol/pubsub"></feature>
+							<feature var="http://jabber.org/protocol/pubsub#collections"></feature>
+							<feature var="http://jabber.org/protocol/pubsub#config-node"></feature>
+							<feature var="http://jabber.org/protocol/pubsub#create-and-configure"></feature>
+							<feature var="http://jabber.org/protocol/pubsub#create-nodes"></feature>
+							<feature
+								var="http://jabber.org/protocol/pubsub#default_access_model_open"></feature>
+							<feature var="http://jabber.org/protocol/pubsub#delete-nodes"></feature>
+							<feature var="http://jabber.org/protocol/pubsub#get-pending"></feature>
+							<feature var="http://jabber.org/protocol/pubsub#instant-nodes"></feature>
+							<feature var="http://jabber.org/protocol/pubsub#item-ids"></feature>
+							<feature var="http://jabber.org/protocol/pubsub#manage-subscriptions"></feature>
+							<feature var="http://jabber.org/protocol/pubsub#meta-data"></feature>
+							<feature var="http://jabber.org/protocol/pubsub#modify-affiliations"></feature>
+							<feature var="http://jabber.org/protocol/pubsub#multi-subscribe"></feature>
+							<feature var="http://jabber.org/protocol/pubsub#outcast-affiliation"></feature>
+							<feature var="http://jabber.org/protocol/pubsub#persistent-items"></feature>
+							<feature
+								var="http://jabber.org/protocol/pubsub#presence-notifications"></feature>
+							<feature var="http://jabber.org/protocol/pubsub#publish"></feature>
+							<feature
+								var="http://jabber.org/protocol/pubsub#publisher-affiliation"></feature>
+							<feature var="http://jabber.org/protocol/pubsub#purge-nodes"></feature>
+							<feature var="http://jabber.org/protocol/pubsub#retract-items"></feature>
+							<feature
+								var="http://jabber.org/protocol/pubsub#retrieve-affiliations"></feature>
+							<feature var="http://jabber.org/protocol/pubsub#retrieve-default"></feature>
+							<feature var="http://jabber.org/protocol/pubsub#retrieve-items"></feature>
+							<feature
+								var="http://jabber.org/protocol/pubsub#retrieve-subscriptions"></feature>
+							<feature var="http://jabber.org/protocol/pubsub#subscribe"></feature>
+							<feature var="http://jabber.org/protocol/pubsub#subscription-options"></feature>
+						</query>
+					</iq>
+					OUT:
+					<iq id="c39243fd-a0bf-40b7-b8ec-dcff0bc4f316" to="conference.mas-analec.gltd.net"
+						type="get">
+						<query xmlns="http://jabber.org/protocol/disco#info"></query>
+					</iq>
+					IN :
+					<iq from="conference.mas-analec.gltd.net" id="c39243fd-a0bf-40b7-b8ec-dcff0bc4f316"
+						to="betty.bidder@mas-analec.gltd.net/office" type="result">
+						<query xmlns="http://jabber.org/protocol/disco#info">
+							<identity category="conference" type="text" name="Public Chatrooms"></identity>
+							<identity category="directory" type="chatroom"
+								name="Public Chatroom Search"></identity>
+							<feature var="http://jabber.org/protocol/disco#info"></feature>
+							<feature var="http://jabber.org/protocol/disco#items"></feature>
+							<feature var="http://jabber.org/protocol/muc"></feature>
+							<feature var="http://jabber.org/protocol/rsm"></feature>
+							<feature var="jabber:iq:search"></feature>
+						</query>
+					</iq>
+					OUT:
+					<iq id="d16d8e48-8d34-4497-99a1-00c2edf2283c" to="proxy.mas-analec.gltd.net"
+						type="get">
+						<query xmlns="http://jabber.org/protocol/disco#info"></query>
+					</iq>
+					IN :
+					<iq from="proxy.mas-analec.gltd.net" id="d16d8e48-8d34-4497-99a1-00c2edf2283c"
+						to="betty.bidder@mas-analec.gltd.net/office" type="result">
+						<query xmlns="http://jabber.org/protocol/disco#info">
+							<identity category="proxy" type="bytestreams"
+								name="SOCKS5 Bytestreams Service"></identity>
+							<feature var="http://jabber.org/protocol/bytestreams"></feature>
+							<feature var="http://jabber.org/protocol/disco#info"></feature>
+						</query>
+					</iq>
+					OUT:
+					<iq id="c493c73d-dd13-4333-9f49-3c7e6cc19bdc" type="get">
+						<query xmlns="http://jabber.org/protocol/disco#items"></query>
+					</iq>
+					IN :
+					<iq id="c493c73d-dd13-4333-9f49-3c7e6cc19bdc" to="betty.bidder@mas-analec.gltd.net/office"
+						type="result">
+						<query xmlns="http://jabber.org/protocol/disco#items">
+							<item jid="avaya2.mas-analec.gltd.net" name="avaya"></item>
+							<item jid="pubsub.mas-analec.gltd.net" name="Publish-Subscribe service"></item>
+							<item jid="conference.mas-analec.gltd.net" name="Public Chatrooms"></item>
+							<item jid="proxy.mas-analec.gltd.net" name="Socks 5 Bytestreams Proxy"></item>
+						</query>
+					</iq>
+					OUT:
+					<iq id="254e7ce4-c5e7-4fac-873d-c81c25298ebc" to="avaya2.mas-analec.gltd.net"
+						type="get">
+						<query xmlns="http://jabber.org/protocol/disco#info"></query>
+					</iq>
+					IN :
+					<iq from="avaya2.mas-analec.gltd.net" id="254e7ce4-c5e7-4fac-873d-c81c25298ebc"
+						to="betty.bidder@mas-analec.gltd.net/office" type="result">
+						<query xmlns="http://jabber.org/protocol/disco#info">
+							<identity category="component" type="command-list" name="avaya"></identity>
+							<feature var="http://jabber.org/protocol/commands"></feature>
+							<feature var="http://jabber.org/protocol/disco#info"></feature>
+							<feature var="http://xmpp.org/protocol/openlink:01:00:00"></feature>
+							<feature
+								var="http://xmpp.org/protocol/openlink:01:00:00#originator-ref"></feature>
+							<feature var="http://xmpp.org/protocol/openlink:01:00:00#tsc"></feature>
+							<feature var="urn:xmpp:ping"></feature>
+						</query>
+					</iq>
+					OUT:
+					<iq id="97a1110f-0428-4c53-9110-6cd9c3fa0487" to="pubsub.mas-analec.gltd.net"
+						type="get">
+						<query xmlns="http://jabber.org/protocol/disco#info"></query>
+					</iq>
+					IN :
+					<iq from="pubsub.mas-analec.gltd.net" id="97a1110f-0428-4c53-9110-6cd9c3fa0487"
+						to="betty.bidder@mas-analec.gltd.net/office" type="result">
+						<query xmlns="http://jabber.org/protocol/disco#info">
+							<identity category="pubsub" type="service"
+								name="Publish-Subscribe service"></identity>
+							<feature var="http://jabber.org/protocol/disco#info"></feature>
+							<feature var="http://jabber.org/protocol/pubsub"></feature>
+							<feature var="http://jabber.org/protocol/pubsub#collections"></feature>
+							<feature var="http://jabber.org/protocol/pubsub#config-node"></feature>
+							<feature var="http://jabber.org/protocol/pubsub#create-and-configure"></feature>
+							<feature var="http://jabber.org/protocol/pubsub#create-nodes"></feature>
+							<feature
+								var="http://jabber.org/protocol/pubsub#default_access_model_open"></feature>
+							<feature var="http://jabber.org/protocol/pubsub#delete-nodes"></feature>
+							<feature var="http://jabber.org/protocol/pubsub#get-pending"></feature>
+							<feature var="http://jabber.org/protocol/pubsub#instant-nodes"></feature>
+							<feature var="http://jabber.org/protocol/pubsub#item-ids"></feature>
+							<feature var="http://jabber.org/protocol/pubsub#manage-subscriptions"></feature>
+							<feature var="http://jabber.org/protocol/pubsub#meta-data"></feature>
+							<feature var="http://jabber.org/protocol/pubsub#modify-affiliations"></feature>
+							<feature var="http://jabber.org/protocol/pubsub#multi-subscribe"></feature>
+							<feature var="http://jabber.org/protocol/pubsub#outcast-affiliation"></feature>
+							<feature var="http://jabber.org/protocol/pubsub#persistent-items"></feature>
+							<feature
+								var="http://jabber.org/protocol/pubsub#presence-notifications"></feature>
+							<feature var="http://jabber.org/protocol/pubsub#publish"></feature>
+							<feature
+								var="http://jabber.org/protocol/pubsub#publisher-affiliation"></feature>
+							<feature var="http://jabber.org/protocol/pubsub#purge-nodes"></feature>
+							<feature var="http://jabber.org/protocol/pubsub#retract-items"></feature>
+							<feature
+								var="http://jabber.org/protocol/pubsub#retrieve-affiliations"></feature>
+							<feature var="http://jabber.org/protocol/pubsub#retrieve-default"></feature>
+							<feature var="http://jabber.org/protocol/pubsub#retrieve-items"></feature>
+							<feature
+								var="http://jabber.org/protocol/pubsub#retrieve-subscriptions"></feature>
+							<feature var="http://jabber.org/protocol/pubsub#subscribe"></feature>
+							<feature var="http://jabber.org/protocol/pubsub#subscription-options"></feature>
+						</query>
+					</iq>
+					OUT:
+					<iq id="e39d4782-125d-4921-829f-f7f916e6a4bb" to="conference.mas-analec.gltd.net"
+						type="get">
+						<query xmlns="http://jabber.org/protocol/disco#info"></query>
+					</iq>
+					IN :
+					<iq from="conference.mas-analec.gltd.net" id="e39d4782-125d-4921-829f-f7f916e6a4bb"
+						to="betty.bidder@mas-analec.gltd.net/office" type="result">
+						<query xmlns="http://jabber.org/protocol/disco#info">
+							<identity category="conference" type="text" name="Public Chatrooms"></identity>
+							<identity category="directory" type="chatroom"
+								name="Public Chatroom Search"></identity>
+							<feature var="http://jabber.org/protocol/disco#info"></feature>
+							<feature var="http://jabber.org/protocol/disco#items"></feature>
+							<feature var="http://jabber.org/protocol/muc"></feature>
+							<feature var="http://jabber.org/protocol/rsm"></feature>
+							<feature var="jabber:iq:search"></feature>
+						</query>
+					</iq>
+					OUT:
+					<iq id="58e65611-38b1-4a98-9c5f-e11e709ea2cc" to="proxy.mas-analec.gltd.net"
+						type="get">
+						<query xmlns="http://jabber.org/protocol/disco#info"></query>
+					</iq>
+					IN :
+					<iq from="proxy.mas-analec.gltd.net" id="58e65611-38b1-4a98-9c5f-e11e709ea2cc"
+						to="betty.bidder@mas-analec.gltd.net/office" type="result">
+						<query xmlns="http://jabber.org/protocol/disco#info">
+							<identity category="proxy" type="bytestreams"
+								name="SOCKS5 Bytestreams Service"></identity>
+							<feature var="http://jabber.org/protocol/bytestreams"></feature>
+							<feature var="http://jabber.org/protocol/disco#info"></feature>
+						</query>
+					</iq>
+					OUT:
+					<iq id="93b87c01-a3cf-48cc-97c1-ee959a107e7f" to="pubsub.mas-analec.gltd.net"
+						type="set">
+						<pubsub xmlns="http://jabber.org/protocol/pubsub">
+							<subscribe jid="betty.bidder@mas-analec.gltd.net" node="AI50202AV50202-BETTY.BIDDER"></subscribe>
+							<options></options>
+						</pubsub>
+					</iq>
+					IN :
+					<iq from="pubsub.mas-analec.gltd.net" id="93b87c01-a3cf-48cc-97c1-ee959a107e7f"
+						to="betty.bidder@mas-analec.gltd.net/office" type="result">
+						<pubsub xmlns="http://jabber.org/protocol/pubsub">
+							<subscription jid="betty.bidder@mas-analec.gltd.net"
+								subid="hCQh4B37HSzr6LKbuOz8FIXObrvJUaw76sDgXxM4" subscription="subscribed"
+								node="AI50202AV50202-BETTY.BIDDER">
+								<subscribe-options></subscribe-options>
+							</subscription>
+						</pubsub>
+					</iq>
+					OUT:
+					<iq id="dc56bfa5-e86b-4347-88b6-3297e7fd466e" type="get">
+						<query xmlns="http://jabber.org/protocol/disco#items"></query>
+					</iq>
+					IN :
+					<message from="pubsub.mas-analec.gltd.net"
+						id="AI50202AV50202-BETTY.BIDDER__betty.bidder@mas-analec.gltd.net__kTg0A"
+						to="betty.bidder@mas-analec.gltd.net">
+						<event xmlns="http://jabber.org/protocol/pubsub#event">
+							<items node="AI50202AV50202-BETTY.BIDDER">
+								<item id="l533RmS8R990k5W">
+									<callstatus
+										xmlns="http://xmpp.org/protocol/openlink:01:00:00#call-status"
+										busy="false">
+										<call>
+											<id>AVA#4571#10000000313#AI50202AV50202-BETTY.BIDDER</id>
+											<profile>AV50202-BETTY.BIDDER</profile>
+											<interest>AI50202AV50202-BETTY.BIDDER</interest>
+											<originator-ref
+												xmlns="http://xmpp.org/protocol/openlink:01:00:00#originator-ref">
+												<property id="universal-callid">
+													<value>09999045711420464847</value>
+												</property>
+											</originator-ref>
+											<changed>State</changed>
+											<state>ConnectionCleared</state>
+											<direction>Outgoing</direction>
+											<duration>0</duration>
+											<caller>
+												<number>50202</number>
+												<name>50202</name>
+											</caller>
+											<called>
+												<number>50203</number>
+												<name>50203</name>
+											</called>
+											<participants>
+												<participant jid="betty.bidder@mas-analec.gltd.net"
+													timestamp="Mon Jan 05 13:34:32 GMT 2015" direction="Outgoing"
+													type="Active"></participant>
+											</participants>
+											<features></features>
+											<actions></actions>
+										</call>
+									</callstatus>
+								</item>
+							</items>
+						</event>
+						<x xmlns="jabber:x:delay" stamp="2015-01-05T13:34:37.334Z"></x>
+					</message>
+					2015-01-05 13:44:29,740 DEBUG OpenlinkClient
+					(net.gltd.gtms.client.openlink.OpenlinkClient$5:handleMessage:347)
+					- MESSAGE EVENT:
+					rocks.xmpp.core.stanza.MessageEvent[source=rocks.xmpp.core.session.XmppSession@29871db1]
+					2015-01-05 13:44:29,740 DEBUG OpenlinkClient
+					(net.gltd.gtms.client.openlink.OpenlinkClient$5:handleMessage:353)
+					- EVENT: rocks.xmpp.extensions.pubsub.model.event.Event@147fcb5
+					2015-01-05 13:44:29,740 DEBUG OpenlinkClient
+					(net.gltd.gtms.client.openlink.OpenlinkClient$5:handleMessage:356)
+					- ITEM:
+					rocks.xmpp.extensions.pubsub.model.event.Event$ItemElement@137f0ced
+					IN :
+					<iq id="dc56bfa5-e86b-4347-88b6-3297e7fd466e" to="betty.bidder@mas-analec.gltd.net/office"
+						type="result">
+						<query xmlns="http://jabber.org/protocol/disco#items">
+							<item jid="avaya2.mas-analec.gltd.net" name="avaya"></item>
+							<item jid="pubsub.mas-analec.gltd.net" name="Publish-Subscribe service"></item>
+							<item jid="conference.mas-analec.gltd.net" name="Public Chatrooms"></item>
+							<item jid="proxy.mas-analec.gltd.net" name="Socks 5 Bytestreams Proxy"></item>
+						</query>
+					</iq>
+					2015-01-05 13:44:29,748 DEBUG OpenlinkClient
+					(net.gltd.gtms.client.openlink.OpenlinkClient$5:handleMessage:359)
+					- CALLSTATUS: false
+					2015-01-05 13:44:29,750 DEBUG gtms
+					(net.gltd.gtms.client.openlink.OpenlinkClientTest$1:callEvent:122)
+					- CALL EVENT:
+					<callstatus
+						xmlns="http://xmpp.org/protocol/openlink:01:00:00#call-status"
+						busy="false">
+						<call>
+							<id>AVA#4571#10000000313#AI50202AV50202-BETTY.BIDDER</id>
+							<profile>AV50202-BETTY.BIDDER</profile>
+							<interest>AI50202AV50202-BETTY.BIDDER</interest>
+							<originator-ref
+								xmlns="http://xmpp.org/protocol/openlink:01:00:00#originator-ref">
+								<property id="universal-callid">
+									<value>09999045711420464847</value>
+								</property>
+							</originator-ref>
+							<changed>State</changed>
+							<state>ConnectionCleared</state>
+							<direction>Outgoing</direction>
+							<duration>0</duration>
+							<caller>
+								<number>50202</number>
+								<name>50202</name>
+							</caller>
+							<called>
+								<number>50203</number>
+								<name>50203</name>
+							</called>
+							<participants>
+								<participant jid="betty.bidder@mas-analec.gltd.net"
+									timestamp="Mon Jan 05 13:34:32 GMT 2015" direction="Outgoing"
+									type="Active"></participant>
+							</participants>
+							<features></features>
+							<actions></actions>
+						</call>
+					</callstatus>
+					2015-01-05 13:44:29,751 DEBUG gtms
+					(net.gltd.gtms.client.openlink.OpenlinkClientTest$2:callEvent:299)
+					- CALL EV:
+					AVA#4571#10000000313#AI50202AV50202-BETTY.BIDDERAVA#4571#10000000313#AI50202AV50202-BETTY.BIDDER,Outgoing,ConnectionCleared,State,0,50202,50202,50203,50203,[],[],[betty.bidder@mas-analec.gltd.net,
+					<null>
+						,Mon Jan 05 13:34:32 GMT
+						2015,Outgoing,Active],AV50202-BETTY.BIDDER,AI50202AV50202-BETTY.BIDDER,[net.gltd.gtms.extension.openlink.originatorref.Property@2cfcd689]
+						2015-01-05 13:44:29,753 DEBUG gtms
+						(net.gltd.gtms.client.openlink.OpenlinkClientTest$2:callEvent:331)
+						- CALL EV: AVA#4571#10000000313#AI50202AV50202-BETTY.BIDDER
+						<call xmlns="http://xmpp.org/protocol/openlink:01:00:00#call-status">
+							<id>AVA#4571#10000000313#AI50202AV50202-BETTY.BIDDER</id>
+							<profile>AV50202-BETTY.BIDDER</profile>
+							<interest>AI50202AV50202-BETTY.BIDDER</interest>
+							<originator-ref
+								xmlns="http://xmpp.org/protocol/openlink:01:00:00#originator-ref">
+								<property id="universal-callid">
+									<value>09999045711420464847</value>
+								</property>
+							</originator-ref>
+							<changed>State</changed>
+							<state>ConnectionCleared</state>
+							<direction>Outgoing</direction>
+							<duration>0</duration>
+							<caller>
+								<number>50202</number>
+								<name>50202</name>
+							</caller>
+							<called>
+								<number>50203</number>
+								<name>50203</name>
+							</called>
+							<participants>
+								<participant jid="betty.bidder@mas-analec.gltd.net"
+									timestamp="Mon Jan 05 13:34:32 GMT 2015" direction="Outgoing"
+									type="Active"></participant>
+							</participants>
+							<features></features>
+							<actions></actions>
+						</call>
+						OUT:
+						<iq id="8279e66c-27d9-4f14-8610-52a316d53223" to="avaya2.mas-analec.gltd.net"
+							type="get">
+							<query xmlns="http://jabber.org/protocol/disco#info"></query>
+						</iq>
+						IN :
+						<iq from="avaya2.mas-analec.gltd.net" id="8279e66c-27d9-4f14-8610-52a316d53223"
+							to="betty.bidder@mas-analec.gltd.net/office" type="result">
+							<query xmlns="http://jabber.org/protocol/disco#info">
+								<identity category="component" type="command-list"
+									name="avaya"></identity>
+								<feature var="http://jabber.org/protocol/commands"></feature>
+								<feature var="http://jabber.org/protocol/disco#info"></feature>
+								<feature var="http://xmpp.org/protocol/openlink:01:00:00"></feature>
+								<feature
+									var="http://xmpp.org/protocol/openlink:01:00:00#originator-ref"></feature>
+								<feature var="http://xmpp.org/protocol/openlink:01:00:00#tsc"></feature>
+								<feature var="urn:xmpp:ping"></feature>
+							</query>
+						</iq>
+						OUT:
+						<iq id="82d987de-6306-4d01-8630-1050d93dcf02" to="pubsub.mas-analec.gltd.net"
+							type="get">
+							<query xmlns="http://jabber.org/protocol/disco#info"></query>
+						</iq>
+						IN :
+						<iq from="pubsub.mas-analec.gltd.net" id="82d987de-6306-4d01-8630-1050d93dcf02"
+							to="betty.bidder@mas-analec.gltd.net/office" type="result">
+							<query xmlns="http://jabber.org/protocol/disco#info">
+								<identity category="pubsub" type="service"
+									name="Publish-Subscribe service"></identity>
+								<feature var="http://jabber.org/protocol/disco#info"></feature>
+								<feature var="http://jabber.org/protocol/pubsub"></feature>
+								<feature var="http://jabber.org/protocol/pubsub#collections"></feature>
+								<feature var="http://jabber.org/protocol/pubsub#config-node"></feature>
+								<feature
+									var="http://jabber.org/protocol/pubsub#create-and-configure"></feature>
+								<feature var="http://jabber.org/protocol/pubsub#create-nodes"></feature>
+								<feature
+									var="http://jabber.org/protocol/pubsub#default_access_model_open"></feature>
+								<feature var="http://jabber.org/protocol/pubsub#delete-nodes"></feature>
+								<feature var="http://jabber.org/protocol/pubsub#get-pending"></feature>
+								<feature var="http://jabber.org/protocol/pubsub#instant-nodes"></feature>
+								<feature var="http://jabber.org/protocol/pubsub#item-ids"></feature>
+								<feature
+									var="http://jabber.org/protocol/pubsub#manage-subscriptions"></feature>
+								<feature var="http://jabber.org/protocol/pubsub#meta-data"></feature>
+								<feature var="http://jabber.org/protocol/pubsub#modify-affiliations"></feature>
+								<feature var="http://jabber.org/protocol/pubsub#multi-subscribe"></feature>
+								<feature var="http://jabber.org/protocol/pubsub#outcast-affiliation"></feature>
+								<feature var="http://jabber.org/protocol/pubsub#persistent-items"></feature>
+								<feature
+									var="http://jabber.org/protocol/pubsub#presence-notifications"></feature>
+								<feature var="http://jabber.org/protocol/pubsub#publish"></feature>
+								<feature
+									var="http://jabber.org/protocol/pubsub#publisher-affiliation"></feature>
+								<feature var="http://jabber.org/protocol/pubsub#purge-nodes"></feature>
+								<feature var="http://jabber.org/protocol/pubsub#retract-items"></feature>
+								<feature
+									var="http://jabber.org/protocol/pubsub#retrieve-affiliations"></feature>
+								<feature var="http://jabber.org/protocol/pubsub#retrieve-default"></feature>
+								<feature var="http://jabber.org/protocol/pubsub#retrieve-items"></feature>
+								<feature
+									var="http://jabber.org/protocol/pubsub#retrieve-subscriptions"></feature>
+								<feature var="http://jabber.org/protocol/pubsub#subscribe"></feature>
+								<feature
+									var="http://jabber.org/protocol/pubsub#subscription-options"></feature>
+							</query>
+						</iq>
+						OUT:
+						<iq id="f559c15e-8665-472b-95b5-25c81f57791f" to="conference.mas-analec.gltd.net"
+							type="get">
+							<query xmlns="http://jabber.org/protocol/disco#info"></query>
+						</iq>
+						IN :
+						<iq from="conference.mas-analec.gltd.net" id="f559c15e-8665-472b-95b5-25c81f57791f"
+							to="betty.bidder@mas-analec.gltd.net/office" type="result">
+							<query xmlns="http://jabber.org/protocol/disco#info">
+								<identity category="conference" type="text" name="Public Chatrooms"></identity>
+								<identity category="directory" type="chatroom"
+									name="Public Chatroom Search"></identity>
+								<feature var="http://jabber.org/protocol/disco#info"></feature>
+								<feature var="http://jabber.org/protocol/disco#items"></feature>
+								<feature var="http://jabber.org/protocol/muc"></feature>
+								<feature var="http://jabber.org/protocol/rsm"></feature>
+								<feature var="jabber:iq:search"></feature>
+							</query>
+						</iq>
+						OUT:
+						<iq id="34104441-a992-4b02-9a0a-dc231ce01a9c" to="proxy.mas-analec.gltd.net"
+							type="get">
+							<query xmlns="http://jabber.org/protocol/disco#info"></query>
+						</iq>
+						IN :
+						<iq from="proxy.mas-analec.gltd.net" id="34104441-a992-4b02-9a0a-dc231ce01a9c"
+							to="betty.bidder@mas-analec.gltd.net/office" type="result">
+							<query xmlns="http://jabber.org/protocol/disco#info">
+								<identity category="proxy" type="bytestreams"
+									name="SOCKS5 Bytestreams Service"></identity>
+								<feature var="http://jabber.org/protocol/bytestreams"></feature>
+								<feature var="http://jabber.org/protocol/disco#info"></feature>
+							</query>
+						</iq>
+						OUT:
+						<iq id="95337946-d449-4224-bf31-696a5a12ac07" type="get">
+							<query xmlns="http://jabber.org/protocol/disco#items"></query>
+						</iq>
+						IN :
+						<iq id="95337946-d449-4224-bf31-696a5a12ac07" to="betty.bidder@mas-analec.gltd.net/office"
+							type="result">
+							<query xmlns="http://jabber.org/protocol/disco#items">
+								<item jid="avaya2.mas-analec.gltd.net" name="avaya"></item>
+								<item jid="pubsub.mas-analec.gltd.net" name="Publish-Subscribe service"></item>
+								<item jid="conference.mas-analec.gltd.net" name="Public Chatrooms"></item>
+								<item jid="proxy.mas-analec.gltd.net" name="Socks 5 Bytestreams Proxy"></item>
+							</query>
+						</iq>
+						OUT:
+						<iq id="4f0f0907-4e7a-4ef8-9304-bf3442d0fb69" to="avaya2.mas-analec.gltd.net"
+							type="get">
+							<query xmlns="http://jabber.org/protocol/disco#info"></query>
+						</iq>
+						IN :
+						<iq from="avaya2.mas-analec.gltd.net" id="4f0f0907-4e7a-4ef8-9304-bf3442d0fb69"
+							to="betty.bidder@mas-analec.gltd.net/office" type="result">
+							<query xmlns="http://jabber.org/protocol/disco#info">
+								<identity category="component" type="command-list"
+									name="avaya"></identity>
+								<feature var="http://jabber.org/protocol/commands"></feature>
+								<feature var="http://jabber.org/protocol/disco#info"></feature>
+								<feature var="http://xmpp.org/protocol/openlink:01:00:00"></feature>
+								<feature
+									var="http://xmpp.org/protocol/openlink:01:00:00#originator-ref"></feature>
+								<feature var="http://xmpp.org/protocol/openlink:01:00:00#tsc"></feature>
+								<feature var="urn:xmpp:ping"></feature>
+							</query>
+						</iq>
+						OUT:
+						<iq id="6cef4c01-d121-4201-910c-9edf2b529a09" to="pubsub.mas-analec.gltd.net"
+							type="get">
+							<query xmlns="http://jabber.org/protocol/disco#info"></query>
+						</iq>
+						IN :
+						<iq from="pubsub.mas-analec.gltd.net" id="6cef4c01-d121-4201-910c-9edf2b529a09"
+							to="betty.bidder@mas-analec.gltd.net/office" type="result">
+							<query xmlns="http://jabber.org/protocol/disco#info">
+								<identity category="pubsub" type="service"
+									name="Publish-Subscribe service"></identity>
+								<feature var="http://jabber.org/protocol/disco#info"></feature>
+								<feature var="http://jabber.org/protocol/pubsub"></feature>
+								<feature var="http://jabber.org/protocol/pubsub#collections"></feature>
+								<feature var="http://jabber.org/protocol/pubsub#config-node"></feature>
+								<feature
+									var="http://jabber.org/protocol/pubsub#create-and-configure"></feature>
+								<feature var="http://jabber.org/protocol/pubsub#create-nodes"></feature>
+								<feature
+									var="http://jabber.org/protocol/pubsub#default_access_model_open"></feature>
+								<feature var="http://jabber.org/protocol/pubsub#delete-nodes"></feature>
+								<feature var="http://jabber.org/protocol/pubsub#get-pending"></feature>
+								<feature var="http://jabber.org/protocol/pubsub#instant-nodes"></feature>
+								<feature var="http://jabber.org/protocol/pubsub#item-ids"></feature>
+								<feature
+									var="http://jabber.org/protocol/pubsub#manage-subscriptions"></feature>
+								<feature var="http://jabber.org/protocol/pubsub#meta-data"></feature>
+								<feature var="http://jabber.org/protocol/pubsub#modify-affiliations"></feature>
+								<feature var="http://jabber.org/protocol/pubsub#multi-subscribe"></feature>
+								<feature var="http://jabber.org/protocol/pubsub#outcast-affiliation"></feature>
+								<feature var="http://jabber.org/protocol/pubsub#persistent-items"></feature>
+								<feature
+									var="http://jabber.org/protocol/pubsub#presence-notifications"></feature>
+								<feature var="http://jabber.org/protocol/pubsub#publish"></feature>
+								<feature
+									var="http://jabber.org/protocol/pubsub#publisher-affiliation"></feature>
+								<feature var="http://jabber.org/protocol/pubsub#purge-nodes"></feature>
+								<feature var="http://jabber.org/protocol/pubsub#retract-items"></feature>
+								<feature
+									var="http://jabber.org/protocol/pubsub#retrieve-affiliations"></feature>
+								<feature var="http://jabber.org/protocol/pubsub#retrieve-default"></feature>
+								<feature var="http://jabber.org/protocol/pubsub#retrieve-items"></feature>
+								<feature
+									var="http://jabber.org/protocol/pubsub#retrieve-subscriptions"></feature>
+								<feature var="http://jabber.org/protocol/pubsub#subscribe"></feature>
+								<feature
+									var="http://jabber.org/protocol/pubsub#subscription-options"></feature>
+							</query>
+						</iq>
+						OUT:
+						<iq id="8c4a1dcf-d90d-49a1-8a2e-c443bc78eca8" to="conference.mas-analec.gltd.net"
+							type="get">
+							<query xmlns="http://jabber.org/protocol/disco#info"></query>
+						</iq>
+						IN :
+						<iq from="conference.mas-analec.gltd.net" id="8c4a1dcf-d90d-49a1-8a2e-c443bc78eca8"
+							to="betty.bidder@mas-analec.gltd.net/office" type="result">
+							<query xmlns="http://jabber.org/protocol/disco#info">
+								<identity category="conference" type="text" name="Public Chatrooms"></identity>
+								<identity category="directory" type="chatroom"
+									name="Public Chatroom Search"></identity>
+								<feature var="http://jabber.org/protocol/disco#info"></feature>
+								<feature var="http://jabber.org/protocol/disco#items"></feature>
+								<feature var="http://jabber.org/protocol/muc"></feature>
+								<feature var="http://jabber.org/protocol/rsm"></feature>
+								<feature var="jabber:iq:search"></feature>
+							</query>
+						</iq>
+						OUT:
+						<iq id="fa1453a0-ef46-46f4-bbc3-f5ac4d2ced7a" to="proxy.mas-analec.gltd.net"
+							type="get">
+							<query xmlns="http://jabber.org/protocol/disco#info"></query>
+						</iq>
+						IN :
+						<iq from="proxy.mas-analec.gltd.net" id="fa1453a0-ef46-46f4-bbc3-f5ac4d2ced7a"
+							to="betty.bidder@mas-analec.gltd.net/office" type="result">
+							<query xmlns="http://jabber.org/protocol/disco#info">
+								<identity category="proxy" type="bytestreams"
+									name="SOCKS5 Bytestreams Service"></identity>
+								<feature var="http://jabber.org/protocol/bytestreams"></feature>
+								<feature var="http://jabber.org/protocol/disco#info"></feature>
+							</query>
+						</iq>
+						OUT:
+						<iq id="d6470a03-de08-47d8-b4d4-6e2551903c3a" to="pubsub.mas-analec.gltd.net"
+							type="get">
+							<pubsub xmlns="http://jabber.org/protocol/pubsub">
+								<subscriptions node="AI50202AV50202-BETTY.BIDDER"></subscriptions>
+							</pubsub>
+						</iq>
+						IN :
+						<iq from="pubsub.mas-analec.gltd.net" id="d6470a03-de08-47d8-b4d4-6e2551903c3a"
+							to="betty.bidder@mas-analec.gltd.net/office" type="result">
+							<pubsub xmlns="http://jabber.org/protocol/pubsub">
+								<subscriptions node="AI50202AV50202-BETTY.BIDDER">
+									<subscription jid="betty.bidder@mas-analec.gltd.net"
+										subid="RIs9DMglt9owBKVgda6aPEG2ewMLCOr8N106yrjk" subscription="subscribed"></subscription>
+									<subscription jid="betty.bidder@mas-analec.gltd.net"
+										subid="5sL5LJ2vusIU4d5hi6zRowjTXFxc3Toag5bqmRt9" subscription="subscribed"></subscription>
+									<subscription jid="betty.bidder@mas-analec.gltd.net"
+										subid="iFx9OEV6JRbJ46zJ75tx27nubhjylvWhavyvb592" subscription="subscribed"></subscription>
+									<subscription jid="betty.bidder@mas-analec.gltd.net"
+										subid="5TJIvUPw1DozEyvHhqBmOhMJ8MxURa0g5z003112" subscription="subscribed"></subscription>
+									<subscription jid="betty.bidder@mas-analec.gltd.net"
+										subid="hCQh4B37HSzr6LKbuOz8FIXObrvJUaw76sDgXxM4" subscription="subscribed"></subscription>
+									<subscription jid="betty.bidder@mas-analec.gltd.net"
+										subid="K253B2pI11at6xgdGjK2IbS0Fs0vb9WN7dAezmlU" subscription="subscribed"></subscription>
+									<subscription jid="betty.bidder@mas-analec.gltd.net"
+										subid="4gePliibNkfegnpbqGiABf5U2yvY3uOh6knaW4O9" subscription="subscribed"></subscription>
+									<subscription jid="betty.bidder@mas-analec.gltd.net"
+										subid="h18A2IR5jAsVQGg5G15D7Qy6KnXQ1q0M75EgxUQ9" subscription="subscribed"></subscription>
+								</subscriptions>
+							</pubsub>
+						</iq>
+						2015-01-05 13:44:29,804 DEBUG gtms
+						(net.gltd.gtms.client.openlink.OpenlinkClientTest:subscribeInterest:239)
+						- SUBSCRIPTION AI50202AV50202-BETTY.BIDDER ID:
+						hCQh4B37HSzr6LKbuOz8FIXObrvJUaw76sDgXxM4
+						2015-01-05 13:44:29,804 DEBUG gtms
+						(net.gltd.gtms.client.openlink.OpenlinkClientTest:isConnected:132)
+						- CONNECTED: true
+						2015-01-05 13:44:29,804 DEBUG gtms
+						(net.gltd.gtms.client.openlink.OpenlinkClientTest:isConnected:132)
+						- CONNECTED: true
+						OUT:
+						<iq id="f6487435-1b32-4854-8b49-24af4d1ce7fb" to="avaya2.mas-analec.gltd.net"
+							type="set">
+							<command xmlns="http://jabber.org/protocol/commands"
+								action="execute" node="http://xmpp.org/protocol/openlink:01:00:00#get-profiles">
+								<iodata xmlns="urn:xmpp:tmp:io-data" type="input">
+									<in>
+										<jid xmlns="http://jabber.org/protocol/commands">betty.bidder@mas-analec.gltd.net</jid>
+									</in>
+								</iodata>
+							</command>
+						</iq>
+						IN :
+						<iq from="avaya2.mas-analec.gltd.net" id="f6487435-1b32-4854-8b49-24af4d1ce7fb"
+							to="betty.bidder@mas-analec.gltd.net/office" type="result">
+							<command xmlns="http://jabber.org/protocol/commands"
+								action="execute" node="http://xmpp.org/protocol/openlink:01:00:00#get-profiles"
+								status="completed">
+								<iodata xmlns="urn:xmpp:tmp:io-data" type="output">
+									<out>
+										<profiles
+											xmlns="http://xmpp.org/protocol/openlink:01:00:00/profiles">
+											<profile id="AV50202-BETTY.BIDDER" device="avaya.50202"
+												default="true" online="true" label="avaya">
+												<actions>
+													<action id="RetrieveCall" label="RetrieveCall"></action>
+													<action id="TransferCall" label="TransferCall"></action>
+													<action id="JoinCall" label="JoinCall"></action>
+													<action id="ClearCall" label="ClearCall"></action>
+													<action id="DeflectCall" label="DeflectCall"></action>
+													<action id="SingleStepTransfer" label="SingleStepTransfer"></action>
+													<action id="HoldCall" label="HoldCall"></action>
+													<action id="AnswerCall" label="AnswerCall"></action>
+													<action id="ConsultationCall" label="ConsultationCall"></action>
+													<action id="SendDigit" label="SendDigit"></action>
+													<action id="ConferenceCall" label="ConferenceCall"></action>
+													<action id="ClearConnection" label="ClearConnection"></action>
+												</actions>
+											</profile>
+										</profiles>
+									</out>
+								</iodata>
+							</command>
+						</iq>
+						2015-01-05 13:44:29,811 DEBUG gtms
+						(net.gltd.gtms.client.openlink.OpenlinkClientTest:isConnected:132)
+						- CONNECTED: true
+						OUT:
+						<iq id="39603b95-e328-466a-8d15-95a5771ffc5c" to="avaya2.mas-analec.gltd.net"
+							type="set">
+							<command xmlns="http://jabber.org/protocol/commands"
+								action="execute" node="http://xmpp.org/protocol/openlink:01:00:00#get-profiles">
+								<iodata xmlns="urn:xmpp:tmp:io-data" type="input">
+									<in>
+										<jid xmlns="http://jabber.org/protocol/commands">betty.bidder@mas-analec.gltd.net</jid>
+									</in>
+								</iodata>
+							</command>
+						</iq>
+						IN :
+						<iq from="avaya2.mas-analec.gltd.net" id="39603b95-e328-466a-8d15-95a5771ffc5c"
+							to="betty.bidder@mas-analec.gltd.net/office" type="result">
+							<command xmlns="http://jabber.org/protocol/commands"
+								action="execute" node="http://xmpp.org/protocol/openlink:01:00:00#get-profiles"
+								status="completed">
+								<iodata xmlns="urn:xmpp:tmp:io-data" type="output">
+									<out>
+										<profiles
+											xmlns="http://xmpp.org/protocol/openlink:01:00:00/profiles">
+											<profile id="AV50202-BETTY.BIDDER" device="avaya.50202"
+												default="true" online="true" label="avaya">
+												<actions>
+													<action id="TransferCall" label="TransferCall"></action>
+													<action id="HoldCall" label="HoldCall"></action>
+													<action id="ConsultationCall" label="ConsultationCall"></action>
+													<action id="SingleStepTransfer" label="SingleStepTransfer"></action>
+													<action id="SendDigit" label="SendDigit"></action>
+													<action id="ClearCall" label="ClearCall"></action>
+													<action id="ConferenceCall" label="ConferenceCall"></action>
+													<action id="ClearConnection" label="ClearConnection"></action>
+													<action id="RetrieveCall" label="RetrieveCall"></action>
+													<action id="JoinCall" label="JoinCall"></action>
+													<action id="DeflectCall" label="DeflectCall"></action>
+													<action id="AnswerCall" label="AnswerCall"></action>
+												</actions>
+											</profile>
+										</profiles>
+									</out>
+								</iodata>
+							</command>
+						</iq>
+						OUT:
+						<iq id="15b45db8-647e-4f55-ac1b-83e44748198a" to="avaya2.mas-analec.gltd.net"
+							type="set">
+							<command xmlns="http://jabber.org/protocol/commands"
+								action="execute"
+								node="http://xmpp.org/protocol/openlink:01:00:00#get-interests">
+								<iodata xmlns="urn:xmpp:tmp:io-data" type="input">
+									<in xmlns="http://jabber.org/protocol/commands">
+										<profile>AV50202-BETTY.BIDDER</profile>
+									</in>
+								</iodata>
+							</command>
+						</iq>
+						IN :
+						<iq from="avaya2.mas-analec.gltd.net" id="15b45db8-647e-4f55-ac1b-83e44748198a"
+							to="betty.bidder@mas-analec.gltd.net/office" type="result">
+							<command xmlns="http://jabber.org/protocol/commands"
+								action="execute"
+								node="http://xmpp.org/protocol/openlink:01:00:00#get-interests"
+								status="completed">
+								<iodata xmlns="urn:xmpp:tmp:io-data" type="output">
+									<out>
+										<interests
+											xmlns="http://xmpp.org/protocol/openlink:01:00:00/interests">
+											<interest id="AI50202AV50202-BETTY.BIDDER" type="DirectoryNumber"
+												label="50202" default="true" value="AV50202-BETTY.BIDDER"></interest>
+										</interests>
+									</out>
+								</iodata>
+							</command>
+						</iq>
+						OUT:
+						<iq id="d9b10313-8a7a-4146-b61f-01e6d28fa93c" to="avaya2.mas-analec.gltd.net"
+							type="set">
+							<command xmlns="http://jabber.org/protocol/commands"
+								action="execute" node="http://xmpp.org/protocol/openlink:01:00:00#make-call">
+								<iodata xmlns="urn:xmpp:tmp:io-data" type="input">
+									<in>
+										<jid xmlns="http://jabber.org/protocol/commands">betty.bidder@mas-analec.gltd.net</jid>
+										<interest xmlns="http://jabber.org/protocol/commands">AI50202AV50202-BETTY.BIDDER
+										</interest>
+										<destination xmlns="http://jabber.org/protocol/commands">50203</destination>
+										<originator-ref
+											xmlns="http://xmpp.org/protocol/openlink:01:00:00#originator-ref">
+											<property id="dummy-id">
+												<value>dummy-value-ABC-1234</value>
+											</property>
+										</originator-ref>
+										<features xmlns="http://jabber.org/protocol/commands">
+											<feature>
+												<id>CALLBACK</id>
+												<value1>true</value1>
+											</feature>
+										</features>
+									</in>
+								</iodata>
+							</command>
+						</iq>
+						IN :
+						<iq from="avaya2.mas-analec.gltd.net" id="d9b10313-8a7a-4146-b61f-01e6d28fa93c"
+							to="betty.bidder@mas-analec.gltd.net/office" type="result">
+							<command xmlns="http://jabber.org/protocol/commands"
+								action="execute" node="http://xmpp.org/protocol/openlink:01:00:00#make-call"
+								status="completed">
+								<iodata xmlns="urn:xmpp:tmp:io-data" type="output">
+									<out>
+										<callstatus
+											xmlns="http://xmpp.org/protocol/openlink:01:00:00#call-status"
+											busy="false">
+											<call>
+												<id>AVA#4990#10000000314#AI50202AV50202-BETTY.BIDDER</id>
+												<profile>AV50202-BETTY.BIDDER</profile>
+												<interest>AI50202AV50202-BETTY.BIDDER</interest>
+												<originator-ref
+													xmlns="http://xmpp.org/protocol/openlink:01:00:00#originator-ref">
+													<property id="dummy-id">
+														<value>dummy-value-ABC-1234</value>
+													</property>
+												</originator-ref>
+												<changed>State</changed>
+												<state>CallOriginated</state>
+												<direction>Outgoing</direction>
+												<duration>0</duration>
+												<caller>
+													<number>50202</number>
+													<name>50202</name>
+												</caller>
+												<called>
+													<number>50203</number>
+													<name>50203</name>
+												</called>
+												<participants>
+													<participant jid="betty.bidder@mas-analec.gltd.net"
+														timestamp="Mon Jan 05 13:44:07 GMT 2015" direction="Outgoing"></participant>
+												</participants>
+												<features></features>
+												<actions>
+													<ClearConnection></ClearConnection>
+												</actions>
+											</call>
+										</callstatus>
+									</out>
+								</iodata>
+							</command>
+						</iq>
+						IN :
+						<message from="pubsub.mas-analec.gltd.net"
+							id="AI50202AV50202-BETTY.BIDDER__betty.bidder@mas-analec.gltd.net__oLUsJ"
+							to="betty.bidder@mas-analec.gltd.net">
+							<event xmlns="http://jabber.org/protocol/pubsub#event">
+								<items node="AI50202AV50202-BETTY.BIDDER">
+									<item id="AI50202AV50202-BETTY.BIDDER">
+										<callstatus
+											xmlns="http://xmpp.org/protocol/openlink:01:00:00#call-status"
+											busy="false">
+											<call>
+												<id>AVA#4990#10000000314#AI50202AV50202-BETTY.BIDDER</id>
+												<profile>AV50202-BETTY.BIDDER</profile>
+												<interest>AI50202AV50202-BETTY.BIDDER</interest>
+												<originator-ref
+													xmlns="http://xmpp.org/protocol/openlink:01:00:00#originator-ref">
+													<property id="universal-callid">
+														<value>09999049901420465422</value>
+													</property>
+													<property id="dummy-id">
+														<value>dummy-value-ABC-1234</value>
+													</property>
+												</originator-ref>
+												<changed>State</changed>
+												<state>CallDelivered</state>
+												<direction>Outgoing</direction>
+												<duration>0</duration>
+												<caller>
+													<number>50202</number>
+													<name>50202</name>
+												</caller>
+												<called>
+													<number>50203</number>
+													<name>50203</name>
+												</called>
+												<participants>
+													<participant jid="betty.bidder@mas-analec.gltd.net"
+														timestamp="Mon Jan 05 13:44:07 GMT 2015" direction="Outgoing"></participant>
+												</participants>
+												<features></features>
+												<actions>
+													<ClearConnection></ClearConnection>
+												</actions>
+											</call>
+										</callstatus>
+									</item>
+								</items>
+							</event>
+							<headers xmlns="http://jabber.org/protocol/shim">
+								<header name="pubsub#subid">RIs9DMglt9owBKVgda6aPEG2ewMLCOr8N106yrjk
+								</header>
+								<header name="pubsub#subid">5sL5LJ2vusIU4d5hi6zRowjTXFxc3Toag5bqmRt9
+								</header>
+								<header name="pubsub#subid">iFx9OEV6JRbJ46zJ75tx27nubhjylvWhavyvb592
+								</header>
+								<header name="pubsub#subid">5TJIvUPw1DozEyvHhqBmOhMJ8MxURa0g5z003112
+								</header>
+								<header name="pubsub#subid">hCQh4B37HSzr6LKbuOz8FIXObrvJUaw76sDgXxM4
+								</header>
+								<header name="pubsub#subid">K253B2pI11at6xgdGjK2IbS0Fs0vb9WN7dAezmlU
+								</header>
+								<header name="pubsub#subid">4gePliibNkfegnpbqGiABf5U2yvY3uOh6knaW4O9
+								</header>
+								<header name="pubsub#subid">h18A2IR5jAsVQGg5G15D7Qy6KnXQ1q0M75EgxUQ9
+								</header>
+							</headers>
+						</message>
+						2015-01-05 13:44:30,805 DEBUG OpenlinkClient
+						(net.gltd.gtms.client.openlink.OpenlinkClient$5:handleMessage:347)
+						- MESSAGE EVENT:
+						rocks.xmpp.core.stanza.MessageEvent[source=rocks.xmpp.core.session.XmppSession@29871db1]
+						2015-01-05 13:44:30,806 DEBUG OpenlinkClient
+						(net.gltd.gtms.client.openlink.OpenlinkClient$5:handleMessage:353)
+						- EVENT: rocks.xmpp.extensions.pubsub.model.event.Event@4197f18a
+						2015-01-05 13:44:30,806 DEBUG OpenlinkClient
+						(net.gltd.gtms.client.openlink.OpenlinkClient$5:handleMessage:356)
+						- ITEM:
+						rocks.xmpp.extensions.pubsub.model.event.Event$ItemElement@3ec06d57
+						2015-01-05 13:44:30,806 DEBUG OpenlinkClient
+						(net.gltd.gtms.client.openlink.OpenlinkClient$5:handleMessage:359)
+						- CALLSTATUS: false
+						2015-01-05 13:44:30,808 DEBUG gtms
+						(net.gltd.gtms.client.openlink.OpenlinkClientTest$1:callEvent:122)
+						- CALL EVENT:
+						<callstatus
+							xmlns="http://xmpp.org/protocol/openlink:01:00:00#call-status"
+							busy="false">
+							<call>
+								<id>AVA#4990#10000000314#AI50202AV50202-BETTY.BIDDER</id>
+								<profile>AV50202-BETTY.BIDDER</profile>
+								<interest>AI50202AV50202-BETTY.BIDDER</interest>
+								<originator-ref
+									xmlns="http://xmpp.org/protocol/openlink:01:00:00#originator-ref">
+									<property id="universal-callid">
+										<value>09999049901420465422</value>
+									</property>
+									<property id="dummy-id">
+										<value>dummy-value-ABC-1234</value>
+									</property>
+								</originator-ref>
+								<changed>State</changed>
+								<state>CallDelivered</state>
+								<direction>Outgoing</direction>
+								<duration>0</duration>
+								<caller>
+									<number>50202</number>
+									<name>50202</name>
+								</caller>
+								<called>
+									<number>50203</number>
+									<name>50203</name>
+								</called>
+								<participants>
+									<participant jid="betty.bidder@mas-analec.gltd.net"
+										timestamp="Mon Jan 05 13:44:07 GMT 2015" direction="Outgoing"></participant>
+								</participants>
+								<features></features>
+								<actions>
+									<ClearConnection></ClearConnection>
+								</actions>
+							</call>
+						</callstatus>
+						2015-01-05 13:44:30,809 DEBUG gtms
+						(net.gltd.gtms.client.openlink.OpenlinkClientTest$2:callEvent:299)
+						- CALL EV:
+						AVA#4990#10000000314#AI50202AV50202-BETTY.BIDDERAVA#4990#10000000314#AI50202AV50202-BETTY.BIDDER,Outgoing,CallDelivered,State,0,50202,50202,50203,50203,[net.gltd.gtms.extension.openlink.callstatus.action.ClearConnection@5e3d9edf],[],[betty.bidder@mas-analec.gltd.net,
+						<null>
+							,Mon Jan 05 13:44:07 GMT 2015,Outgoing,
+							<null>
+								],AV50202-BETTY.BIDDER,AI50202AV50202-BETTY.BIDDER,[net.gltd.gtms.extension.openlink.originatorref.Property@58135915,
+								net.gltd.gtms.extension.openlink.originatorref.Property@4dcb3539]
+								2015-01-05 13:44:30,810 DEBUG gtms
+								(net.gltd.gtms.client.openlink.OpenlinkClientTest$2:callEvent:331)
+								- CALL EV: AVA#4990#10000000314#AI50202AV50202-BETTY.BIDDER
+								<call xmlns="http://xmpp.org/protocol/openlink:01:00:00#call-status">
+									<id>AVA#4990#10000000314#AI50202AV50202-BETTY.BIDDER</id>
+									<profile>AV50202-BETTY.BIDDER</profile>
+									<interest>AI50202AV50202-BETTY.BIDDER</interest>
+									<originator-ref
+										xmlns="http://xmpp.org/protocol/openlink:01:00:00#originator-ref">
+										<property id="universal-callid">
+											<value>09999049901420465422</value>
+										</property>
+										<property id="dummy-id">
+											<value>dummy-value-ABC-1234</value>
+										</property>
+									</originator-ref>
+									<changed>State</changed>
+									<state>CallDelivered</state>
+									<direction>Outgoing</direction>
+									<duration>0</duration>
+									<caller>
+										<number>50202</number>
+										<name>50202</name>
+									</caller>
+									<called>
+										<number>50203</number>
+										<name>50203</name>
+									</called>
+									<participants>
+										<participant jid="betty.bidder@mas-analec.gltd.net"
+											timestamp="Mon Jan 05 13:44:07 GMT 2015" direction="Outgoing"></participant>
+									</participants>
+									<features></features>
+									<actions>
+										<ClearConnection></ClearConnection>
+									</actions>
+								</call>
+								IN :
+								<message from="pubsub.mas-analec.gltd.net"
+									id="AI50202AV50202-BETTY.BIDDER__betty.bidder@mas-analec.gltd.net__9tAn6"
+									to="betty.bidder@mas-analec.gltd.net">
+									<event xmlns="http://jabber.org/protocol/pubsub#event">
+										<items node="AI50202AV50202-BETTY.BIDDER">
+											<item id="Y7gal8vDCd7OocH">
+												<callstatus
+													xmlns="http://xmpp.org/protocol/openlink:01:00:00#call-status"
+													busy="false">
+													<call>
+														<id>AVA#4990#10000000314#AI50202AV50202-BETTY.BIDDER</id>
+														<profile>AV50202-BETTY.BIDDER</profile>
+														<interest>AI50202AV50202-BETTY.BIDDER</interest>
+														<originator-ref
+															xmlns="http://xmpp.org/protocol/openlink:01:00:00#originator-ref">
+															<property id="dummy-id">
+																<value>dummy-value-ABC-1234</value>
+															</property>
+															<property id="universal-callid">
+																<value>09999049901420465422</value>
+															</property>
+														</originator-ref>
+														<changed>State</changed>
+														<state>CallDelivered</state>
+														<direction>Outgoing</direction>
+														<duration>0</duration>
+														<caller>
+															<number>50202</number>
+															<name>50202</name>
+														</caller>
+														<called>
+															<number>50203</number>
+															<name>50203</name>
+														</called>
+														<participants>
+															<participant jid="betty.bidder@mas-analec.gltd.net"
+																timestamp="Mon Jan 05 13:44:07 GMT 2015" direction="Outgoing"></participant>
+														</participants>
+														<features></features>
+														<actions>
+															<ClearConnection></ClearConnection>
+														</actions>
+													</call>
+												</callstatus>
+											</item>
+										</items>
+									</event>
+									<headers xmlns="http://jabber.org/protocol/shim">
+										<header name="pubsub#subid">RIs9DMglt9owBKVgda6aPEG2ewMLCOr8N106yrjk
+										</header>
+										<header name="pubsub#subid">5sL5LJ2vusIU4d5hi6zRowjTXFxc3Toag5bqmRt9
+										</header>
+										<header name="pubsub#subid">iFx9OEV6JRbJ46zJ75tx27nubhjylvWhavyvb592
+										</header>
+										<header name="pubsub#subid">5TJIvUPw1DozEyvHhqBmOhMJ8MxURa0g5z003112
+										</header>
+										<header name="pubsub#subid">hCQh4B37HSzr6LKbuOz8FIXObrvJUaw76sDgXxM4
+										</header>
+										<header name="pubsub#subid">K253B2pI11at6xgdGjK2IbS0Fs0vb9WN7dAezmlU
+										</header>
+										<header name="pubsub#subid">4gePliibNkfegnpbqGiABf5U2yvY3uOh6knaW4O9
+										</header>
+										<header name="pubsub#subid">h18A2IR5jAsVQGg5G15D7Qy6KnXQ1q0M75EgxUQ9
+										</header>
+									</headers>
+								</message>
+								2015-01-05 13:44:30,811 DEBUG OpenlinkClient
+								(net.gltd.gtms.client.openlink.OpenlinkClient$5:handleMessage:347)
+								- MESSAGE EVENT:
+								rocks.xmpp.core.stanza.MessageEvent[source=rocks.xmpp.core.session.XmppSession@29871db1]
+								2015-01-05 13:44:30,812 DEBUG OpenlinkClient
+								(net.gltd.gtms.client.openlink.OpenlinkClient$5:handleMessage:353)
+								- EVENT: rocks.xmpp.extensions.pubsub.model.event.Event@4e72c39b
+								2015-01-05 13:44:30,812 DEBUG OpenlinkClient
+								(net.gltd.gtms.client.openlink.OpenlinkClient$5:handleMessage:356)
+								- ITEM:
+								rocks.xmpp.extensions.pubsub.model.event.Event$ItemElement@183ee75d
+								2015-01-05 13:44:30,812 DEBUG OpenlinkClient
+								(net.gltd.gtms.client.openlink.OpenlinkClient$5:handleMessage:359)
+								- CALLSTATUS: false
+								2015-01-05 13:44:30,814 DEBUG gtms
+								(net.gltd.gtms.client.openlink.OpenlinkClientTest$1:callEvent:122)
+								- CALL EVENT:
+								<callstatus
+									xmlns="http://xmpp.org/protocol/openlink:01:00:00#call-status"
+									busy="false">
+									<call>
+										<id>AVA#4990#10000000314#AI50202AV50202-BETTY.BIDDER</id>
+										<profile>AV50202-BETTY.BIDDER</profile>
+										<interest>AI50202AV50202-BETTY.BIDDER</interest>
+										<originator-ref
+											xmlns="http://xmpp.org/protocol/openlink:01:00:00#originator-ref">
+											<property id="dummy-id">
+												<value>dummy-value-ABC-1234</value>
+											</property>
+											<property id="universal-callid">
+												<value>09999049901420465422</value>
+											</property>
+										</originator-ref>
+										<changed>State</changed>
+										<state>CallDelivered</state>
+										<direction>Outgoing</direction>
+										<duration>0</duration>
+										<caller>
+											<number>50202</number>
+											<name>50202</name>
+										</caller>
+										<called>
+											<number>50203</number>
+											<name>50203</name>
+										</called>
+										<participants>
+											<participant jid="betty.bidder@mas-analec.gltd.net"
+												timestamp="Mon Jan 05 13:44:07 GMT 2015" direction="Outgoing"></participant>
+										</participants>
+										<features></features>
+										<actions>
+											<ClearConnection></ClearConnection>
+										</actions>
+									</call>
+								</callstatus>
+								2015-01-05 13:44:30,814 DEBUG gtms
+								(net.gltd.gtms.client.openlink.OpenlinkClientTest$2:callEvent:299)
+								- CALL EV:
+								AVA#4990#10000000314#AI50202AV50202-BETTY.BIDDERAVA#4990#10000000314#AI50202AV50202-BETTY.BIDDER,Outgoing,CallDelivered,State,0,50202,50202,50203,50203,[net.gltd.gtms.extension.openlink.callstatus.action.ClearConnection@28aa0484],[],[betty.bidder@mas-analec.gltd.net,
+								<null>
+									,Mon Jan 05 13:44:07 GMT 2015,Outgoing,
+									<null>
+										],AV50202-BETTY.BIDDER,AI50202AV50202-BETTY.BIDDER,[net.gltd.gtms.extension.openlink.originatorref.Property@1c845473,
+										net.gltd.gtms.extension.openlink.originatorref.Property@33c458a5]
+										2015-01-05 13:44:30,816 DEBUG gtms
+										(net.gltd.gtms.client.openlink.OpenlinkClientTest$2:callEvent:331)
+										- CALL EV: AVA#4990#10000000314#AI50202AV50202-BETTY.BIDDER
+										<call xmlns="http://xmpp.org/protocol/openlink:01:00:00#call-status">
+											<id>AVA#4990#10000000314#AI50202AV50202-BETTY.BIDDER</id>
+											<profile>AV50202-BETTY.BIDDER</profile>
+											<interest>AI50202AV50202-BETTY.BIDDER</interest>
+											<originator-ref
+												xmlns="http://xmpp.org/protocol/openlink:01:00:00#originator-ref">
+												<property id="dummy-id">
+													<value>dummy-value-ABC-1234</value>
+												</property>
+												<property id="universal-callid">
+													<value>09999049901420465422</value>
+												</property>
+											</originator-ref>
+											<changed>State</changed>
+											<state>CallDelivered</state>
+											<direction>Outgoing</direction>
+											<duration>0</duration>
+											<caller>
+												<number>50202</number>
+												<name>50202</name>
+											</caller>
+											<called>
+												<number>50203</number>
+												<name>50203</name>
+											</called>
+											<participants>
+												<participant jid="betty.bidder@mas-analec.gltd.net"
+													timestamp="Mon Jan 05 13:44:07 GMT 2015" direction="Outgoing"></participant>
+											</participants>
+											<features></features>
+											<actions>
+												<ClearConnection></ClearConnection>
+											</actions>
+										</call>
+										2015-01-05 13:44:31,472 DEBUG gtms
+										(net.gltd.gtms.client.openlink.OpenlinkClientTest:makeCallAndRequestAction:365)
+										- CALL:
+										AVA#4990#10000000314#AI50202AV50202-BETTY.BIDDERAVA#4990#10000000314#AI50202AV50202-BETTY.BIDDER,Outgoing,CallOriginated,State,0,50202,50202,50203,50203,[net.gltd.gtms.extension.openlink.callstatus.action.ClearConnection@6536e939],[],[betty.bidder@mas-analec.gltd.net,
+										<null>
+											,Mon Jan 05 13:44:07 GMT 2015,Outgoing,
+											<null>
+												],AV50202-BETTY.BIDDER,AI50202AV50202-BETTY.BIDDER,[net.gltd.gtms.extension.openlink.originatorref.Property@1b1498ba]
+												2015-01-05 13:44:31,474 DEBUG gtms
+												(net.gltd.gtms.client.openlink.OpenlinkClientTest:makeCallAndRequestAction:366)
+												- CALL : AVA#4990#10000000314#AI50202AV50202-BETTY.BIDDER
+												<call
+													xmlns="http://xmpp.org/protocol/openlink:01:00:00#call-status">
+													<id>AVA#4990#10000000314#AI50202AV50202-BETTY.BIDDER</id>
+													<profile>AV50202-BETTY.BIDDER</profile>
+													<interest>AI50202AV50202-BETTY.BIDDER</interest>
+													<originator-ref
+														xmlns="http://xmpp.org/protocol/openlink:01:00:00#originator-ref">
+														<property id="dummy-id">
+															<value>dummy-value-ABC-1234</value>
+														</property>
+													</originator-ref>
+													<changed>State</changed>
+													<state>CallOriginated</state>
+													<direction>Outgoing</direction>
+													<duration>0</duration>
+													<caller>
+														<number>50202</number>
+														<name>50202</name>
+													</caller>
+													<called>
+														<number>50203</number>
+														<name>50203</name>
+													</called>
+													<participants>
+														<participant jid="betty.bidder@mas-analec.gltd.net"
+															timestamp="Mon Jan 05 13:44:07 GMT 2015" direction="Outgoing"></participant>
+													</participants>
+													<features></features>
+													<actions>
+														<ClearConnection></ClearConnection>
+													</actions>
+												</call>
+												OUT:
+												<iq id="83ad73ab-7fdc-4928-a9c5-9398deeae56d" to="avaya2.mas-analec.gltd.net"
+													type="set">
+													<command xmlns="http://jabber.org/protocol/commands"
+														action="execute"
+														node="http://xmpp.org/protocol/openlink:01:00:00#request-action">
+														<iodata xmlns="urn:xmpp:tmp:io-data" type="input">
+															<in xmlns="http://jabber.org/protocol/commands">
+																<interest>AI50202AV50202-BETTY.BIDDER</interest>
+																<action>ClearConnection</action>
+																<call>AVA#4990#10000000314#AI50202AV50202-BETTY.BIDDER
+																</call>
+															</in>
+														</iodata>
+													</command>
+												</iq>
+												IN :
+												<iq from="avaya2.mas-analec.gltd.net" id="83ad73ab-7fdc-4928-a9c5-9398deeae56d"
+													to="betty.bidder@mas-analec.gltd.net/office" type="result">
+													<command xmlns="http://jabber.org/protocol/commands"
+														action="execute"
+														node="http://xmpp.org/protocol/openlink:01:00:00#request-action"
+														status="completed">
+														<iodata xmlns="urn:xmpp:tmp:io-data" type="output">
+															<out>
+																<callstatus
+																	xmlns="http://xmpp.org/protocol/openlink:01:00:00#call-status"
+																	busy="false">
+																	<call>
+																		<id>AVA#4990#10000000314#AI50202AV50202-BETTY.BIDDER
+																		</id>
+																		<profile>AV50202-BETTY.BIDDER</profile>
+																		<interest>AI50202AV50202-BETTY.BIDDER</interest>
+																		<originator-ref
+																			xmlns="http://xmpp.org/protocol/openlink:01:00:00#originator-ref">
+																			<property id="dummy-id">
+																				<value>dummy-value-ABC-1234</value>
+																			</property>
+																			<property id="universal-callid">
+																				<value>09999049901420465422</value>
+																			</property>
+																		</originator-ref>
+																		<changed>State</changed>
+																		<state>CallDelivered</state>
+																		<direction>Outgoing</direction>
+																		<duration>0</duration>
+																		<caller>
+																			<number>50202</number>
+																			<name>50202</name>
+																		</caller>
+																		<called>
+																			<number>50203</number>
+																			<name>50203</name>
+																		</called>
+																		<participants>
+																			<participant jid="betty.bidder@mas-analec.gltd.net"
+																				timestamp="Mon Jan 05 13:44:07 GMT 2015" direction="Outgoing"></participant>
+																		</participants>
+																		<features></features>
+																		<actions>
+																			<ClearConnection></ClearConnection>
+																		</actions>
+																	</call>
+																</callstatus>
+															</out>
+														</iodata>
+													</command>
+												</iq>
+												IN :
+												<message from="pubsub.mas-analec.gltd.net"
+													id="AI50202AV50202-BETTY.BIDDER__betty.bidder@mas-analec.gltd.net__1p30Y"
+													to="betty.bidder@mas-analec.gltd.net">
+													<event xmlns="http://jabber.org/protocol/pubsub#event">
+														<items node="AI50202AV50202-BETTY.BIDDER">
+															<item id="AI50202AV50202-BETTY.BIDDER">
+																<callstatus
+																	xmlns="http://xmpp.org/protocol/openlink:01:00:00#call-status"
+																	busy="false">
+																	<call>
+																		<id>AVA#4990#10000000314#AI50202AV50202-BETTY.BIDDER
+																		</id>
+																		<profile>AV50202-BETTY.BIDDER</profile>
+																		<interest>AI50202AV50202-BETTY.BIDDER</interest>
+																		<originator-ref
+																			xmlns="http://xmpp.org/protocol/openlink:01:00:00#originator-ref">
+																			<property id="dummy-id">
+																				<value>dummy-value-ABC-1234</value>
+																			</property>
+																			<property id="universal-callid">
+																				<value>09999049901420465422</value>
+																			</property>
+																		</originator-ref>
+																		<changed>State</changed>
+																		<state>ConnectionCleared</state>
+																		<direction>Outgoing</direction>
+																		<duration>0</duration>
+																		<caller>
+																			<number>50202</number>
+																			<name>50202</name>
+																		</caller>
+																		<called>
+																			<number>50203</number>
+																			<name>50203</name>
+																		</called>
+																		<participants>
+																			<participant jid="betty.bidder@mas-analec.gltd.net"
+																				timestamp="Mon Jan 05 13:44:07 GMT 2015" direction="Outgoing"
+																				type="Active"></participant>
+																		</participants>
+																		<features></features>
+																		<actions>
+																			<ClearConnection></ClearConnection>
+																		</actions>
+																	</call>
+																</callstatus>
+															</item>
+														</items>
+													</event>
+													<headers xmlns="http://jabber.org/protocol/shim">
+														<header name="pubsub#subid">RIs9DMglt9owBKVgda6aPEG2ewMLCOr8N106yrjk
+														</header>
+														<header name="pubsub#subid">5sL5LJ2vusIU4d5hi6zRowjTXFxc3Toag5bqmRt9
+														</header>
+														<header name="pubsub#subid">iFx9OEV6JRbJ46zJ75tx27nubhjylvWhavyvb592
+														</header>
+														<header name="pubsub#subid">5TJIvUPw1DozEyvHhqBmOhMJ8MxURa0g5z003112
+														</header>
+														<header name="pubsub#subid">hCQh4B37HSzr6LKbuOz8FIXObrvJUaw76sDgXxM4
+														</header>
+														<header name="pubsub#subid">K253B2pI11at6xgdGjK2IbS0Fs0vb9WN7dAezmlU
+														</header>
+														<header name="pubsub#subid">4gePliibNkfegnpbqGiABf5U2yvY3uOh6knaW4O9
+														</header>
+														<header name="pubsub#subid">h18A2IR5jAsVQGg5G15D7Qy6KnXQ1q0M75EgxUQ9
+														</header>
+													</headers>
+												</message>
+												2015-01-05 13:44:34,629 DEBUG OpenlinkClient
+												(net.gltd.gtms.client.openlink.OpenlinkClient$5:handleMessage:347)
+												- MESSAGE EVENT:
+												rocks.xmpp.core.stanza.MessageEvent[source=rocks.xmpp.core.session.XmppSession@29871db1]
+												2015-01-05 13:44:34,629 DEBUG OpenlinkClient
+												(net.gltd.gtms.client.openlink.OpenlinkClient$5:handleMessage:353)
+												- EVENT:
+												rocks.xmpp.extensions.pubsub.model.event.Event@35b83ac6
+												2015-01-05 13:44:34,630 DEBUG OpenlinkClient
+												(net.gltd.gtms.client.openlink.OpenlinkClient$5:handleMessage:356)
+												- ITEM:
+												rocks.xmpp.extensions.pubsub.model.event.Event$ItemElement@5855207d
+												2015-01-05 13:44:34,630 DEBUG OpenlinkClient
+												(net.gltd.gtms.client.openlink.OpenlinkClient$5:handleMessage:359)
+												- CALLSTATUS: false
+												2015-01-05 13:44:34,631 DEBUG gtms
+												(net.gltd.gtms.client.openlink.OpenlinkClientTest$1:callEvent:122)
+												- CALL EVENT:
+												<callstatus
+													xmlns="http://xmpp.org/protocol/openlink:01:00:00#call-status"
+													busy="false">
+													<call>
+														<id>AVA#4990#10000000314#AI50202AV50202-BETTY.BIDDER</id>
+														<profile>AV50202-BETTY.BIDDER</profile>
+														<interest>AI50202AV50202-BETTY.BIDDER</interest>
+														<originator-ref
+															xmlns="http://xmpp.org/protocol/openlink:01:00:00#originator-ref">
+															<property id="dummy-id">
+																<value>dummy-value-ABC-1234</value>
+															</property>
+															<property id="universal-callid">
+																<value>09999049901420465422</value>
+															</property>
+														</originator-ref>
+														<changed>State</changed>
+														<state>ConnectionCleared</state>
+														<direction>Outgoing</direction>
+														<duration>0</duration>
+														<caller>
+															<number>50202</number>
+															<name>50202</name>
+														</caller>
+														<called>
+															<number>50203</number>
+															<name>50203</name>
+														</called>
+														<participants>
+															<participant jid="betty.bidder@mas-analec.gltd.net"
+																timestamp="Mon Jan 05 13:44:07 GMT 2015" direction="Outgoing"
+																type="Active"></participant>
+														</participants>
+														<features></features>
+														<actions>
+															<ClearConnection></ClearConnection>
+														</actions>
+													</call>
+												</callstatus>
+												2015-01-05 13:44:34,632 DEBUG gtms
+												(net.gltd.gtms.client.openlink.OpenlinkClientTest$2:callEvent:299)
+												- CALL EV:
+												AVA#4990#10000000314#AI50202AV50202-BETTY.BIDDERAVA#4990#10000000314#AI50202AV50202-BETTY.BIDDER,Outgoing,ConnectionCleared,State,0,50202,50202,50203,50203,[net.gltd.gtms.extension.openlink.callstatus.action.ClearConnection@5c1ff7c6],[],[betty.bidder@mas-analec.gltd.net,
+												<null>
+													,Mon Jan 05 13:44:07 GMT
+													2015,Outgoing,Active],AV50202-BETTY.BIDDER,AI50202AV50202-BETTY.BIDDER,[net.gltd.gtms.extension.openlink.originatorref.Property@408df350,
+													net.gltd.gtms.extension.openlink.originatorref.Property@27612a4c]
+													2015-01-05 13:44:34,633 DEBUG gtms
+													(net.gltd.gtms.client.openlink.OpenlinkClientTest$2:callEvent:331)
+													- CALL EV: AVA#4990#10000000314#AI50202AV50202-BETTY.BIDDER
+													<call
+														xmlns="http://xmpp.org/protocol/openlink:01:00:00#call-status">
+														<id>AVA#4990#10000000314#AI50202AV50202-BETTY.BIDDER</id>
+														<profile>AV50202-BETTY.BIDDER</profile>
+														<interest>AI50202AV50202-BETTY.BIDDER</interest>
+														<originator-ref
+															xmlns="http://xmpp.org/protocol/openlink:01:00:00#originator-ref">
+															<property id="dummy-id">
+																<value>dummy-value-ABC-1234</value>
+															</property>
+															<property id="universal-callid">
+																<value>09999049901420465422</value>
+															</property>
+														</originator-ref>
+														<changed>State</changed>
+														<state>ConnectionCleared</state>
+														<direction>Outgoing</direction>
+														<duration>0</duration>
+														<caller>
+															<number>50202</number>
+															<name>50202</name>
+														</caller>
+														<called>
+															<number>50203</number>
+															<name>50203</name>
+														</called>
+														<participants>
+															<participant jid="betty.bidder@mas-analec.gltd.net"
+																timestamp="Mon Jan 05 13:44:07 GMT 2015" direction="Outgoing"
+																type="Active"></participant>
+														</participants>
+														<features></features>
+														<actions>
+															<ClearConnection></ClearConnection>
+														</actions>
+													</call>
+													2015-01-05 13:44:36,602 DEBUG gtms
+													(net.gltd.gtms.client.openlink.OpenlinkClientTest:shutdown:110)
+													- SHUTDOWN
+													2015-01-05 13:44:36,603 DEBUG OpenlinkClient
+													(net.gltd.gtms.client.openlink.OpenlinkClient:disconnect:407)
+													- DISCONNECT
+													2015-01-05 13:44:36,603 DEBUG OpenlinkClient
+													(net.gltd.gtms.client.openlink.OpenlinkClient$3:sessionStatusChanged:303)
+													- CONNECTION EV: CLOSING :
+													rocks.xmpp.core.session.XmppSession@29871db1 : null
+													OUT:
+				</stream:stream>
+				IN :
+			</stream:stream>
+			2015-01-05 13:44:36,856 DEBUG OpenlinkClient
+			(net.gltd.gtms.client.openlink.OpenlinkClient$3:sessionStatusChanged:303)
+			- CONNECTION EV: CLOSED :
+			rocks.xmpp.core.session.XmppSession@29871db1 : null

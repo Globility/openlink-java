@@ -7,6 +7,9 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
 @XmlRootElement(name = "callstatus")
 public class CallStatus extends HashSet<Call> {
 
@@ -28,4 +31,9 @@ public class CallStatus extends HashSet<Call> {
 		this.busy = busy;
 	}
 
+	@Override
+	public String toString() {
+		return ToStringBuilder.reflectionToString(this, ToStringStyle.SIMPLE_STYLE);
+	}
+	
 }

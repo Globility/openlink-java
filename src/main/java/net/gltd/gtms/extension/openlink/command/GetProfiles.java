@@ -10,8 +10,7 @@ import net.gltd.gtms.client.openlink.OpenlinkNamespaces;
 import net.gltd.gtms.extension.command.Command;
 import net.gltd.gtms.extension.iodata.IoData;
 import net.gltd.gtms.extension.iodata.IoData.IoDataType;
-
-import org.xmpp.Jid;
+import rocks.xmpp.core.Jid;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name = "command", namespace = "http://jabber.org/protocol/commands")

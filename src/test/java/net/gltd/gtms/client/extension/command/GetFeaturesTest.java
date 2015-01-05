@@ -16,10 +16,11 @@ import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.xmpp.Jid;
-import org.xmpp.XmlTest;
-import org.xmpp.stanza.client.IQ;
-import org.xmpp.stanza.client.Message;
+
+import rocks.xmpp.core.Jid;
+import rocks.xmpp.core.XmlTest;
+import rocks.xmpp.core.stanza.model.client.IQ;
+import rocks.xmpp.core.stanza.model.client.Message;
 
 public class GetFeaturesTest extends XmlTest {
 
@@ -51,7 +52,7 @@ public class GetFeaturesTest extends XmlTest {
 
 		String xml = marshal(iq);
 		Assert.assertNotNull(xml);
-		logger.debug(XmlUtil.formatXml(xml));
+		logger.debug(xml);
 
 		// Assert.assertTrue(xml.contains("<iodata xmlns=\"urn:xmpp:tmp:io-data\" type=\"output\">"));
 

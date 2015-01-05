@@ -1,8 +1,5 @@
 package net.gltd.gtms.client.extension.iodata;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-
 import javax.xml.bind.JAXBException;
 import javax.xml.stream.XMLStreamException;
 
@@ -16,7 +13,6 @@ import net.gltd.gtms.extension.openlink.profiles.Action;
 import net.gltd.gtms.extension.openlink.profiles.Profile;
 import net.gltd.gtms.extension.openlink.profiles.Profiles;
 import net.gltd.util.log.GtmsLog;
-import net.gltd.util.string.StringUtil;
 import net.gltd.util.xml.XmlUtil;
 
 import org.apache.log4j.LogManager;
@@ -24,9 +20,10 @@ import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.xmpp.XmlTest;
-import org.xmpp.stanza.client.IQ;
-import org.xmpp.stanza.client.Message;
+
+import rocks.xmpp.core.XmlTest;
+import rocks.xmpp.core.stanza.model.client.IQ;
+import rocks.xmpp.core.stanza.model.client.Message;
 
 public class IoDataTest extends XmlTest {
 
@@ -72,7 +69,7 @@ public class IoDataTest extends XmlTest {
 
 		String xml = marshal(c);
 		Assert.assertNotNull(xml);
-		logger.debug(XmlUtil.formatXml(xml));
+		logger.debug(xml);
 
 		Assert.assertTrue(xml
 				.contains("<command xmlns=\"http://jabber.org/protocol/commands\" node=\"http://xmpp.org/protocol/openlink:01:00:00#get-profiles\" sessionid="));

@@ -4,5 +4,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "HoldCall")
 public class HoldCall extends CallAction {
-
+	@Override
+	public String getId() {
+		return "HoldCall";
+	}
 }

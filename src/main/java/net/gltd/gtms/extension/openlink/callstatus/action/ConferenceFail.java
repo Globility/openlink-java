@@ -4,5 +4,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "ConferenceFail")
 public class ConferenceFail extends CallAction {
-
+	@Override
+	public String getId() {
+		return "ConferenceFail";
+	}
 }

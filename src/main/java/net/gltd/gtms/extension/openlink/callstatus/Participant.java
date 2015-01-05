@@ -1,17 +1,18 @@
 package net.gltd.gtms.extension.openlink.callstatus;
 
 import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlTransient;
-import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.XmlRootElement;
+
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
 import net.gltd.gtms.extension.openlink.callstatus.Call.CallDirection;
+import rocks.xmpp.core.Jid;
 
-import org.xmpp.Jid;
-
-@XmlType(propOrder = { "type", "direction", "exten" })
+@XmlRootElement(name="participant")
 public class Participant {
 
-	@XmlTransient
+	@XmlAttribute
 	private Jid jid;
 
 	@XmlAttribute
@@ -25,15 +26,6 @@ public class Participant {
 
 	@XmlAttribute
 	private ParticipantType type;
-
-	@XmlAttribute(name = "jid")
-	public String getJidAsString() {
-		String result = null;
-		if (getJid() != null) {
-			result = getJid().asBareJid().toString();
-		}
-		return result;
-	}
 
 	public Jid getJid() {
 		return jid;
@@ -77,6 +69,11 @@ public class Participant {
 
 	public enum ParticipantType {
 		Active, Inactive
+	}
+
+	@Override
+	public String toString() {
+		return ToStringBuilder.reflectionToString(this, ToStringStyle.SIMPLE_STYLE);
 	}
 
 }

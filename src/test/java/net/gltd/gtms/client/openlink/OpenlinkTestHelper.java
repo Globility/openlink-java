@@ -34,7 +34,8 @@ import net.gltd.gtms.extension.openlink.profiles.Profile;
 import net.gltd.gtms.extension.openlink.profiles.Profiles;
 
 import org.apache.commons.lang3.RandomStringUtils;
-import org.xmpp.Jid;
+
+import rocks.xmpp.core.Jid;
 
 public class OpenlinkTestHelper {
 

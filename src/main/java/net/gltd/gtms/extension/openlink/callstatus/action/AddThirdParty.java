@@ -4,5 +4,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "AddThirdParty")
 public class AddThirdParty extends CallAction {
+	@Override
+	public String getId() {
+		return "AddThirdParty";
+	}
 
 }

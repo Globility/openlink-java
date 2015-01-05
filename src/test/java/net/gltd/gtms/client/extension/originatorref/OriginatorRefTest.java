@@ -52,12 +52,13 @@ import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.xmpp.XmlTest;
-import org.xmpp.extension.pubsub.event.Event;
-import org.xmpp.extension.shim.Header;
-import org.xmpp.extension.shim.Headers;
-import org.xmpp.stanza.client.IQ;
-import org.xmpp.stanza.client.Message;
+
+import rocks.xmpp.core.XmlTest;
+import rocks.xmpp.core.stanza.model.client.IQ;
+import rocks.xmpp.core.stanza.model.client.Message;
+import rocks.xmpp.extensions.pubsub.model.event.Event;
+import rocks.xmpp.extensions.shim.model.Header;
+import rocks.xmpp.extensions.shim.model.Headers;
 
 public class OriginatorRefTest extends XmlTest {
 
@@ -92,7 +93,7 @@ public class OriginatorRefTest extends XmlTest {
 
 		String xml = marshal(ref);
 		Assert.assertNotNull(xml);
-		logger.debug("XML : " + XmlUtil.formatXml(xml));
+		logger.debug("XML : " + xml);
 
 	}
 
@@ -106,7 +107,7 @@ public class OriginatorRefTest extends XmlTest {
 
 		String xmlOut = marshal(ref);
 		Assert.assertNotNull(xmlOut);
-		logger.debug(XmlUtil.formatXml(xmlOut));
+		logger.debug(xmlOut);
 
 		Assert.assertEquals(2, ref.getProperties().size());
 

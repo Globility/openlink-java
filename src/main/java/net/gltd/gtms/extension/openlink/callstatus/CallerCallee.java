@@ -2,6 +2,9 @@ package net.gltd.gtms.extension.openlink.callstatus;
 
 import javax.xml.bind.annotation.XmlElement;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
 public class CallerCallee {
 
 	@XmlElement
@@ -24,6 +27,11 @@ public class CallerCallee {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	@Override
+	public String toString() {
+		return ToStringBuilder.reflectionToString(this, ToStringStyle.SIMPLE_STYLE);
 	}
 
 }

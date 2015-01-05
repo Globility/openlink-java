@@ -11,6 +11,9 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
 import net.gltd.gtms.client.openlink.OpenlinkNamespaces;
 import net.gltd.gtms.extension.openlink.callstatus.action.CallAction;
 import net.gltd.gtms.extension.openlink.originatorref.Property;
@@ -42,7 +45,7 @@ public class Call {
 	private CallerCallee called;
 
 	@XmlElementWrapper(name = "actions")
-	@XmlAnyElement
+	@XmlAnyElement(lax = true)
 	private Set<CallAction> actions = new HashSet<CallAction>();
 
 	@XmlElementWrapper(name = "features")
@@ -62,7 +65,7 @@ public class Call {
 	@XmlElementWrapper(name = "originator-ref", namespace = OpenlinkNamespaces.NS_OPENLINK_ORIGINATORREF)
 	@XmlElement(name = "property", namespace = OpenlinkNamespaces.NS_OPENLINK_ORIGINATORREF)
 	private Collection<Property> originatorRef = new HashSet<Property>();
-	
+
 	public enum CallDirection {
 		Outgoing, Incoming
 	}
@@ -167,7 +170,7 @@ public class Call {
 		this.interest = interest;
 	}
 
-	public Collection<Property> getoriginatorRef() {
+	public Collection<Property> getOriginatorRef() {
 		return originatorRef;
 	}
 
@@ -175,14 +178,17 @@ public class Call {
 		this.originatorRef = originatorRef;
 	}
 
-//	public OriginatorRef getOriginatorRef() {
-//		return originatorRef;
-//	}
-//
-//	public void setOriginatorRef(OriginatorRef originatorRef) {
-//		this.originatorRef = originatorRef;
-//	}
+	// public OriginatorRef getOriginatorRef() {
+	// return originatorRef;
+	// }
+	//
+	// public void setOriginatorRef(OriginatorRef originatorRef) {
+	// this.originatorRef = originatorRef;
+	// }
 
-	
-	
+	@Override
+	public String toString() {
+		return ToStringBuilder.reflectionToString(this, ToStringStyle.SIMPLE_STYLE);
+	}
+
 }

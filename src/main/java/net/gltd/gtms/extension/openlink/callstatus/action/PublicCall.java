@@ -4,5 +4,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "PublicCall")
 public class PublicCall extends CallAction {
-
+	@Override
+	public String getId() {
+		return "PublicCall";
+	}
 }

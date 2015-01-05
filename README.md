@@ -8,9 +8,9 @@ This application uses [Babbler](https://bitbucket.org/sco0ter/babbler/) to provi
 
 ###OpenlinkJava XMPP Library
 
-The OpenlinkJava library itself is comprised of three main files: `openlink-java.jar, xmpp-core.jar and xmpp-client.jar`. It extends upon the [Babbler](https://bitbucket.org/sco0ter/babbler/) library to provide full client functionality against an Openlink (XMPP) server.
+The OpenlinkJava library itself is comprised of three main files: `openlink-java.jar, xmpp-core.jar, xmpp-core-client.jar, xmpp-extensions.jar and xmpp-extensions-client.jar`. It extends upon the [Babbler](https://bitbucket.org/sco0ter/babbler/) library to provide full client functionality against an Openlink (XMPP) server.
 
-If managing your own dependencies simply use `openlink-java` otherwise use `openlink-java-jar-with-dependencies.jar`.
+If managing your own dependencies simply use `openlink-java.jar` otherwise use `openlink-java-jar-with-dependencies.jar`.
 
 More information about Babbler can be found in the [Javadoc](http://sco0ter.bitbucket.org/babbler/apidocs/index.html) and [Babbler General Documentation](http://docs.xmpp.rocks/). But the short summary is to simply drop the files into your application and use  OpenlinkClient.java to invoke your Openlink commands.
  
@@ -56,8 +56,11 @@ Whilst the `OpenlinkClientTest` file is only a guide it follows the standard str
 
 ###Connected/Disconnected Events
 
-These can be listened for by adding a `ConnectionListener` object to the `XmppSession` object retrieved by getXmppSession();
-
+These can be listened for by adding a rocks.xmpp.core.session.SessionStatusListener object to the XmppSession object retrieved by getXmppSession();￼
+	client.getXmppSession().addSessionStatusListener(		new SessionStatusListener() {
+			@Override
+			public void sessionStatusChanged(SessionStatusEvent e) {...}
+	});
 
 ###Call Events
 

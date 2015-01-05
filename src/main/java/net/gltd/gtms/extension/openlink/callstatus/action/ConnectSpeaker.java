@@ -4,5 +4,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "ConnectSpeaker")
 public class ConnectSpeaker extends CallAction {
-
+	@Override
+	public String getId() {
+		return "ConnectSpeaker";
+	}
 }

@@ -2,6 +2,7 @@ package net.gltd.gtms.client.extension.openlink.callstatus;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.List;
 
 import javax.xml.bind.JAXBException;
@@ -13,6 +14,8 @@ import net.gltd.gtms.extension.command.Command;
 import net.gltd.gtms.extension.command.Note;
 import net.gltd.gtms.extension.iodata.IoData;
 import net.gltd.gtms.extension.openlink.callstatus.Call;
+import net.gltd.gtms.extension.openlink.callstatus.Call.CallDirection;
+import net.gltd.gtms.extension.openlink.callstatus.Call.CallState;
 import net.gltd.gtms.extension.openlink.callstatus.CallFeature;
 import net.gltd.gtms.extension.openlink.callstatus.CallStatus;
 import net.gltd.gtms.extension.openlink.callstatus.CallerCallee;
@@ -50,36 +53,36 @@ import net.gltd.gtms.extension.openlink.profiles.Profile;
 import net.gltd.gtms.extension.openlink.profiles.Profiles;
 import net.gltd.util.log.GtmsLog;
 import net.gltd.util.string.StringUtil;
-import net.gltd.util.xml.XmlUtil;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.xmpp.Jid;
-import org.xmpp.XmlTest;
-import org.xmpp.extension.pubsub.Item;
-import org.xmpp.extension.pubsub.event.Event;
-import org.xmpp.extension.shim.Header;
-import org.xmpp.extension.shim.Headers;
-import org.xmpp.stanza.client.IQ;
-import org.xmpp.stanza.client.Message;
+
+import rocks.xmpp.core.Jid;
+import rocks.xmpp.core.XmlTest;
+import rocks.xmpp.core.stanza.model.client.IQ;
+import rocks.xmpp.core.stanza.model.client.Message;
+import rocks.xmpp.extensions.pubsub.model.Item;
+import rocks.xmpp.extensions.pubsub.model.event.Event;
+import rocks.xmpp.extensions.shim.model.Header;
+import rocks.xmpp.extensions.shim.model.Headers;
 
 public class CallStatusTest extends XmlTest {
 
 	protected Logger logger = Logger.getLogger("net.gltd.gtms");
 
 	public CallStatusTest() throws JAXBException, XMLStreamException {
-		super(OriginatorRef.class, Property.class, Headers.class, Header.class, Event.class, Command.class, Note.class, Message.class, IQ.class,
-				IoData.class, Profiles.class, Profile.class, Action.class, Interests.class, Interest.class,
-				Features.class, Feature.class, CallStatus.class, Call.class, CallerCallee.class, CallFeature.class,
-				Participant.class, CallAction.class, AddThirdParty.class, AnswerCall.class, ClearCall.class,
-				ClearConnection.class, ConferenceFail.class, ConnectSpeaker.class, ConsultationCall.class,
-				DisconnectSpeaker.class, HoldCall.class, IntercomTransfer.class, JoinCall.class, PrivateCall.class,
-				PublicCall.class, RemoveThirdParty.class, RetrieveCall.class, SendDigit.class, SendDigits.class,
-				SingleStepTransfer.class, RemoveThirdParty.class, SendDigits.class, StartVoiceDrop.class,
-				StopVoiceDrop.class, TransferCall.class);
+		super(OriginatorRef.class, Property.class, Headers.class, Header.class, Event.class, Command.class, Note.class,
+				Message.class, IQ.class, IoData.class, Profiles.class, Profile.class, Action.class, Interests.class,
+				Interest.class, Features.class, Feature.class, CallStatus.class, Call.class, CallerCallee.class,
+				CallFeature.class, Participant.class, CallAction.class, AddThirdParty.class, AnswerCall.class,
+				ClearCall.class, ClearConnection.class, ConferenceFail.class, ConnectSpeaker.class,
+				ConsultationCall.class, DisconnectSpeaker.class, HoldCall.class, IntercomTransfer.class,
+				JoinCall.class, PrivateCall.class, PublicCall.class, RemoveThirdParty.class, RetrieveCall.class,
+				SendDigit.class, SendDigits.class, SingleStepTransfer.class, RemoveThirdParty.class, SendDigits.class,
+				StartVoiceDrop.class, StopVoiceDrop.class, TransferCall.class);
 	}
 
 	@Before
@@ -102,7 +105,7 @@ public class CallStatusTest extends XmlTest {
 
 		String xml = marshal(m);
 		Assert.assertNotNull(xml);
-		logger.debug("XML : " + XmlUtil.formatXml(xml));
+		logger.debug("XML : " + xml);
 
 		Assert.assertTrue(xml
 				.contains("<callstatus xmlns=\"http://xmpp.org/protocol/openlink:01:00:00#call-status\" busy=\"false\">"));
@@ -112,15 +115,14 @@ public class CallStatusTest extends XmlTest {
 	}
 
 	@Test
-	public void testCallStatusUnmarshal() throws FileNotFoundException, XMLStreamException, JAXBException,
-			IOException {
+	public void testCallStatusUnmarshal() throws FileNotFoundException, XMLStreamException, JAXBException, IOException {
 		String xmlIn = StringUtil.readFileAsString("ol-callstatus.xml");
 
 		Message message = unmarshal(xmlIn, Message.class);
 
 		String xmlOut = marshal(message);
 		Assert.assertNotNull(xmlOut);
-		logger.debug(XmlUtil.formatXml(xmlOut));
+		logger.debug(xmlOut);
 
 		Event e = message.getExtension(Event.class);
 		Assert.assertNotNull(e);
@@ -134,11 +136,69 @@ public class CallStatusTest extends XmlTest {
 
 		Assert.assertTrue(cs.getCalls().size() == 2);
 
-		Call c = cs.getCalls().iterator().next();
+		Call c1 = null;
+		Call c2 = null;
 
-		Assert.assertNotNull(c);
+		for (Call c : cs.getCalls()) {
+			Assert.assertNotNull(c);
+			Assert.assertNotNull(c.getId());
+			if (c.getId().equals("AVA#10585#10000000292#AI50202AV50202-BETTY.BIDDER")) {
+				c1 = c;
+			} else {
+				c2 = c;
+			}
+		}
+		Assert.assertEquals("AI50202AV50202-BETTY.BIDDER", c1.getInterest());
+		Assert.assertEquals("AV50202-BETTY.BIDDER", c1.getProfile());
 
-		Assert.assertEquals("AI50202AV50202-BETTY.BIDDER", c.getInterest());
+		Assert.assertNotNull(c1.getOriginatorRef());
+		Assert.assertEquals(2, c1.getOriginatorRef().size());
+		int validOriginatorRefCount = 0;
+		for (Property p : c1.getOriginatorRef()) {
+			if ("universal-callid".equals(p.getId())) {
+				Assert.assertEquals("09999105851418922357", p.getValue());
+				validOriginatorRefCount++;
+			} else if ("platform-callid".equals(p.getId())) {
+				Assert.assertEquals("ABCDEFGHIJKLMNOP1234", p.getValue());
+				validOriginatorRefCount++;
+			}
+		}
+		Assert.assertEquals(2, validOriginatorRefCount);
+
+		Assert.assertEquals(CallState.ConnectionCleared, c1.getState());
+		Assert.assertEquals(CallDirection.Outgoing, c1.getDirection());
+
+		Assert.assertNotNull(c1.getCaller());
+		Assert.assertEquals("50202", c1.getCaller().getName());
+		Assert.assertEquals("50202", c1.getCaller().getNumber());
+
+		Assert.assertNotNull(c1.getCalled());
+		Assert.assertEquals("50203", c1.getCalled().getNumber());
+		Assert.assertEquals("50203", c1.getCalled().getName());
+
+		Assert.assertEquals(0, c1.getDuration());
+
+		Assert.assertEquals(2, c1.getFeatures().size());
+		for (CallFeature cf : c1.getFeatures()) {
+			Assert.assertTrue(cf.getId().equals("Conference") || cf.getId().equals("Callback"));
+			Assert.assertTrue(cf.isValue1());
+		}
+
+		Assert.assertEquals(3, c1.getActions().size());
+		for (CallAction a : c1.getActions()) {
+			Assert.assertTrue(a instanceof CallAction);
+			 Assert.assertTrue(a.getId().equals("ClearConnection") || a.getId().equals("ClearCall")
+			 || a.getId().equals("AddThirdParty"));
+		}
+
+		Assert.assertEquals(2, c1.getParticipants().size());
+		for (Participant p : c1.getParticipants()) {
+			Assert.assertTrue(p.getExten() != null && p.getExten().length() > 1);
+			Assert.assertTrue(p.getJid() != null);
+			Assert.assertTrue(p.getType() != null);
+			Assert.assertTrue(p.getDirection() != null);
+			Assert.assertTrue(p.getExten() != null);
+		}
+
 	}
-
 }

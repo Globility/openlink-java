@@ -40,9 +40,9 @@
 							<AddThirdParty />
 						</actions>
 						<participants>
-							<participant jid="betty.bidder@mas-analec.gltd.net"
+							<participant exten="50202" jid="betty.bidder@mas-analec.gltd.net"
 								type="Active" direction="Outgoing" timestamp="Thu Dec 18 17:04:57 GMT 2014" />
-							<participant jid="brian.broker@mas-analec.gltd.net"
+							<participant exten="50203" jid="brian.broker@mas-analec.gltd.net"
 								type="Inactive" direction="Incoming" timestamp="Thu Dec 18 17:05:08 GMT 2014" />
 						</participants>
 					</call>

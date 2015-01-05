@@ -1,6 +1,12 @@
 package net.gltd.gtms.client.openlink;
 
 import java.io.IOException;
+import java.net.Proxy;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -10,6 +16,9 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 import javax.security.auth.login.FailedLoginException;
 import javax.security.auth.login.LoginException;
 import javax.xml.bind.JAXBException;
@@ -62,29 +71,34 @@ import net.gltd.gtms.extension.openlink.profiles.Profile;
 import net.gltd.gtms.extension.openlink.profiles.Profiles;
 
 import org.apache.log4j.Logger;
-import org.xmpp.Connection;
-import org.xmpp.Jid;
-import org.xmpp.TcpConnection;
-import org.xmpp.XmppContext;
-import org.xmpp.XmppException;
-import org.xmpp.XmppSession;
-import org.xmpp.extension.pubsub.Item;
-import org.xmpp.extension.pubsub.PubSubManager;
-import org.xmpp.extension.pubsub.PubSubNode;
-import org.xmpp.extension.pubsub.PubSubService;
-import org.xmpp.extension.pubsub.Subscription;
-import org.xmpp.extension.pubsub.event.Event;
-import org.xmpp.extension.shim.Header;
-import org.xmpp.extension.shim.Headers;
-import org.xmpp.im.RosterEvent;
-import org.xmpp.im.RosterListener;
-import org.xmpp.stanza.MessageEvent;
-import org.xmpp.stanza.MessageListener;
-import org.xmpp.stanza.PresenceEvent;
-import org.xmpp.stanza.PresenceListener;
-import org.xmpp.stanza.StanzaException;
-import org.xmpp.stanza.client.IQ;
-import org.xmpp.stanza.client.Presence;
+
+import rocks.xmpp.core.Jid;
+import rocks.xmpp.core.XmppException;
+import rocks.xmpp.core.roster.RosterEvent;
+import rocks.xmpp.core.roster.RosterListener;
+import rocks.xmpp.core.session.SessionStatusEvent;
+import rocks.xmpp.core.session.SessionStatusListener;
+import rocks.xmpp.core.session.TcpConnectionConfiguration;
+import rocks.xmpp.core.session.XmppSession;
+import rocks.xmpp.core.session.XmppSessionConfiguration;
+import rocks.xmpp.core.session.XmppSessionConfiguration.Builder;
+import rocks.xmpp.core.session.context.extensions.ExtensionContext;
+import rocks.xmpp.core.session.debug.ConsoleDebugger;
+import rocks.xmpp.core.stanza.MessageEvent;
+import rocks.xmpp.core.stanza.MessageListener;
+import rocks.xmpp.core.stanza.PresenceEvent;
+import rocks.xmpp.core.stanza.PresenceListener;
+import rocks.xmpp.core.stanza.model.StanzaException;
+import rocks.xmpp.core.stanza.model.client.IQ;
+import rocks.xmpp.core.stanza.model.client.Presence;
+import rocks.xmpp.extensions.pubsub.PubSubManager;
+import rocks.xmpp.extensions.pubsub.PubSubNode;
+import rocks.xmpp.extensions.pubsub.PubSubService;
+import rocks.xmpp.extensions.pubsub.model.Item;
+import rocks.xmpp.extensions.pubsub.model.Subscription;
+import rocks.xmpp.extensions.pubsub.model.event.Event;
+import rocks.xmpp.extensions.shim.model.Header;
+import rocks.xmpp.extensions.shim.model.Headers;
 
 /**
  * The OpenlinkClient has all the XMPP specific logic for Openlink functionality including profiles, interests,
@@ -124,38 +138,48 @@ public class OpenlinkClient {
 			this.jid = Jid.valueOf(username + "@" + domain + "/" + resource);
 		}
 		logger.debug("Client Initialized with JID: " + this.getFullJid());
-		registerExtensions();
 	}
 
-	protected void registerExtensions() {
-		XmppContext.getDefault().registerExtension(Command.class, Note.class);
-		XmppContext.getDefault().registerExtension(IoData.class);
+	protected XmppSessionConfiguration getSessionConfiguration() {
 
-		XmppContext.getDefault().registerExtension(Headers.class, Header.class);
+		XmppSessionConfiguration.Builder builder = XmppSessionConfiguration.builder()
+				.context(new ExtensionContext(
 
-		XmppContext.getDefault().registerExtension(Event.class);
+		Command.class, Note.class,
+		IoData.class,
 
-		XmppContext.getDefault().registerExtension(CallAction.class, AddThirdParty.class, AnswerCall.class,
+		Headers.class, Header.class,
+
+		Event.class,
+
+		CallAction.class, AddThirdParty.class, AnswerCall.class,
 				ClearCall.class, ClearConnection.class, ConferenceFail.class, ConnectSpeaker.class,
 				ConsultationCall.class, DisconnectSpeaker.class, HoldCall.class, IntercomTransfer.class,
 				JoinCall.class, PrivateCall.class, PublicCall.class, RemoveThirdParty.class, RetrieveCall.class,
 				SendDigit.class, SendDigits.class, SingleStepTransfer.class, RemoveThirdParty.class, SendDigits.class,
-				StartVoiceDrop.class, StopVoiceDrop.class, TransferCall.class);
+				StartVoiceDrop.class, StopVoiceDrop.class, TransferCall.class,
 
-		XmppContext.getDefault().registerExtension(Call.class, CallerCallee.class, CallFeature.class, CallStatus.class,
-				Participant.class, Property.class);
-		XmppContext.getDefault().registerExtension(GetFeatures.class, GetFeatures.GetFeaturesIn.class);
-		XmppContext.getDefault().registerExtension(GetInterests.class, GetInterests.GetInterestsIn.class);
-		XmppContext.getDefault().registerExtension(MakeCall.class, MakeCall.MakeCallIn.class,
-				MakeCall.MakeCallIn.MakeCallFeature.class);
+		Call.class, CallerCallee.class, CallFeature.class, CallStatus.class,
+				Participant.class, Property.class,
+		GetFeatures.class, GetFeatures.GetFeaturesIn.class,
+		GetInterests.class, GetInterests.GetInterestsIn.class,
+		MakeCall.class, MakeCall.MakeCallIn.class,
+				MakeCall.MakeCallIn.MakeCallFeature.class,
 
-		XmppContext.getDefault().registerExtension(RequestAction.class, RequestAction.RequestActionIn.class);
+		RequestAction.class, RequestAction.RequestActionIn.class,
 
-		XmppContext.getDefault().registerExtension(GetProfiles.class, GetProfiles.GetProfilesIn.class);
+		GetProfiles.class, GetProfiles.GetProfilesIn.class,
 
-		XmppContext.getDefault().registerExtension(Feature.class, Features.class);
-		XmppContext.getDefault().registerExtension(Interest.class, Interests.class);
-		XmppContext.getDefault().registerExtension(Action.class, Profile.class, Profiles.class);
+		Feature.class, Features.class,
+		Interest.class, Interests.class,
+		Action.class, Profile.class, Profiles.class));
+		
+		if (isDebug()) {
+			builder.debugger(ConsoleDebugger.class);
+			logger.debug("CONSOLE LOGGING: ENABLED");
+		}
+		
+		return builder.build();
 	}
 
 	public boolean isDebug() {
@@ -169,7 +193,6 @@ public class OpenlinkClient {
 	 */
 	public void setDebug(boolean debug) {
 		this.debug = debug;
-
 		if (this.debug) {
 			this.initializeLogging();
 		}
@@ -233,42 +256,78 @@ public class OpenlinkClient {
 	 * Connect to the server.
 	 */
 	public void connect() {
-		Connection tcpConnection = new TcpConnection(this.host, this.PORT);
-		xmppSession = new XmppSession(this.domain, tcpConnection);
-
-		// Setting a custom SSL context
-		// xmppSession.getSecurityManager().setSSLContext(sslContext);
-		if (isDebug()) {
-			xmppSession.getSecurityManager().setEnabled(false);
-		}
-		// Listen for presence changes
-		xmppSession.addPresenceListener(new PresenceListener() {
-			@Override
-			public void handle(PresenceEvent e) {
-				if (e.isIncoming()) {
-					// Handle incoming presence.
-				}
-			}
-		});
-
-		// Listen for messages
-		xmppSession.addMessageListener(getCallStatusMessageListener());
-
-		// Listen for roster pushes
-		xmppSession.getRosterManager().addRosterListener(new RosterListener() {
-			@Override
-			public void rosterChanged(RosterEvent e) {
-
-			}
-		});
 
 		try {
-			xmppSession.connect();
+			SSLContext sslContext = SSLContext.getInstance("TLS");
+			sslContext.init(null, new TrustManager[] { new X509TrustManager() {
+				@Override
+				public void checkClientTrusted(X509Certificate[] x509Certificates, String s)
+						throws CertificateException {
+				}
 
+				@Override
+				public void checkServerTrusted(X509Certificate[] x509Certificates, String s)
+						throws CertificateException {
+				}
+
+				@Override
+				public X509Certificate[] getAcceptedIssuers() {
+					return new X509Certificate[0];
+				}
+			} }, new SecureRandom());
+			
+			
+			TcpConnectionConfiguration tcpConfiguration = TcpConnectionConfiguration.builder()
+					.hostname(this.host)
+					.port(OpenlinkClient.PORT)
+					.proxy(Proxy.NO_PROXY)
+					.secure(!isDebug())
+					.build();
+			
+			xmppSession = new XmppSession(this.domain, getSessionConfiguration(), tcpConfiguration);
+			
+			// Listen for presence changes
+			xmppSession.addPresenceListener(new PresenceListener() {
+				@Override
+				public void handlePresence(PresenceEvent e) {
+					if (e.isIncoming()) {
+						// Handle incoming presence.
+					}
+				}
+			});
+			
+			// Listen for session changes
+			xmppSession.addSessionStatusListener(new SessionStatusListener() {
+				@Override
+				public void sessionStatusChanged(SessionStatusEvent e) {
+					logger.debug("CONNECTION EV: " + e.getStatus() + " : " + e.getSource() + " : " + e.getException());
+					
+				}
+			});
+			
+			// Listen for messages
+			xmppSession.addMessageListener(getCallStatusMessageListener());
+
+			// Listen for roster pushes
+			xmppSession.getRosterManager().addRosterListener(new RosterListener() {
+				@Override
+				public void rosterChanged(RosterEvent e) {
+
+				}
+			});
+			
+			// Connect
+			xmppSession.connect();
+			
+			// Login
 			xmppSession.login(this.username, this.password, this.resource);
 
+			// Send initial presence
 			xmppSession.send(new Presence());
-
+		} catch (KeyManagementException e) {
+			e.printStackTrace();
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
 		} catch (IOException e) {
 			// e.g. UnknownHostException
 			e.printStackTrace();
@@ -279,13 +338,12 @@ public class OpenlinkClient {
 			// Login failed, due to wrong username/password
 			e.printStackTrace();
 		}
-
 	}
 
 	private MessageListener getCallStatusMessageListener() {
 		return new MessageListener() {
 			@Override
-			public void handle(MessageEvent e) {
+			public void handleMessage(MessageEvent e) {
 				logger.debug("MESSAGE EVENT: " + e);
 				// Handle outgoing or incoming message
 
@@ -346,6 +404,7 @@ public class OpenlinkClient {
 	 * Disconnect from the server
 	 */
 	public void disconnect() {
+		logger.debug("DISCONNECT");
 		if (xmppSession != null && isConnected()) {
 			try {
 				xmppSession.close();

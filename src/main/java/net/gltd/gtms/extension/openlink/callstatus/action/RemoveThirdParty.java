@@ -4,5 +4,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "RemoveThirdParty")
 public class RemoveThirdParty extends CallAction {
-
+	@Override
+	public String getId() {
+		return "RemoveThirdParty";
+	}
 }

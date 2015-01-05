@@ -2,6 +2,7 @@ package net.gltd.gtms.client.openlink;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Set;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.stream.XMLStreamException;
@@ -10,6 +11,7 @@ import net.gltd.gtms.extension.command.Command;
 import net.gltd.gtms.extension.command.Note;
 import net.gltd.gtms.extension.iodata.IoData;
 import net.gltd.gtms.extension.openlink.callstatus.Call;
+import net.gltd.gtms.extension.openlink.callstatus.Call.CallState;
 import net.gltd.gtms.extension.openlink.callstatus.CallFeature;
 import net.gltd.gtms.extension.openlink.callstatus.CallStatus;
 import net.gltd.gtms.extension.openlink.callstatus.CallerCallee;
@@ -36,6 +38,7 @@ import net.gltd.gtms.extension.openlink.callstatus.action.SingleStepTransfer;
 import net.gltd.gtms.extension.openlink.callstatus.action.StartVoiceDrop;
 import net.gltd.gtms.extension.openlink.callstatus.action.StopVoiceDrop;
 import net.gltd.gtms.extension.openlink.callstatus.action.TransferCall;
+import net.gltd.gtms.extension.openlink.command.MakeCall.MakeCallIn.MakeCallFeature;
 import net.gltd.gtms.extension.openlink.command.RequestAction.RequestActionAction;
 import net.gltd.gtms.extension.openlink.features.Feature;
 import net.gltd.gtms.extension.openlink.features.Features;
@@ -46,7 +49,6 @@ import net.gltd.gtms.extension.openlink.profiles.Action;
 import net.gltd.gtms.extension.openlink.profiles.Profile;
 import net.gltd.gtms.extension.openlink.profiles.Profiles;
 import net.gltd.util.log.GtmsLog;
-import net.gltd.util.xml.XmlUtil;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -54,36 +56,37 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.xmpp.XmlTest;
-import org.xmpp.extension.pubsub.Subscription;
-import org.xmpp.extension.pubsub.event.Event;
-import org.xmpp.extension.shim.Header;
-import org.xmpp.extension.shim.Headers;
-import org.xmpp.stanza.client.IQ;
-import org.xmpp.stanza.client.Message;
+
+import rocks.xmpp.core.XmlTest;
+import rocks.xmpp.core.stanza.model.client.IQ;
+import rocks.xmpp.core.stanza.model.client.Message;
+import rocks.xmpp.extensions.pubsub.model.Subscription;
+import rocks.xmpp.extensions.pubsub.model.event.Event;
+import rocks.xmpp.extensions.shim.model.Header;
+import rocks.xmpp.extensions.shim.model.Headers;
 
 public class OpenlinkClientTest extends XmlTest {
 
 	protected Logger logger = Logger.getLogger("net.gltd.gtms");
 
-	private static final String USERNAME = "random_user";
-	private static final String PASSWORD = "PassW0rd";
-	private static final String RESOURCE = "my_resource";
+	private static final String USERNAME = "betty.bidder";
+	private static final String PASSWORD = "password";
+	private static final String RESOURCE = "office";
 
-	private static final String DOMAIN = "domain.example.com";
-	private static final String HOST = "domain.example.com";
+	private static final String DOMAIN = "example.com";
+	private static final String HOST = "server.example.com";
 
-	private static final String SYSTEM = "xmppcomponentnode";
+	private static final String SYSTEM = "my_system";
 
 	private static final String SYSTEM_AND_DOMAIN = SYSTEM + "." + DOMAIN;
 
-	private static final String DESTINATION = "12345";
+	private static final String DESTINATION = "123456";
 
 	private OpenlinkClient client = null;
 
 	public OpenlinkClientTest() throws JAXBException, XMLStreamException {
-		super(Property.class, Headers.class, Header.class, Event.class, Command.class, Note.class, Message.class, IQ.class,
-				IoData.class, Profiles.class, Profile.class, Action.class, Interests.class, Interest.class,
+		super(Property.class, Headers.class, Header.class, Event.class, Command.class, Note.class, Message.class,
+				IQ.class, IoData.class, Profiles.class, Profile.class, Action.class, Interests.class, Interest.class,
 				Features.class, Feature.class, CallStatus.class, Call.class, CallerCallee.class, CallFeature.class,
 				Participant.class, CallAction.class, AddThirdParty.class, AnswerCall.class, ClearCall.class,
 				ClearConnection.class, ConferenceFail.class, ConnectSpeaker.class, ConsultationCall.class,
@@ -167,7 +170,7 @@ public class OpenlinkClientTest extends XmlTest {
 			Collection<Profile> profiles = this.client.getProfiles(SYSTEM_AND_DOMAIN);
 			Assert.assertNotNull(profiles);
 			Assert.assertTrue(profiles.size() > 0);
-			logger.debug(XmlUtil.formatXml(marshal(profiles)));
+			logger.debug(marshal(profiles));
 			for (Profile p : profiles) {
 				Assert.assertNotNull(p.getId());
 				Assert.assertNotNull(p.getDevice());
@@ -187,7 +190,7 @@ public class OpenlinkClientTest extends XmlTest {
 			Assert.assertNotNull(p);
 			Collection<Feature> features = this.client.getFeatures(SYSTEM_AND_DOMAIN, p);
 			Assert.assertTrue(features.size() > 0);
-			logger.debug(XmlUtil.formatXml(marshal(features)));
+			logger.debug(marshal(features));
 			for (Feature f : features) {
 				Assert.assertNotNull(f.getId());
 				Assert.assertNotNull(f.getLabel());
@@ -208,7 +211,7 @@ public class OpenlinkClientTest extends XmlTest {
 			Assert.assertNotNull(p);
 			Collection<Interest> interests = this.client.getInterests(SYSTEM_AND_DOMAIN, p);
 			Assert.assertTrue(interests.size() > 0);
-			logger.debug(XmlUtil.formatXml(marshal(interests)));
+			logger.debug(marshal(interests));
 			for (Interest i : interests) {
 				Assert.assertNotNull(i.getId());
 				Assert.assertNotNull(i.getLabel());
@@ -252,8 +255,8 @@ public class OpenlinkClientTest extends XmlTest {
 			Assert.assertNotNull(result);
 			this.client.unsubscribe(i);
 			Collection<Subscription> subs = this.client.getSubscriptions(i);
-//			Assert.assertTrue(subs.isEmpty()); // Not sure if a bug in Openfire's caching strategy which prevents
-												// subscriptions from removing correctly
+			// Assert.assertTrue(subs.isEmpty()); // Not sure if a bug in Openfire's caching strategy which prevents
+			// subscriptions from removing correctly
 		} catch (Exception e) {
 			e.printStackTrace();
 			Assert.fail(e.getMessage());
@@ -268,6 +271,7 @@ public class OpenlinkClientTest extends XmlTest {
 			Assert.assertNotNull(p);
 			Interest i = getPrimaryInterest(SYSTEM_AND_DOMAIN, p.getId());
 			Assert.assertNotNull(i);
+			Thread.sleep(5000);
 			Subscription result = this.client.subscribe(i);
 			Assert.assertNotNull(result);
 			Collection<Subscription> subs = this.client.getSubscriptions(i);
@@ -275,8 +279,53 @@ public class OpenlinkClientTest extends XmlTest {
 			this.client.unsubscribe(i);
 			subs = this.client.getSubscriptions(i);
 			logger.debug("SUBSCRIPTIONS: SIZE: " + subs.size());
-//			Assert.assertTrue(subs.isEmpty()); // Not sure if a bug in Openfire's caching strategy which prevents
-												// subscriptions from removing correctly
+			// Assert.assertTrue(subs.isEmpty()); // Not sure if a bug in Openfire's caching strategy which prevents
+			// subscriptions from removing correctly
+			Thread.sleep(5000);
+		} catch (Exception e) {
+			e.printStackTrace();
+			Assert.fail(e.getMessage());
+		}
+	}
+	
+	@Test
+	public void makeCallAndRequestActionSimple() {
+		try {
+			this.client.addCallListener(new CallListener() {
+				@Override
+				public void callEvent(Collection<Call> calls) {
+					for (Call c : calls) {
+						Assert.assertNotNull(c.getId());
+						logger.debug("CALL EV: " + c.getId() + c);
+						try {
+							logger.debug("CALL EV: " + c.getId() + marshal(c));
+						} catch (Exception e) {
+							e.printStackTrace();
+							Assert.fail(e.getMessage());
+						}
+					}
+				}
+			});
+			subscribeInterest();
+			Assert.assertTrue(isConnected());
+			Profile p = getPrimaryProfile(SYSTEM_AND_DOMAIN);
+			Assert.assertNotNull(p);
+			Interest i = getPrimaryInterest(SYSTEM_AND_DOMAIN, p.getId());
+			Assert.assertNotNull(i);
+			Collection<Call> calls = this.client.makeCall(SYSTEM_AND_DOMAIN, i, DESTINATION, null,
+					new HashSet<Property>());
+			Thread.sleep(1000);
+			Assert.assertNotNull(calls);
+			Assert.assertTrue(calls.size() > 0);
+			for (Call c : calls) {
+				Assert.assertNotNull(c.getId());
+				logger.debug("CALL: " + c.getId() + c);
+				logger.debug("CALL : " + c.getId() + marshal(c));
+			}
+			Call call = calls.iterator().next();
+			Thread.sleep(3000);
+			this.client.requestAction(SYSTEM_AND_DOMAIN, call, RequestActionAction.ClearConnection, null, null);
+			Thread.sleep(2000);
 		} catch (Exception e) {
 			e.printStackTrace();
 			Assert.fail(e.getMessage());
@@ -284,23 +333,93 @@ public class OpenlinkClientTest extends XmlTest {
 	}
 
 	@Test
-	public void makeCallAndRequestAction() {
+	public void makeCallAndRequestActionFull() {
 		try {
+			this.client.addCallListener(new CallListener() {
+				@Override
+				public void callEvent(Collection<Call> calls) {
+					for (Call c : calls) {
+						Assert.assertNotNull(c.getId());
+						logger.debug("CALL EV: " + c.getId() + c);
+						// Assert.assertEquals(1, c.getFeatures().size());
+						// for (CallFeature cf : c.getFeatures()) {
+						// Assert.assertTrue(cf.getId().equals("CALLBACK"));
+						// Assert.assertTrue(cf.isValue1());
+						// }
+
+						Assert.assertTrue(c.getOriginatorRef().size() > 0);
+						int validOriginatorRefCount = 0;
+						for (Property p : c.getOriginatorRef()) {
+							if ("dummy-id".equals(p.getId())) {
+								Assert.assertEquals("dummy-value-ABC-1234", p.getValue());
+								validOriginatorRefCount++;
+							}
+						}
+						Assert.assertEquals(1, validOriginatorRefCount);
+
+						if (CallState.ConnectionCleared != c.getState()) {
+							Assert.assertTrue(c.getActions().size() > 0);
+							for (CallAction a : c.getActions()) {
+								Assert.assertTrue(a instanceof CallAction);
+								Assert.assertTrue(a.getId().equals("ClearConnection") || a.getId().equals("ClearCall")
+										|| a.getId().equals("AnswerCall"));
+							}
+						}
+
+						Assert.assertTrue(c.getParticipants().size() > 0);
+						for (Participant p : c.getParticipants()) {
+							Assert.assertTrue(p.getJid() != null);
+							Assert.assertTrue(p.getTimestamp() != null);
+							Assert.assertTrue(p.getDirection() != null);
+							// Assert.assertTrue(p.getType() != null); // avaya plugin doesn't send inactive for
+							// non-active parties at the moment
+						}
+
+						Assert.assertTrue(c.getOriginatorRef().size() > 0);
+						for (Property p : c.getOriginatorRef()) {
+							Assert.assertNotNull(p.getId());
+							Assert.assertNotNull(p.getValue());
+						}
+
+						try {
+							logger.debug("CALL EV: " + c.getId() + marshal(c));
+						} catch (Exception e) {
+							e.printStackTrace();
+							Assert.fail(e.getMessage());
+						}
+					}
+				}
+			});
 			subscribeInterest();
 			Assert.assertTrue(isConnected());
 			Profile p = getPrimaryProfile(SYSTEM_AND_DOMAIN);
 			Assert.assertNotNull(p);
 			Interest i = getPrimaryInterest(SYSTEM_AND_DOMAIN, p.getId());
 			Assert.assertNotNull(i);
-			Collection<Call> calls = this.client.makeCall(SYSTEM_AND_DOMAIN, i, DESTINATION, null, new HashSet<Property>());
+
+			Set<MakeCallFeature> features = new HashSet<MakeCallFeature>();
+			MakeCallFeature feature = new MakeCallFeature();
+			feature.setId("CALLBACK");
+			feature.setValue1("true");
+			features.add(feature);
+
+			Set<Property> originatorReferences = new HashSet<Property>();
+			Property p1 = new Property();
+			p1.setId("dummy-id");
+			p1.setValue("dummy-value-ABC-1234");
+			originatorReferences.add(p1);
+
+			Collection<Call> calls = this.client.makeCall(SYSTEM_AND_DOMAIN, i, DESTINATION, features,
+					originatorReferences);
 			Thread.sleep(1000);
 			Assert.assertNotNull(calls);
 			Assert.assertTrue(calls.size() > 0);
 			for (Call c : calls) {
 				Assert.assertNotNull(c.getId());
+				logger.debug("CALL: " + c.getId() + c);
+				logger.debug("CALL : " + c.getId() + marshal(c));
 			}
 			Call call = calls.iterator().next();
-			logger.debug(marshal(calls));
 			Thread.sleep(3000);
 			this.client.requestAction(SYSTEM_AND_DOMAIN, call, RequestActionAction.ClearConnection, null, null);
 			Thread.sleep(2000);

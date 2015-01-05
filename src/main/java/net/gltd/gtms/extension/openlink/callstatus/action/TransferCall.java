@@ -4,5 +4,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "TransferCall")
 public class TransferCall extends CallAction {
-
+	@Override
+	public String getId() {
+		return "TransferCall";
+	}
 }

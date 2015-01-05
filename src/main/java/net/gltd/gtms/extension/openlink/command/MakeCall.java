@@ -17,8 +17,7 @@ import net.gltd.gtms.extension.command.Command;
 import net.gltd.gtms.extension.iodata.IoData;
 import net.gltd.gtms.extension.iodata.IoData.IoDataType;
 import net.gltd.gtms.extension.openlink.originatorref.Property;
-
-import org.xmpp.Jid;
+import rocks.xmpp.core.Jid;
 
 @XmlRootElement(name = "command")
 public class MakeCall extends Command {

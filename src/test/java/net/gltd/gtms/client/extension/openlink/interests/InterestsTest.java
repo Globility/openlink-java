@@ -17,9 +17,10 @@ import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.xmpp.Jid;
-import org.xmpp.XmlTest;
-import org.xmpp.stanza.client.Message;
+
+import rocks.xmpp.core.Jid;
+import rocks.xmpp.core.XmlTest;
+import rocks.xmpp.core.stanza.model.client.Message;
 
 public class InterestsTest extends XmlTest {
 
@@ -58,7 +59,7 @@ public class InterestsTest extends XmlTest {
 
 		String xml = marshal(m);
 		Assert.assertNotNull(xml);
-		logger.debug(XmlUtil.formatXml(marshal(is)));
+		logger.debug(marshal(is));
 
 		Assert.assertTrue(xml.contains("<interests xmlns=\"" + OpenlinkNamespaces.NS_OPENLINK_INTERESTS
 				+ "\"><interest id=\""));
