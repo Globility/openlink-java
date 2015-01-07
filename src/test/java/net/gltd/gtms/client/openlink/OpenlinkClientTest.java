@@ -55,6 +55,7 @@ import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import rocks.xmpp.core.XmlTest;
@@ -70,17 +71,17 @@ public class OpenlinkClientTest extends XmlTest {
 	protected Logger logger = Logger.getLogger("net.gltd.gtms");
 
 	private static final String USERNAME = "betty.bidder";
-	private static final String PASSWORD = "password";
+	private static final String PASSWORD = "Pa55w0rd";
 	private static final String RESOURCE = "office";
 
-	private static final String DOMAIN = "example.com";
-	private static final String HOST = "server.example.com";
+	private static final String DOMAIN = "mas-analec.gltd.net";
+	private static final String HOST = "mas-analec.gltd.net";
 
-	private static final String SYSTEM = "my_system";
+	private static final String SYSTEM = "avaya2";
 
 	private static final String SYSTEM_AND_DOMAIN = SYSTEM + "." + DOMAIN;
 
-	private static final String DESTINATION = "123456";
+	private static final String DESTINATION = "50203";
 
 	private OpenlinkClient client = null;
 
@@ -297,6 +298,9 @@ public class OpenlinkClientTest extends XmlTest {
 					for (Call c : calls) {
 						Assert.assertNotNull(c.getId());
 						logger.debug("CALL EV: " + c.getId() + c);
+						for (Property p2 : c.getOriginatorRef()) {
+							logger.debug("CALL PROPERTY: ID: " + p2.getId() + " : " + p2.getValue());
+						}
 						try {
 							logger.debug("CALL EV: " + c.getId() + marshal(c));
 						} catch (Exception e) {
@@ -321,9 +325,12 @@ public class OpenlinkClientTest extends XmlTest {
 				Assert.assertNotNull(c.getId());
 				logger.debug("CALL: " + c.getId() + c);
 				logger.debug("CALL : " + c.getId() + marshal(c));
+				for (Property p2 : c.getOriginatorRef()) {
+					logger.debug("CALL PROPERTY: ID: " + p2.getId() + " : " + p2.getValue());
+				}
 			}
 			Call call = calls.iterator().next();
-			Thread.sleep(3000);
+			Thread.sleep(8000);
 			this.client.requestAction(SYSTEM_AND_DOMAIN, call, RequestActionAction.ClearConnection, null, null);
 			Thread.sleep(2000);
 		} catch (Exception e) {
@@ -375,6 +382,10 @@ public class OpenlinkClientTest extends XmlTest {
 							// non-active parties at the moment
 						}
 
+						
+						for (Property p2 : c.getOriginatorRef()) {
+							logger.debug("CALL PROPERTY: ID: " + p2.getId() + " : " + p2.getValue());
+						}
 						Assert.assertTrue(c.getOriginatorRef().size() > 0);
 						for (Property p : c.getOriginatorRef()) {
 							Assert.assertNotNull(p.getId());
@@ -418,9 +429,12 @@ public class OpenlinkClientTest extends XmlTest {
 				Assert.assertNotNull(c.getId());
 				logger.debug("CALL: " + c.getId() + c);
 				logger.debug("CALL : " + c.getId() + marshal(c));
+				for (Property p2 : c.getOriginatorRef()) {
+					logger.debug("CALL PROPERTY: ID: " + p2.getId() + " : " + p2.getValue());
+				}
 			}
 			Call call = calls.iterator().next();
-			Thread.sleep(3000);
+			Thread.sleep(8000);
 			this.client.requestAction(SYSTEM_AND_DOMAIN, call, RequestActionAction.ClearConnection, null, null);
 			Thread.sleep(2000);
 		} catch (Exception e) {
@@ -429,4 +443,17 @@ public class OpenlinkClientTest extends XmlTest {
 		}
 	}
 
+	@Ignore
+	@Test
+	public void debugTrace() {
+		while (true) {
+			try {
+				Thread.sleep(10);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+				Assert.fail(e.getMessage());
+			}
+		}
+	}
+	
 }

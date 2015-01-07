@@ -3,7 +3,7 @@ package net.gltd.gtms.client.extension.originatorref;
 import javax.xml.bind.JAXBException;
 import javax.xml.stream.XMLStreamException;
 
-import junit.framework.Assert;
+import net.gltd.gtms.client.openlink.OpenlinkNamespaces;
 import net.gltd.gtms.client.openlink.OpenlinkTestHelper;
 import net.gltd.gtms.extension.command.Command;
 import net.gltd.gtms.extension.command.Note;
@@ -45,11 +45,11 @@ import net.gltd.gtms.extension.openlink.profiles.Action;
 import net.gltd.gtms.extension.openlink.profiles.Profile;
 import net.gltd.gtms.extension.openlink.profiles.Profiles;
 import net.gltd.util.log.GtmsLog;
-import net.gltd.util.xml.XmlUtil;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -99,7 +99,7 @@ public class OriginatorRefTest extends XmlTest {
 
 	@Test
 	public void testOriginatorRefUnMarshal() throws XMLStreamException, JAXBException {
-		String xmlIn = "<originator-ref xmlns=\"http://xmpp.org/protocol/openlink:01:00:00#originator-ref\">"
+		String xmlIn = "<originator-ref xmlns=\"" + OpenlinkNamespaces.NS_OPENLINK_ORIGINATORREF + "\">"
 				+ "<property id=\"universal-callid\"><value>wFQ22tr5rc</value></property>"
 				+ "<property id=\"platform-callid\"><value>Dmde2MALM7</value></property>" + "</originator-ref>";
 

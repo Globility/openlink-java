@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.gltd.gtms.client</groupId>
 	<artifactId>openlink-java</artifactId>
-	<version>2.1.0</version>
+	<version>2.1.1-SNAPSHOT</version>
 	<name>Openlink Java Client Library</name>
 	<description>Openlink Java Client Library</description>
 	<url>https://github.com/Globility/openlink-java</url>
@@ -142,7 +142,7 @@
 			<version>1.2.0-SNAPSHOT</version>
 			<scope>test</scope>
 		</dependency>
-		
+
 		<!-- GTMS -->
 		<dependency>
 			<groupId>org.igniterealtime.openfire</groupId>
@@ -202,6 +202,17 @@
 			</plugin>
 		</plugins>
 	</build>
+
+
+	<profiles>
+		<profile>
+			<id>release</id>
+			<properties>
+				<skipTests>true</skipTests>
+			</properties>
+		</profile>
+	</profiles>
+
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<powermock.version>1.4.6</powermock.version>
