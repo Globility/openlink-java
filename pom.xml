@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.gltd.gtms.client</groupId>
 	<artifactId>openlink-java</artifactId>
-	<version>2.1.1C-SNAPSHOT</version>
+	<version>2.1.2-SNAPSHOT</version>
 	<name>Openlink Java Client Library</name>
 	<description>Openlink Java Client Library</description>
 	<url>https://github.com/Globility/openlink-java</url>

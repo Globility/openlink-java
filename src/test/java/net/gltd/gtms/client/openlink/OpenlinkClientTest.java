@@ -58,6 +58,7 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import rocks.xmpp.core.Jid;
 import rocks.xmpp.core.XmlTest;
 import rocks.xmpp.core.stanza.model.client.IQ;
 import rocks.xmpp.core.stanza.model.client.Message;
@@ -70,14 +71,14 @@ public class OpenlinkClientTest extends XmlTest {
 
 	protected Logger logger = Logger.getLogger("net.gltd.gtms");
 
-	private static final String USERNAME = "leon";
-	private static final String PASSWORD = "password";
+	private static final String USERNAME = "betty.bidder";
+	private static final String PASSWORD = "Pa55w0rd";
 	private static final String RESOURCE = "office";
 
-	private static final String DOMAIN = "clarabel";
-	private static final String HOST = "clarabel";
+	private static final String DOMAIN = "mas-analec.gltd.net";
+	private static final String HOST = "mas-analec.gltd.net";
 
-	private static final String SYSTEM = "avaya1";
+	private static final String SYSTEM = "avaya2";
 
 	private static final String SYSTEM_AND_DOMAIN = SYSTEM + "." + DOMAIN;
 
@@ -86,15 +87,13 @@ public class OpenlinkClientTest extends XmlTest {
 	private OpenlinkClient client = null;
 
 	public OpenlinkClientTest() throws JAXBException, XMLStreamException {
-		super(Property.class, Headers.class, Header.class, Event.class, Command.class, Note.class, Message.class,
-				IQ.class, IoData.class, Profiles.class, Profile.class, Action.class, Interests.class, Interest.class,
-				Features.class, Feature.class, CallStatus.class, Call.class, CallerCallee.class, CallFeature.class,
-				Participant.class, CallAction.class, AddThirdParty.class, AnswerCall.class, ClearCall.class,
-				ClearConnection.class, ConferenceFail.class, ConnectSpeaker.class, ConsultationCall.class,
-				DisconnectSpeaker.class, HoldCall.class, IntercomTransfer.class, JoinCall.class, PrivateCall.class,
-				PublicCall.class, RemoveThirdParty.class, RetrieveCall.class, SendDigit.class, SendDigits.class,
-				SingleStepTransfer.class, RemoveThirdParty.class, SendDigits.class, StartVoiceDrop.class,
-				StopVoiceDrop.class, TransferCall.class);
+		super(Property.class, Headers.class, Header.class, Event.class, Command.class, Note.class, Message.class, IQ.class, IoData.class,
+				Profiles.class, Profile.class, Action.class, Interests.class, Interest.class, Features.class, Feature.class, CallStatus.class,
+				Call.class, CallerCallee.class, CallFeature.class, Participant.class, CallAction.class, AddThirdParty.class, AnswerCall.class,
+				ClearCall.class, ClearConnection.class, ConferenceFail.class, ConnectSpeaker.class, ConsultationCall.class, DisconnectSpeaker.class,
+				HoldCall.class, IntercomTransfer.class, JoinCall.class, PrivateCall.class, PublicCall.class, RemoveThirdParty.class,
+				RetrieveCall.class, SendDigit.class, SendDigits.class, SingleStepTransfer.class, RemoveThirdParty.class, SendDigits.class,
+				StartVoiceDrop.class, StopVoiceDrop.class, TransferCall.class);
 	}
 
 	@Before
@@ -162,6 +161,27 @@ public class OpenlinkClientTest extends XmlTest {
 		Assert.assertTrue(isConnected());
 		this.client.disconnect();
 		Assert.assertFalse(isConnected());
+	}
+
+	@Test
+	public void getProfilesAsAdmin() throws Exception {
+		if (this.USERNAME.equals("admin")) {
+			try {
+				Assert.assertTrue(isConnected());
+				Collection<Profile> profiles = this.client.getProfiles(SYSTEM_AND_DOMAIN, Jid.valueOf("betty.bidder" + "@" + this.DOMAIN));
+				Assert.assertNotNull(profiles);
+				Assert.assertTrue(profiles.size() > 0);
+				logger.debug(marshal(profiles));
+				for (Profile p : profiles) {
+					Assert.assertNotNull(p.getId());
+					Assert.assertNotNull(p.getDevice());
+					logger.debug("PROFILES: " + p.getId() + " " + p.getLabel() + " " + p.getDevice());
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				Assert.fail(e.getMessage());
+			}
+		}
 	}
 
 	@Test
@@ -288,7 +308,8 @@ public class OpenlinkClientTest extends XmlTest {
 			Assert.fail(e.getMessage());
 		}
 	}
-	
+
+	@Ignore
 	@Test
 	public void makeCallAndRequestActionSimple() {
 		try {
@@ -316,8 +337,7 @@ public class OpenlinkClientTest extends XmlTest {
 			Assert.assertNotNull(p);
 			Interest i = getPrimaryInterest(SYSTEM_AND_DOMAIN, p.getId());
 			Assert.assertNotNull(i);
-			Collection<Call> calls = this.client.makeCall(SYSTEM_AND_DOMAIN, i, DESTINATION, null,
-					new HashSet<Property>());
+			Collection<Call> calls = this.client.makeCall(SYSTEM_AND_DOMAIN, i, DESTINATION, null, new HashSet<Property>());
 			Thread.sleep(1000);
 			Assert.assertNotNull(calls);
 			Assert.assertTrue(calls.size() > 0);
@@ -339,6 +359,7 @@ public class OpenlinkClientTest extends XmlTest {
 		}
 	}
 
+	@Ignore
 	@Test
 	public void makeCallAndRequestActionFull() {
 		try {
@@ -382,7 +403,6 @@ public class OpenlinkClientTest extends XmlTest {
 							// non-active parties at the moment
 						}
 
-						
 						for (Property p2 : c.getOriginatorRef()) {
 							logger.debug("CALL PROPERTY: ID: " + p2.getId() + " : " + p2.getValue());
 						}
@@ -420,8 +440,7 @@ public class OpenlinkClientTest extends XmlTest {
 			p1.setValue("dummy-value-ABC-1234");
 			originatorReferences.add(p1);
 
-			Collection<Call> calls = this.client.makeCall(SYSTEM_AND_DOMAIN, i, DESTINATION, features,
-					originatorReferences);
+			Collection<Call> calls = this.client.makeCall(SYSTEM_AND_DOMAIN, i, DESTINATION, features, originatorReferences);
 			Thread.sleep(1000);
 			Assert.assertNotNull(calls);
 			Assert.assertTrue(calls.size() > 0);
@@ -443,6 +462,7 @@ public class OpenlinkClientTest extends XmlTest {
 		}
 	}
 
+	@Ignore
 	@Test
 	public void debugTrace() {
 		while (true) {
@@ -454,5 +474,5 @@ public class OpenlinkClientTest extends XmlTest {
 			}
 		}
 	}
-	
+
 }

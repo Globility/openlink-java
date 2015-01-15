@@ -81,7 +81,6 @@ import rocks.xmpp.core.session.SessionStatusListener;
 import rocks.xmpp.core.session.TcpConnectionConfiguration;
 import rocks.xmpp.core.session.XmppSession;
 import rocks.xmpp.core.session.XmppSessionConfiguration;
-import rocks.xmpp.core.session.XmppSessionConfiguration.Builder;
 import rocks.xmpp.core.session.context.extensions.ExtensionContext;
 import rocks.xmpp.core.session.debug.ConsoleDebugger;
 import rocks.xmpp.core.stanza.MessageEvent;
@@ -101,11 +100,10 @@ import rocks.xmpp.extensions.shim.model.Header;
 import rocks.xmpp.extensions.shim.model.Headers;
 
 /**
- * The OpenlinkClient has all the XMPP specific logic for Openlink functionality including profiles, interests,
- * features, make-call and request action.
+ * The OpenlinkClient has all the XMPP specific logic for Openlink functionality including profiles, interests, features, make-call and request
+ * action.
  * 
- * In addition it exposes helpers for pubsub functionality such as subscribe/unsubscribe and get the list of
- * subscriptions.
+ * In addition it exposes helpers for pubsub functionality such as subscribe/unsubscribe and get the list of subscriptions.
  */
 public class OpenlinkClient {
 	private static final Logger logger = Logger.getLogger(OpenlinkClient.class);
@@ -142,43 +140,36 @@ public class OpenlinkClient {
 
 	protected XmppSessionConfiguration getSessionConfiguration() {
 
-		XmppSessionConfiguration.Builder builder = XmppSessionConfiguration.builder()
-				.context(new ExtensionContext(
+		XmppSessionConfiguration.Builder builder = XmppSessionConfiguration.builder().context(
+				new ExtensionContext(
 
-		Command.class, Note.class,
-		IoData.class,
+				Command.class, Note.class, IoData.class,
 
-		Headers.class, Header.class,
+				Headers.class, Header.class,
 
-		Event.class,
+				Event.class,
 
-		CallAction.class, AddThirdParty.class, AnswerCall.class,
-				ClearCall.class, ClearConnection.class, ConferenceFail.class, ConnectSpeaker.class,
-				ConsultationCall.class, DisconnectSpeaker.class, HoldCall.class, IntercomTransfer.class,
-				JoinCall.class, PrivateCall.class, PublicCall.class, RemoveThirdParty.class, RetrieveCall.class,
-				SendDigit.class, SendDigits.class, SingleStepTransfer.class, RemoveThirdParty.class, SendDigits.class,
-				StartVoiceDrop.class, StopVoiceDrop.class, TransferCall.class,
+				CallAction.class, AddThirdParty.class, AnswerCall.class, ClearCall.class, ClearConnection.class, ConferenceFail.class,
+						ConnectSpeaker.class, ConsultationCall.class, DisconnectSpeaker.class, HoldCall.class, IntercomTransfer.class,
+						JoinCall.class, PrivateCall.class, PublicCall.class, RemoveThirdParty.class, RetrieveCall.class, SendDigit.class,
+						SendDigits.class, SingleStepTransfer.class, RemoveThirdParty.class, SendDigits.class, StartVoiceDrop.class,
+						StopVoiceDrop.class, TransferCall.class,
 
-		Call.class, CallerCallee.class, CallFeature.class, CallStatus.class,
-				Participant.class, Property.class,
-		GetFeatures.class, GetFeatures.GetFeaturesIn.class,
-		GetInterests.class, GetInterests.GetInterestsIn.class,
-		MakeCall.class, MakeCall.MakeCallIn.class,
-				MakeCall.MakeCallIn.MakeCallFeature.class,
+						Call.class, CallerCallee.class, CallFeature.class, CallStatus.class, Participant.class, Property.class, GetFeatures.class,
+						GetFeatures.GetFeaturesIn.class, GetInterests.class, GetInterests.GetInterestsIn.class, MakeCall.class,
+						MakeCall.MakeCallIn.class, MakeCall.MakeCallIn.MakeCallFeature.class,
 
-		RequestAction.class, RequestAction.RequestActionIn.class,
+						RequestAction.class, RequestAction.RequestActionIn.class,
 
-		GetProfiles.class, GetProfiles.GetProfilesIn.class,
+						GetProfiles.class, GetProfiles.GetProfilesIn.class,
 
-		Feature.class, Features.class,
-		Interest.class, Interests.class,
-		Action.class, Profile.class, Profiles.class));
-		
+						Feature.class, Features.class, Interest.class, Interests.class, Action.class, Profile.class, Profiles.class));
+
 		if (isDebug()) {
 			builder.debugger(ConsoleDebugger.class);
 			logger.debug("CONSOLE LOGGING: ENABLED");
 		}
-		
+
 		return builder.build();
 	}
 
@@ -261,13 +252,11 @@ public class OpenlinkClient {
 			SSLContext sslContext = SSLContext.getInstance("TLS");
 			sslContext.init(null, new TrustManager[] { new X509TrustManager() {
 				@Override
-				public void checkClientTrusted(X509Certificate[] x509Certificates, String s)
-						throws CertificateException {
+				public void checkClientTrusted(X509Certificate[] x509Certificates, String s) throws CertificateException {
 				}
 
 				@Override
-				public void checkServerTrusted(X509Certificate[] x509Certificates, String s)
-						throws CertificateException {
+				public void checkServerTrusted(X509Certificate[] x509Certificates, String s) throws CertificateException {
 				}
 
 				@Override
@@ -275,17 +264,12 @@ public class OpenlinkClient {
 					return new X509Certificate[0];
 				}
 			} }, new SecureRandom());
-			
-			
-			TcpConnectionConfiguration tcpConfiguration = TcpConnectionConfiguration.builder()
-					.hostname(this.host)
-					.port(OpenlinkClient.PORT)
-					.proxy(Proxy.NO_PROXY)
-					.secure(!isDebug())
-					.build();
-			
+
+			TcpConnectionConfiguration tcpConfiguration = TcpConnectionConfiguration.builder().hostname(this.host).port(OpenlinkClient.PORT)
+					.proxy(Proxy.NO_PROXY).secure(!isDebug()).build();
+
 			xmppSession = new XmppSession(this.domain, getSessionConfiguration(), tcpConfiguration);
-			
+
 			// Listen for presence changes
 			xmppSession.addPresenceListener(new PresenceListener() {
 				@Override
@@ -295,16 +279,16 @@ public class OpenlinkClient {
 					}
 				}
 			});
-			
+
 			// Listen for session changes
 			xmppSession.addSessionStatusListener(new SessionStatusListener() {
 				@Override
 				public void sessionStatusChanged(SessionStatusEvent e) {
 					logger.debug("CONNECTION EV: " + e.getStatus() + " : " + e.getSource() + " : " + e.getException());
-					
+
 				}
 			});
-			
+
 			// Listen for messages
 			xmppSession.addMessageListener(getCallStatusMessageListener());
 
@@ -315,10 +299,10 @@ public class OpenlinkClient {
 
 				}
 			});
-			
+
 			// Connect
 			xmppSession.connect();
-			
+
 			// Login
 			xmppSession.login(this.username, this.password, this.resource);
 
@@ -416,16 +400,22 @@ public class OpenlinkClient {
 
 	/**
 	 * Implements 'http://xmpp.org/protocol/openlink:01:00:00#get-profiles'.
-	 *
+	 * 
 	 * @param to
 	 *            Openlink XMPP component.
+	 * @param jid
+	 *            if logged on as an admin a user can obtain profiles on behalf of another user by specifying their bare JID (eg. user@example.com).
 	 * @return collection of user's profiles.
 	 */
-	public Collection<Profile> getProfiles(String to) throws XmppException {
+	public Collection<Profile> getProfiles(String to, Jid jid) throws XmppException {
 		Collection<Profile> result = new ArrayList<Profile>();
 
 		GetProfiles gp = new GetProfiles();
-		gp.getIn().setJid(this.jid);
+		if (jid == null) {
+			gp.getIn().setJid(this.jid);
+		} else {
+			gp.getIn().setJid(jid);
+		}
 		IQ iq = new IQ(Jid.valueOf(to), IQ.Type.SET, gp);
 		IQ iqResult = xmppSession.query(iq);
 
@@ -440,6 +430,17 @@ public class OpenlinkClient {
 			}
 		}
 		return result;
+	}
+
+	/**
+	 * Implements 'http://xmpp.org/protocol/openlink:01:00:00#get-profiles'.
+	 *
+	 * @param to
+	 *            Openlink XMPP component.
+	 * @return collection of user's profiles.
+	 */
+	public Collection<Profile> getProfiles(String to) throws XmppException {
+		return getProfiles(to, null);
 	}
 
 	/**
@@ -543,8 +544,7 @@ public class OpenlinkClient {
 					try {
 						pubSubNode.unsubscribe(subscription.getSubId());
 					} catch (StanzaException sex) {
-						logger.error("UNSUBSCRIBE: ID: " + pubSubNode.getId() + " SUBID: " + subscription.getSubId()
-								+ " FAILED: " + sex.getMessage());
+						logger.error("UNSUBSCRIBE: ID: " + pubSubNode.getId() + " SUBID: " + subscription.getSubId() + " FAILED: " + sex.getMessage());
 					}
 				}
 			}
@@ -583,8 +583,8 @@ public class OpenlinkClient {
 	 *            collection to associate with the call.
 	 * @return Collection of calls made as a result of the request.
 	 */
-	public Collection<Call> makeCall(String to, Interest interest, String destination, Set<MakeCallFeature> features,
-			Set<Property> originatorRef) throws XmppException {
+	public Collection<Call> makeCall(String to, Interest interest, String destination, Set<MakeCallFeature> features, Set<Property> originatorRef)
+			throws XmppException {
 		Collection<Call> result = new ArrayList<Call>();
 
 		MakeCall mc = new MakeCall();
@@ -628,8 +628,7 @@ public class OpenlinkClient {
 	 *            RequestAction value2.
 	 * @return Collection of calls made as a result of the request.
 	 */
-	public Collection<Call> requestAction(String to, Call call, RequestActionAction action, String value1, String value2)
-			throws XmppException {
+	public Collection<Call> requestAction(String to, Call call, RequestActionAction action, String value1, String value2) throws XmppException {
 		Collection<Call> result = new ArrayList<Call>();
 
 		RequestAction ra = new RequestAction();
