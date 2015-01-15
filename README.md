@@ -73,4 +73,4 @@ The method `callEvent(Collection<Call> calls)` will be called with a list of cal
 
 ##License
 
-`This file is subject to the terms and conditions defined 3in file `LICENSE`, which is part of this source code package.`
+`This file is subject to the terms and conditions defined in the file `LICENSE`, which is part of this source code package.`

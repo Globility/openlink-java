@@ -62,8 +62,8 @@ public class Call {
 	@XmlElement
 	private String interest;
 
-	@XmlElementWrapper(name = "originator-ref", namespace = OpenlinkNamespaces.NS_OPENLINK_ORIGINATORREF)
-	@XmlElement(name = "property", namespace = OpenlinkNamespaces.NS_OPENLINK_ORIGINATORREF)
+	@XmlElementWrapper(name = "originator-ref")
+	@XmlElement(name = "property")
 	private Collection<Property> originatorRef = new HashSet<Property>();
 
 	public enum CallDirection {

@@ -1,5 +1,5 @@
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlSchema(namespace = net.gltd.gtms.client.openlink.OpenlinkNamespaces.NS_OPENLINK_ORIGINATORREF, elementFormDefault = XmlNsForm.QUALIFIED)
+@XmlSchema(namespace = net.gltd.gtms.client.openlink.OpenlinkNamespaces.NS_OPENLINK_CALLSTATUS, elementFormDefault = XmlNsForm.QUALIFIED)
 package net.gltd.gtms.extension.openlink.originatorref;
 
 import javax.xml.bind.annotation.XmlAccessType;
