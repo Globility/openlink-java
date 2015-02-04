@@ -67,18 +67,19 @@ import rocks.xmpp.extensions.pubsub.model.event.Event;
 import rocks.xmpp.extensions.shim.model.Header;
 import rocks.xmpp.extensions.shim.model.Headers;
 
+@Ignore
 public class OpenlinkClientTest extends XmlTest {
 
 	protected Logger logger = Logger.getLogger("net.gltd.gtms");
 
-	private static final String USERNAME = "betty.bidder";
-	private static final String PASSWORD = "Pa55w0rd";
+	private static final String USERNAME = "leon";
+	private static final String PASSWORD = "password";
 	private static final String RESOURCE = "office";
 
-	private static final String DOMAIN = "mas-analec.gltd.net";
-	private static final String HOST = "mas-analec.gltd.net";
+	private static final String DOMAIN = "clarabel";
+	private static final String HOST = "clarabel";
 
-	private static final String SYSTEM = "avaya2";
+	private static final String SYSTEM = "avaya1";
 
 	private static final String SYSTEM_AND_DOMAIN = SYSTEM + "." + DOMAIN;
 

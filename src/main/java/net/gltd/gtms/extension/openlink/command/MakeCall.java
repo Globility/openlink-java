@@ -69,8 +69,8 @@ public class MakeCall extends Command {
 		@XmlElement
 		private String destination;
 
-		@XmlElementWrapper(name = "originator-ref")
-		@XmlElement(name = "property")
+		@XmlElementWrapper(name = "originator-ref", namespace = OpenlinkNamespaces.NS_OPENLINK_ORIGINATORREF)
+		@XmlElement(name = "property", namespace = OpenlinkNamespaces.NS_OPENLINK_ORIGINATORREF)
 		private Collection<Property> originatorRef;
 
 		@XmlElementWrapper(name = "features")
