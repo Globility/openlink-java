@@ -8,7 +8,6 @@ import java.util.List;
 import javax.xml.bind.JAXBException;
 import javax.xml.stream.XMLStreamException;
 
-import junit.framework.Assert;
 import net.gltd.gtms.client.openlink.OpenlinkTestHelper;
 import net.gltd.gtms.extension.command.Command;
 import net.gltd.gtms.extension.command.Note;
@@ -57,6 +56,7 @@ import net.gltd.util.string.StringUtil;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 

@@ -67,7 +67,7 @@ import rocks.xmpp.extensions.pubsub.model.event.Event;
 import rocks.xmpp.extensions.shim.model.Header;
 import rocks.xmpp.extensions.shim.model.Headers;
 
-@Ignore
+//@Ignore
 public class OpenlinkClientTest extends XmlTest {
 
 	protected Logger logger = Logger.getLogger("net.gltd.gtms");
@@ -310,7 +310,7 @@ public class OpenlinkClientTest extends XmlTest {
 		}
 	}
 
-	@Ignore
+//	@Ignore
 	@Test
 	public void makeCallAndRequestActionSimple() {
 		try {
@@ -360,7 +360,7 @@ public class OpenlinkClientTest extends XmlTest {
 		}
 	}
 
-	@Ignore
+//	@Ignore
 	@Test
 	public void makeCallAndRequestActionFull() {
 		try {
@@ -379,6 +379,7 @@ public class OpenlinkClientTest extends XmlTest {
 						Assert.assertTrue(c.getOriginatorRef().size() > 0);
 						int validOriginatorRefCount = 0;
 						for (Property p : c.getOriginatorRef()) {
+							logger.debug("CALL PROPERTY: ID: " + p.getId() + " : " + p.getValue());
 							if ("dummy-id".equals(p.getId())) {
 								Assert.assertEquals("dummy-value-ABC-1234", p.getValue());
 								validOriginatorRefCount++;
