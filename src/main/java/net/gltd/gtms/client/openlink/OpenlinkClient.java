@@ -618,8 +618,10 @@ public class OpenlinkClient {
 	 * 
 	 * @param to
 	 *            Openlink XMPP component.
-	 * @param call
-	 *            the Openlink Call object.
+	 * @param interest
+	 *            the Openlink interest.
+	 * @param callId
+	 *            the Openlink Call ID.
 	 * @param action
 	 *            the RequestAction action to execute.
 	 * @param value1
@@ -628,13 +630,14 @@ public class OpenlinkClient {
 	 *            RequestAction value2.
 	 * @return Collection of calls made as a result of the request.
 	 */
-	public Collection<Call> requestAction(String to, Call call, RequestActionAction action, String value1, String value2) throws XmppException {
+	public Collection<Call> requestAction(String to, String interest, String callId, RequestActionAction action, String value1, String value2)
+			throws XmppException {
 		Collection<Call> result = new ArrayList<Call>();
 
 		RequestAction ra = new RequestAction();
-		ra.getIn().setCall(call.getId());
+		ra.getIn().setCall(callId);
 		ra.getIn().setAction(action);
-		ra.getIn().setInterest(call.getInterest());
+		ra.getIn().setInterest(interest);
 		ra.getIn().setValue1(value1);
 		ra.getIn().setValue2(value2);
 
@@ -653,6 +656,25 @@ public class OpenlinkClient {
 		}
 
 		return result;
+	}
+
+	/**
+	 * Implements 'http://xmpp.org/protocol/openlink:01:00:00#request-action'.
+	 * 
+	 * @param to
+	 *            Openlink XMPP component.
+	 * @param call
+	 *            the Openlink Call object.
+	 * @param action
+	 *            the RequestAction action to execute.
+	 * @param value1
+	 *            RequestAction value1.
+	 * @param value2
+	 *            RequestAction value2.
+	 * @return Collection of calls made as a result of the request.
+	 */
+	public Collection<Call> requestAction(String to, Call call, RequestActionAction action, String value1, String value2) throws XmppException {
+		return this.requestAction(to, call.getInterest(), call.getId(), action, value1, value2);
 	}
 
 	public PubSubService getPubSubService() throws XmppException {
