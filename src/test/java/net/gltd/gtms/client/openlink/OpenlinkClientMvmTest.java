@@ -67,26 +67,27 @@ import rocks.xmpp.extensions.pubsub.model.event.Event;
 import rocks.xmpp.extensions.shim.model.Header;
 import rocks.xmpp.extensions.shim.model.Headers;
 
-public class OpenlinkClientTest extends XmlTest {
+@Ignore
+public class OpenlinkClientMvmTest extends XmlTest {
 
 	protected Logger logger = Logger.getLogger("net.gltd.gtms");
 
 	private static final String USERNAME = "leon";
-	private static final String PASSWORD = "password";
+	private static final String PASSWORD = "leon";
 	private static final String RESOURCE = "office";
 
-	private static final String DOMAIN = "clarabel";
-	private static final String HOST = "clarabel";
+	private static final String DOMAIN = "garyvms";
+	private static final String HOST = "garyvms";
 
-	private static final String SYSTEM = "avaya1";
+	private static final String SYSTEM = "vmstsp";
 
 	private static final String SYSTEM_AND_DOMAIN = SYSTEM + "." + DOMAIN;
 
-	private static final String DESTINATION = "50203";
+	private static final String DESTINATION = "3807";
 
 	private OpenlinkClient client = null;
 
-	public OpenlinkClientTest() throws JAXBException, XMLStreamException {
+	public OpenlinkClientMvmTest() throws JAXBException, XMLStreamException {
 		super(Property.class, Headers.class, Header.class, Event.class, Command.class, Note.class, Message.class, IQ.class, IoData.class,
 				Profiles.class, Profile.class, Action.class, Interests.class, Interest.class, Features.class, Feature.class, CallStatus.class,
 				Call.class, CallerCallee.class, CallFeature.class, Participant.class, CallAction.class, AddThirdParty.class, AnswerCall.class,
