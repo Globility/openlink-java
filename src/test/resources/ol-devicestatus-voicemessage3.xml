@@ -1,0 +1,65 @@
+<iq from='openlink.shakespeare.lit' id='manage-voice-message-1'
+	to='user.agent@shakespeare.lit/globe' type='result' xml:lang='en'>
+	<command xmlns='http://jabber.org/protocol/commands'
+		node='http://xmpp.org/protocol/openlink:01:00:00#manage-voice-message'
+		status='completed'>
+		<iodata xmlns='urn:xmpp:tmp:io-data' type='output'>
+			<out>
+				<devicestatus
+					xmlns='http://xmpp.org/protocol/openlink:01:00:00#device-status'>
+					<profile>alan_myprofile</profile>
+					<features>
+						<feature id="MK0001">
+							<voicemessage
+								xmlns='http://xmpp.org/protocol/openlink:01:00:00/features#voice-message'>
+								<status>ok</status>
+								<label>Invitation to watch cricket at the oval</label>
+								<msglen>47.93275</msglen>
+								<creationdate>2010-01-01 14:23:27.029</creationdate>
+							</voicemessage>
+						</feature>
+						<feature id="MK0002">
+							<voicemessage
+								xmlns='http://xmpp.org/protocol/openlink:01:00:00/features#voice-message'>
+								<playlist>PL0001</playlist>
+								<sequence>2</sequence>
+								<status>ok</status>
+								<callid>mk-101230412123123</callid>
+								<action>Playback</action>
+								<state>start</state>
+								<label>Market alert</label>
+								<msglen>312.123</msglen>
+								<destination>6004</destination>
+								<playprogress>22.969</playprogress>
+								<creationdate>2010-01-01 09:33:22.019</creationdate>
+							</voicemessage>
+						</feature>
+						<feature id="MK0003">
+							<voicemessage
+								xmlns='http://xmpp.org/protocol/openlink:01:00:00/features#voice-message'>
+								<playlist>PL0001</playlist>
+								<sequence>3</sequence>
+								<status>ok</status>
+								<label>Status update</label>
+								<callid>mk-101230412123123</callid>
+								<action>Playback</action>
+								<state>pending</state>
+								<msglen>83.123</msglen>
+								<creationdate>2010-02-02 10:23:27.044</creationdate>
+							</voicemessage>
+						</feature>
+						<feature id="MK0005">
+							<voicemessage
+								xmlns='http://xmpp.org/protocol/openlink:01:00:00/features#voice-message'>
+								<status>ok</status>
+								<label>Status update</label>
+								<msglen>83.123</msglen>
+								<creationdate>2010-02-02 10:23:27.044</creationdate>
+							</voicemessage>
+						</feature>
+					</features>
+				</devicestatus>
+			</out>
+		</iodata>
+	</command>
+</iq>

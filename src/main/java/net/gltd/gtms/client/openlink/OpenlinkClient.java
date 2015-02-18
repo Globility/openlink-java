@@ -27,6 +27,7 @@ import net.gltd.gtms.client.openlink.logging.LogFormatter;
 import net.gltd.gtms.extension.command.Command;
 import net.gltd.gtms.extension.command.Note;
 import net.gltd.gtms.extension.iodata.IoData;
+import net.gltd.gtms.extension.openlink.audiofiles.AudioFile;
 import net.gltd.gtms.extension.openlink.callstatus.Call;
 import net.gltd.gtms.extension.openlink.callstatus.CallFeature;
 import net.gltd.gtms.extension.openlink.callstatus.CallStatus;
@@ -59,10 +60,18 @@ import net.gltd.gtms.extension.openlink.command.GetInterests;
 import net.gltd.gtms.extension.openlink.command.GetProfiles;
 import net.gltd.gtms.extension.openlink.command.MakeCall;
 import net.gltd.gtms.extension.openlink.command.MakeCall.MakeCallIn.MakeCallFeature;
+import net.gltd.gtms.extension.openlink.command.ManageVoiceMessage;
+import net.gltd.gtms.extension.openlink.command.ManageVoiceMessage.ManageVoiceMessageFeature;
+import net.gltd.gtms.extension.openlink.command.ManageVoiceMessage.ManageVoiceMessageIn;
 import net.gltd.gtms.extension.openlink.command.RequestAction;
 import net.gltd.gtms.extension.openlink.command.RequestAction.RequestActionAction;
+import net.gltd.gtms.extension.openlink.devicestatus.DeviceStatus;
+import net.gltd.gtms.extension.openlink.devicestatus.DeviceStatusFeature;
 import net.gltd.gtms.extension.openlink.features.Feature;
 import net.gltd.gtms.extension.openlink.features.Features;
+import net.gltd.gtms.extension.openlink.features.callback.Callback;
+import net.gltd.gtms.extension.openlink.features.dtmf.Dtmf;
+import net.gltd.gtms.extension.openlink.features.voicemessage.VoiceMessage;
 import net.gltd.gtms.extension.openlink.interests.Interest;
 import net.gltd.gtms.extension.openlink.interests.Interests;
 import net.gltd.gtms.extension.openlink.originatorref.Property;
@@ -122,7 +131,10 @@ public class OpenlinkClient {
 	private XmppSession xmppSession;
 	private Jid jid;
 
-	private Collection<CallListener> callListeners = new ArrayList<CallListener>();;
+	private Collection<CallListener> callListeners = new ArrayList<CallListener>();
+	private Collection<DeviceListener> deviceListeners = new ArrayList<DeviceListener>();
+
+	private ManageVoiceMessageHandler voiceMessageHandler;
 
 	public OpenlinkClient(String username, String password, String resource, String domain, String host) {
 		this.username = username;
@@ -159,11 +171,21 @@ public class OpenlinkClient {
 						GetFeatures.GetFeaturesIn.class, GetInterests.class, GetInterests.GetInterestsIn.class, MakeCall.class,
 						MakeCall.MakeCallIn.class, MakeCall.MakeCallIn.MakeCallFeature.class,
 
+						ManageVoiceMessage.class, ManageVoiceMessageIn.class, ManageVoiceMessageFeature.class,
+
 						RequestAction.class, RequestAction.RequestActionIn.class,
 
 						GetProfiles.class, GetProfiles.GetProfilesIn.class,
 
-						Feature.class, Features.class, Interest.class, Interests.class, Action.class, Profile.class, Profiles.class));
+						Feature.class, Features.class, Interest.class, Interests.class, Action.class, Profile.class, Profiles.class,
+
+						DeviceStatus.class, DeviceStatusFeature.class, 
+						
+						AudioFile.class, AudioFile.Location.class, AudioFile.Location.Auth.class,
+						
+						net.gltd.gtms.extension.openlink.properties.Property.class,
+						
+						VoiceMessage.class, Callback.class, Callback.Active.class, Dtmf.class));
 
 		if (isDebug()) {
 			builder.debugger(ConsoleDebugger.class);
@@ -208,7 +230,7 @@ public class OpenlinkClient {
 		return xmppSession;
 	}
 
-	public void setXmppSession(XmppSession xmppSession) {
+	private void setXmppSession(XmppSession xmppSession) {
 		this.xmppSession = xmppSession;
 	}
 
@@ -268,7 +290,9 @@ public class OpenlinkClient {
 			TcpConnectionConfiguration tcpConfiguration = TcpConnectionConfiguration.builder().hostname(this.host).port(OpenlinkClient.PORT)
 					.proxy(Proxy.NO_PROXY).secure(!isDebug()).build();
 
-			xmppSession = new XmppSession(this.domain, getSessionConfiguration(), tcpConfiguration);
+			this.setXmppSession(new XmppSession(this.domain, getSessionConfiguration(), tcpConfiguration));
+
+			this.voiceMessageHandler = new ManageVoiceMessageHandler(this.getXmppSession());
 
 			// Listen for presence changes
 			xmppSession.addPresenceListener(new PresenceListener() {
@@ -291,6 +315,7 @@ public class OpenlinkClient {
 
 			// Listen for messages
 			xmppSession.addMessageListener(getCallStatusMessageListener());
+			xmppSession.addMessageListener(getDeviceStatusMessageListener());
 
 			// Listen for roster pushes
 			xmppSession.getRosterManager().addRosterListener(new RosterListener() {
@@ -324,20 +349,19 @@ public class OpenlinkClient {
 		}
 	}
 
+	public ManageVoiceMessageHandler getVoiceMessageHandler() {
+		return voiceMessageHandler;
+	}
+
 	private MessageListener getCallStatusMessageListener() {
 		return new MessageListener() {
 			@Override
 			public void handleMessage(MessageEvent e) {
-				logger.debug("MESSAGE EVENT: " + e);
 				// Handle outgoing or incoming message
-
 				if (e.isIncoming() && e.getMessage() != null) {
-
 					Event event = e.getMessage().getExtension(Event.class);
-					logger.debug("EVENT: " + event);
 					if (event != null) {
 						for (Item item : event.getItems()) {
-							logger.debug("ITEM: " + item);
 							if (item.getPayload() instanceof CallStatus) {
 								CallStatus callStatus = (CallStatus) item.getPayload();
 								logger.debug("CALLSTATUS: " + callStatus.toString());
@@ -345,6 +369,31 @@ public class OpenlinkClient {
 									listener.callEvent(callStatus);
 								}
 
+							}
+						}
+					}
+				}
+			}
+		};
+	}
+
+	private MessageListener getDeviceStatusMessageListener() {
+		return new MessageListener() {
+			@Override
+			public void handleMessage(MessageEvent e) {
+				// Handle outgoing or incoming message
+				if (e.isIncoming() && e.getMessage() != null) {
+					Event event = e.getMessage().getExtension(Event.class);
+					if (event != null) {
+						for (Item item : event.getItems()) {
+							if (item.getPayload() instanceof DeviceStatus) {
+								DeviceStatus deviceStatus = (DeviceStatus) item.getPayload();
+								logger.debug("DEVICESTATUS: " + deviceStatus.toString());
+								if (deviceStatus.getFeatures() != null && !deviceStatus.getFeatures().isEmpty()) {
+									for (DeviceListener listener : deviceListeners) {
+										listener.deviceEvent(deviceStatus.getProfile(), deviceStatus.getFeatures());
+									}
+								}
 							}
 						}
 					}
@@ -382,6 +431,37 @@ public class OpenlinkClient {
 	 */
 	public void removeCallListener(CallListener listener) {
 		callListeners.remove(listener);
+	}
+
+	/**
+	 * Returns the list of device listeners.
+	 * 
+	 * @return device listener.
+	 */
+	public Collection<DeviceListener> getDeviceListeners() {
+		return Collections.unmodifiableCollection(deviceListeners);
+	}
+
+	/**
+	 * Add a device listener to listen to device events. See {@link DeviceListener}.
+	 * 
+	 * @param listener
+	 *            device listener.
+	 */
+	public void addDeviceListener(DeviceListener listener) {
+		if (listener != null) {
+			deviceListeners.add(listener);
+		}
+	}
+
+	/**
+	 * Remove device listener.
+	 * 
+	 * @param listener
+	 *            device listener.
+	 */
+	public void removeDeviceListener(DeviceListener listener) {
+		deviceListeners.remove(listener);
 	}
 
 	/**

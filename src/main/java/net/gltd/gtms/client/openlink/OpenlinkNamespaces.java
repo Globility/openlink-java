@@ -34,6 +34,10 @@ public class OpenlinkNamespaces {
 	public static final String NS_OPENLINK_REQUESTACTION = "http://xmpp.org/protocol/openlink:01:00:00#request-action";
 
 	public static final String NS_OPENLINK_ORIGINATORREF = "http://xmpp.org/protocol/openlink:01:00:00#originator-ref";
+	
+	public static final String NS_OPENLINK_AUDIOFILES = "http://xmpp.org/protocol/openlink:01:00:00/audio-files";
+	
+	public static final String NS_OPENLINK_PROPERTIES = "http://xmpp.org/protocol/openlink:01:00:00/properties";
 
 	private OpenlinkNamespaces() {
 	};

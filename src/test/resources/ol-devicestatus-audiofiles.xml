@@ -1,0 +1,23 @@
+<audiofiles xmlns="http://xmpp.org/protocol/openlink:01:00:00/audio-files">
+	<audiofile>
+		<label>Test Label</label>
+		<lifetime>0</lifetime>
+		<msglen>47.932</msglen>
+		<size>1024</size>
+		<creationdate>2015-02-19 12:11:19.522</creationdate>
+		<location url="http://vss01/81038909_1_20141120_182223.wav">
+			<auth type="none|required">
+				<userid>user1</userid>
+				<password>****</password>
+			</auth>
+		</location>
+		<properties xmlns="http://xmpp.org/protocol/openlink:01:00:00/properties">
+			<property id="callid" type="system">
+				<value>NICEID1234</value>
+			</property>
+			<property id="comment" type="user">
+				<value>Comment</value>
+			</property>
+		</properties>
+	</audiofile>
+</audiofiles>

@@ -1,0 +1,23 @@
+<message from="pubsub.example.com" to="user0@example.com"
+	id="D20012001__2001@example.com__4x1tW">
+	<event xmlns="http://jabber.org/protocol/pubsub#event">
+		<items node="user_office_vmstsp_default">
+			<item id="user_office_vmstsp_default">
+				<devicestatus
+					xmlns="http://xmpp.org/protocol/openlink:01:00:00#device-status">
+					<profile>user_office</profile>
+					<features>
+						<feature id="CallBack">
+							<callback
+								xmlns="http://xmpp.org/protocol/openlink:01:00:00/features#callback">
+								<allocation>true</allocation>
+								<active state="Ringing">true</active>
+								<destination>6004</destination>
+							</callback>
+						</feature>
+					</features>
+				</devicestatus>
+			</item>
+		</items>
+	</event>
+</message>

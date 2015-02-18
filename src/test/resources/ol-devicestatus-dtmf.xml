@@ -1,0 +1,28 @@
+<message from="pubsub.example.com" to="user@example.com"
+	id="user_myprofile_asterisk_02071234567user@example.com7r832">
+	<event xmlns="http://jabber.org/protocol/pubsub#event">
+		<items node="user_myprofile_asterisk_02071234567">
+			<item id="user_myprofile_asterisk_02071234567">
+				<devicestatus
+					xmlns="http://xmpp.org/protocol/openlink:01:00:00#device-status">
+					<profile>user_office</profile>
+					<features>
+						<feature id="dtmf">
+							<dtmf xmlns="http://xmpp.org/protocol/openlink:01:00:00/features#dtmf">
+								<callid>1221245605499</callid>
+								<value>#</value>
+								<direction>sent</direction>
+								<participant exten="3805" />
+							</dtmf>
+						</feature>
+					</features>
+				</devicestatus>
+			</item>
+		</items>
+	</event>
+	<headers xmlns="http://jabber.org/protocol/shim">
+		<header name="pubsub#subid">TTgLhtDIOktW5BxSYdU7E1FgPM73OcwOu1k72n1U</header>
+		<header name="pubsub#subid">SFK51tnY81KMHs4x0LGP6szfCm4E3gr940bA9U3n</header>
+		<header name="pubsub#subid">Vi6LA22WdOwzjJy0AQais0uUm1sf4TfjQ462kUld</header>
+	</headers>
+</message> 

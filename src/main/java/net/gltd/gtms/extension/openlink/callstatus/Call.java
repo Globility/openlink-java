@@ -11,12 +11,12 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
-
 import net.gltd.gtms.client.openlink.OpenlinkNamespaces;
 import net.gltd.gtms.extension.openlink.callstatus.action.CallAction;
 import net.gltd.gtms.extension.openlink.originatorref.Property;
+
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
 @XmlRootElement(name = "call")
 @XmlType(propOrder = { "id", "profile", "interest", "originatorRef", "changed", "state", "direction", "duration",

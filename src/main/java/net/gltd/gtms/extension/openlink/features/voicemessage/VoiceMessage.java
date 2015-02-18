@@ -1,5 +1,6 @@
 package net.gltd.gtms.extension.openlink.features.voicemessage;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -7,12 +8,18 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import net.gltd.gtms.openlinkcommon.constants.DeviceStatusAction;
-import net.gltd.gtms.openlinkcommon.constants.DeviceStatusStatus;
-import net.gltd.gtms.openlinkcommon.constants.VmsState;
+import net.gltd.gtms.client.openlink.OpenlinkNamespaces;
+import net.gltd.gtms.extension.openlink.devicestatus.DeviceStatus.DeviceStatusAction;
+import net.gltd.gtms.extension.openlink.devicestatus.DeviceStatus.DeviceStatusStatus;
+import net.gltd.gtms.extension.openlink.properties.Property;
+
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
 @XmlRootElement(name = "voicemessage")
 public class VoiceMessage {
+
+	private String id;
 
 	@XmlElement
 	private String playlist;
@@ -21,13 +28,19 @@ public class VoiceMessage {
 	private DeviceStatusStatus status;
 
 	@XmlElement
-	private VmsState state;
+	private State state;
 
 	@XmlElement
 	private String sequence;
 
 	@XmlElement
 	private String label;
+
+	@XmlElement(name = "amdetect")
+	private boolean amdDetect;
+
+	@XmlElement(name = "callid")
+	private String callId;
 
 	@XmlElement(name = "statusdescriptor")
 	private String statusDescriptor;
@@ -63,10 +76,28 @@ public class VoiceMessage {
 	@XmlElement
 	private String timestamp;
 
-	//Properties
-	
+	@XmlElementWrapper(name = "properties", namespace = OpenlinkNamespaces.NS_OPENLINK_PROPERTIES)
+	@XmlElement(name = "property", namespace = OpenlinkNamespaces.NS_OPENLINK_PROPERTIES)
+	private Collection<Property> properties = new HashSet<Property>();
+
+	public Collection<Property> getProperties() {
+		return properties;
+	}
+
+	public void setProperties(Collection<Property> properties) {
+		this.properties = properties;
+	}
+
 	public String getPlaylist() {
 		return playlist;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
 	}
 
 	public void setPlaylist(String playlist) {
@@ -81,11 +112,11 @@ public class VoiceMessage {
 		this.status = status;
 	}
 
-	public VmsState getState() {
+	public State getState() {
 		return state;
 	}
 
-	public void setState(VmsState state) {
+	public void setState(State state) {
 		this.state = state;
 	}
 
@@ -103,6 +134,14 @@ public class VoiceMessage {
 
 	public void setLabel(String label) {
 		this.label = label;
+	}
+
+	public boolean isAmdDetect() {
+		return amdDetect;
+	}
+
+	public void setAmdDetect(boolean amdDetect) {
+		this.amdDetect = amdDetect;
 	}
 
 	public String getStatusDescriptor() {
@@ -191,6 +230,23 @@ public class VoiceMessage {
 
 	public void setTimestamp(String timestamp) {
 		this.timestamp = timestamp;
+	}
+
+	public String getCallId() {
+		return callId;
+	}
+
+	public void setCallId(String callId) {
+		this.callId = callId;
+	}
+
+	@Override
+	public String toString() {
+		return ToStringBuilder.reflectionToString(this, ToStringStyle.SIMPLE_STYLE);
+	}
+
+	public enum State {
+		start, stop, pause, pending, idle;
 	}
 
 }

@@ -98,17 +98,16 @@ public class OpenlinkTestHelper {
 		p1.setTimestamp(new Date().toString());
 		call.getParticipants().add(p1);
 		
-//		Property pr1 = new Property();
-//		pr1.setId("universal-callid");
-//		pr1.setValue(RandomStringUtils.randomAlphanumeric(10));
-//		call.getoriginatorRef().add(pr1);
-//		
-//		Property pr2 = new Property();
-//		pr2.setId("platform-callid");
-//		pr2.setValue(RandomStringUtils.randomAlphanumeric(10));
-//		call.getoriginatorRef().add(pr2);
+		Property pr1 = new Property();
+		pr1.setId("universal-callid");
+		pr1.setValue(RandomStringUtils.randomAlphanumeric(10));
+		call.getOriginatorRef().add(pr1);
 		
-		call.setOriginatorRef(getOriginatorRef());
+		Property pr2 = new Property();
+		pr2.setId("platform-callid");
+		pr2.setValue(RandomStringUtils.randomAlphanumeric(10));
+		call.getOriginatorRef().add(pr2);
+		
 		
 		return call;
 	}

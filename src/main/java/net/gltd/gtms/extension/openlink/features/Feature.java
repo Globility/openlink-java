@@ -3,7 +3,6 @@ package net.gltd.gtms.extension.openlink.features;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.XmlValue;
 
 @XmlRootElement(name = "feature")
 @XmlType(propOrder = { "id", "type", "label" })
@@ -17,9 +16,6 @@ public class Feature {
 
 	@XmlAttribute
 	private String label;
-
-	@XmlValue
-	private Object value;
 
 	public String getId() {
 		return id;
@@ -45,8 +41,14 @@ public class Feature {
 		this.label = label;
 	}
 
-	public Object getValue() {
-		return value;
+	/**
+	 * List of potential feature types.
+	 * 
+	 * @author leon
+	 *
+	 */
+	public enum FeatureType {
+		MessageWaiting, MicrophoneGain, MicrophoneMute, RingerStatus, SpeakerMute, SpeedDial, GroupIntercom, SpeakerChannel, VoiceMessage, VoiceMessagePlaylist, VoiceRecorder, VoiceBridge, Privacy, Handset, DoNotDisturb, CallForward, CallBack, Conference, MediaStream, DeviceKeys;
 	}
 
 }

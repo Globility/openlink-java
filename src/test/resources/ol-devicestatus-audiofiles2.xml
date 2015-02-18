@@ -1,0 +1,29 @@
+<iq type="result" id="MX_90" from="vmstsp.garyvms.gltd.local" to="gary@garyvms.gltd.local/office" xmlns="jabber:client">
+  <command xmlns="http://jabber.org/protocol/commands" sessionid="1801" node="http://xmpp.org/protocol/openlink:01:00:00#manage-voice-message" status="completed">
+    <iodata xmlns="urn:xmpp:tmp:io-data" type="output">
+      <out>
+        <devicestatus xmlns="http://xmpp.org/protocol/openlink:01:00:00#device-status">
+          <profile>gary_office</profile>
+          <features>
+            <feature id="MK1276">
+              <voicemessage xmlns="http://xmpp.org/protocol/openlink:01:00:00/features#voice-message">
+                <label>Test Label</label>
+                <status>ok</status>
+                <msglen>47.932</msglen>
+                <creationdate>2015-02-19 12:11:19.522</creationdate>
+                <properties xmlns="http://xmpp.org/protocol/openlink:01:00:00/properties">
+                  <property id="callid" type="system">
+                    <value>NICEID1234</value>
+                  </property>
+                  <property id="comment" type="user">
+                    <value>Comment</value>
+                  </property>
+                </properties>
+              </voicemessage>
+            </feature>
+          </features>
+        </devicestatus>
+      </out>
+    </iodata>
+  </command>
+</iq>

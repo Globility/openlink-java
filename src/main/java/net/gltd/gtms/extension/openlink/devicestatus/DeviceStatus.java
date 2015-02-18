@@ -1,9 +1,11 @@
 package net.gltd.gtms.extension.openlink.devicestatus;
 
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
+import java.util.HashSet;
+import java.util.Set;
 
-import net.gltd.gtms.extension.openlink.features.Features;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "devicestatus")
 public class DeviceStatus {
@@ -11,8 +13,9 @@ public class DeviceStatus {
 	@XmlElement
 	private String profile;
 
-	@XmlElement
-	private Features features;
+	@XmlElementWrapper(name = "features")
+	@XmlElement(name = "feature")
+	private Set<DeviceStatusFeature> features = new HashSet<DeviceStatusFeature>();
 
 	public String getProfile() {
 		return profile;
@@ -22,12 +25,20 @@ public class DeviceStatus {
 		this.profile = profile;
 	}
 
-	public Features getFeatures() {
+	public Set<DeviceStatusFeature> getFeatures() {
 		return features;
 	}
 
-	public void setFeatures(Features features) {
+	public void setFeatures(Set<DeviceStatusFeature> features) {
 		this.features = features;
+	}
+
+	public enum DeviceStatusAction {
+		Playback, Record, VoiceBlast, VoiceDrop;
+	}
+
+	public enum DeviceStatusStatus {
+		ok, error, warn, unknown;
 	}
 
 }

@@ -1,0 +1,34 @@
+<message from="pubsub.example.com" to="user@example.com"
+	id="user_myprofile_asterisk_02071234567user@example.com7r832">
+	<event xmlns="http://jabber.org/protocol/pubsub#event">
+		<items node="user_myprofile_asterisk_02071234567">
+			<item id="user_myprofile_asterisk_02071234567">
+				<devicestatus
+					xmlns="http://xmpp.org/protocol/openlink:01:00:00#device-status">
+					<profile>user_myprofile</profile>
+					<features>
+						<feature id="MK1016">
+							<voicemessage
+								xmlns="http://xmpp.org/protocol/openlink:01:00:00/features#voice-message">
+								<status>ok</status>
+								<callid>abcd</callid>
+								<action>VoiceDrop</action>
+								<msglen>121.23274993896</msglen>
+								<destination>6004</destination>
+								<state>stop</state>
+								<exten>970003</exten>
+								<creationdate>2011-09-05 15:52:22.0</creationdate>
+								<playprogress>121</playprogress>
+							</voicemessage>
+						</feature>
+					</features>
+				</devicestatus>
+			</item>
+		</items>
+	</event>
+	<headers xmlns="http://jabber.org/protocol/shim">
+		<header name="pubsub#subid">TTgLhtDIOktW5BxSYdU7E1FgPM73OcwOu1k72n1U</header>
+		<header name="pubsub#subid">SFK51tnY81KMHs4x0LGP6szfCm4E3gr940bA9U3n</header>
+		<header name="pubsub#subid">Vi6LA22WdOwzjJy0AQais0uUm1sf4TfjQ462kUld</header>
+	</headers>
+</message> 

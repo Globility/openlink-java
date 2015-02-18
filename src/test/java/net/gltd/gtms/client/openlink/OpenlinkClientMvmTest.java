@@ -10,6 +10,8 @@ import javax.xml.stream.XMLStreamException;
 import net.gltd.gtms.extension.command.Command;
 import net.gltd.gtms.extension.command.Note;
 import net.gltd.gtms.extension.iodata.IoData;
+import net.gltd.gtms.extension.openlink.audiofiles.AudioFile;
+import net.gltd.gtms.extension.openlink.audiofiles.AudioFile.Location.Auth.AuthType;
 import net.gltd.gtms.extension.openlink.callstatus.Call;
 import net.gltd.gtms.extension.openlink.callstatus.Call.CallState;
 import net.gltd.gtms.extension.openlink.callstatus.CallFeature;
@@ -40,8 +42,14 @@ import net.gltd.gtms.extension.openlink.callstatus.action.StopVoiceDrop;
 import net.gltd.gtms.extension.openlink.callstatus.action.TransferCall;
 import net.gltd.gtms.extension.openlink.command.MakeCall.MakeCallIn.MakeCallFeature;
 import net.gltd.gtms.extension.openlink.command.RequestAction.RequestActionAction;
+import net.gltd.gtms.extension.openlink.devicestatus.DeviceStatus;
+import net.gltd.gtms.extension.openlink.devicestatus.DeviceStatusFeature;
 import net.gltd.gtms.extension.openlink.features.Feature;
+import net.gltd.gtms.extension.openlink.features.Feature.FeatureType;
 import net.gltd.gtms.extension.openlink.features.Features;
+import net.gltd.gtms.extension.openlink.features.callback.Callback;
+import net.gltd.gtms.extension.openlink.features.dtmf.Dtmf;
+import net.gltd.gtms.extension.openlink.features.voicemessage.VoiceMessage;
 import net.gltd.gtms.extension.openlink.interests.Interest;
 import net.gltd.gtms.extension.openlink.interests.Interests;
 import net.gltd.gtms.extension.openlink.originatorref.Property;
@@ -50,6 +58,8 @@ import net.gltd.gtms.extension.openlink.profiles.Profile;
 import net.gltd.gtms.extension.openlink.profiles.Profiles;
 import net.gltd.util.log.GtmsLog;
 
+import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.junit.After;
@@ -67,34 +77,41 @@ import rocks.xmpp.extensions.pubsub.model.event.Event;
 import rocks.xmpp.extensions.shim.model.Header;
 import rocks.xmpp.extensions.shim.model.Headers;
 
-@Ignore
 public class OpenlinkClientMvmTest extends XmlTest {
 
 	protected Logger logger = Logger.getLogger("net.gltd.gtms");
 
-	private static final String USERNAME = "leon";
-	private static final String PASSWORD = "leon";
+	private static final String USERNAME = "gary";
+	private static final String PASSWORD = "gary";
 	private static final String RESOURCE = "office";
 
-	private static final String DOMAIN = "garyvms";
-	private static final String HOST = "garyvms";
+	private static final String DOMAIN = "garyvms.gltd.local";
+	private static final String HOST = "garyvms.gltd.local";
 
 	private static final String SYSTEM = "vmstsp";
 
+	private static final String DEFAULT_PROFILE = USERNAME + "_office";
+
 	private static final String SYSTEM_AND_DOMAIN = SYSTEM + "." + DOMAIN;
 
-	private static final String DESTINATION = "3807";
+	private static final String DESTINATION = "662";
 
 	private OpenlinkClient client = null;
 
 	public OpenlinkClientMvmTest() throws JAXBException, XMLStreamException {
-		super(Property.class, Headers.class, Header.class, Event.class, Command.class, Note.class, Message.class, IQ.class, IoData.class,
-				Profiles.class, Profile.class, Action.class, Interests.class, Interest.class, Features.class, Feature.class, CallStatus.class,
-				Call.class, CallerCallee.class, CallFeature.class, Participant.class, CallAction.class, AddThirdParty.class, AnswerCall.class,
-				ClearCall.class, ClearConnection.class, ConferenceFail.class, ConnectSpeaker.class, ConsultationCall.class, DisconnectSpeaker.class,
-				HoldCall.class, IntercomTransfer.class, JoinCall.class, PrivateCall.class, PublicCall.class, RemoveThirdParty.class,
-				RetrieveCall.class, SendDigit.class, SendDigits.class, SingleStepTransfer.class, RemoveThirdParty.class, SendDigits.class,
-				StartVoiceDrop.class, StopVoiceDrop.class, TransferCall.class);
+		super(Property.class, net.gltd.gtms.extension.openlink.properties.Property.class, Headers.class, Header.class, Event.class, Command.class,
+				Note.class, Message.class, IQ.class, IoData.class, Profiles.class, Profile.class, Action.class, Interests.class, Interest.class,
+				Features.class, Feature.class, CallStatus.class, Call.class, CallerCallee.class, CallFeature.class, Participant.class,
+				CallAction.class, AddThirdParty.class, AnswerCall.class, ClearCall.class, ClearConnection.class, ConferenceFail.class,
+				ConnectSpeaker.class, ConsultationCall.class, DisconnectSpeaker.class, HoldCall.class, IntercomTransfer.class, JoinCall.class,
+				PrivateCall.class, PublicCall.class, RemoveThirdParty.class, RetrieveCall.class, SendDigit.class, SendDigits.class,
+				SingleStepTransfer.class, RemoveThirdParty.class, SendDigits.class, StartVoiceDrop.class, StopVoiceDrop.class, TransferCall.class,
+
+				DeviceStatus.class, DeviceStatusFeature.class,
+
+				AudioFile.class, AudioFile.Location.class, AudioFile.Location.Auth.class,
+
+				VoiceMessage.class, Callback.class, Callback.Active.class, Dtmf.class);
 	}
 
 	@Before
@@ -135,11 +152,24 @@ public class OpenlinkClientMvmTest extends XmlTest {
 	}
 
 	public Profile getPrimaryProfile(String to) throws Exception {
+		Profile result = null;
 		Assert.assertTrue(isConnected());
 		Collection<Profile> profiles = this.client.getProfiles(SYSTEM_AND_DOMAIN);
 		Assert.assertNotNull(profiles);
 		Assert.assertTrue(profiles.size() > 0);
-		return profiles.iterator().next();
+
+		if (DEFAULT_PROFILE != null) {
+			for (Profile p : profiles) {
+				if (DEFAULT_PROFILE.equals(p.getId())) {
+					result = p;
+					break;
+				}
+			}
+		} else {
+			result = profiles.iterator().next();
+		}
+
+		return result;
 	}
 
 	public Interest getPrimaryInterest(String to, String profileId) throws Exception {
@@ -310,6 +340,413 @@ public class OpenlinkClientMvmTest extends XmlTest {
 		}
 	}
 
+	public Set<String> getFeatureIds(FeatureType type, int limit) throws Exception {
+
+		Set<String> result = new HashSet<String>();
+		Profile p = getPrimaryProfile(SYSTEM_AND_DOMAIN);
+		Assert.assertNotNull(p);
+
+		Set<String> messageIds = new HashSet<String>();
+		Collection<Feature> features = this.client.getFeatures(SYSTEM_AND_DOMAIN, p);
+		Assert.assertTrue(features.size() > 0);
+		logger.debug(marshal(features));
+		for (Feature f : features) {
+			Assert.assertNotNull(f.getId());
+			Assert.assertNotNull(f.getLabel());
+			Assert.assertNotNull(f.getType());
+			logger.debug("FEATURE: " + f.getId() + " " + f.getLabel() + " " + f.getType());
+			if (type.name().equals(f.getType())) {
+				messageIds.add(f.getId());
+			}
+		}
+
+		if (limit > 0) {
+			for (String id : messageIds) {
+				result.add(id);
+				if (result.size() == limit) {
+					break;
+				}
+			}
+		} else {
+			result = messageIds;
+		}
+
+		return result;
+	}
+
+	public Set<String> getMessageIds(int limit) throws Exception {
+		return this.getFeatureIds(FeatureType.VoiceMessage, limit);
+	}
+
+	public Set<String> getPlaylistIds(int limit) throws Exception {
+		return this.getFeatureIds(FeatureType.VoiceMessagePlaylist, limit);
+	}
+
+	public Set<String> getMessageIds() throws Exception {
+		return this.getFeatureIds(FeatureType.VoiceMessage, 0);
+	}
+
+	public Set<String> getPlaylistIds() throws Exception {
+		return this.getFeatureIds(FeatureType.VoiceMessagePlaylist, 0);
+	}
+
+	@Test
+	public void saveMessage() {
+		try {
+			subscribeInterest();
+			Assert.assertTrue(isConnected());
+			Profile p = getPrimaryProfile(SYSTEM_AND_DOMAIN);
+			Assert.assertNotNull(p);
+
+			AudioFile a1 = new AudioFile();
+			a1.setCreationDate("2015-02-19 12:11:19.522");
+			a1.setLabel("Test Label 2");
+			a1.setLifetime("0");
+			a1.setMsgLength("47.932");
+			a1.setSize("1024");
+
+			net.gltd.gtms.extension.openlink.properties.Property p1 = new net.gltd.gtms.extension.openlink.properties.Property();
+			p1.setId("callid");
+			p1.setType("system");
+			p1.setValue("NICEID123455");
+
+			net.gltd.gtms.extension.openlink.properties.Property p2 = new net.gltd.gtms.extension.openlink.properties.Property();
+			p2.setId("comment");
+			p2.setType("user");
+			p2.setValue("My Comment");
+
+			a1.getProperties().add(p1);
+			a1.getProperties().add(p2);
+
+			AudioFile.Location l = new AudioFile.Location();
+			l.setUrl("http://vss01/81038909_1_20141120_182223.wav");
+
+			AudioFile.Location.Auth auth = new AudioFile.Location.Auth();
+			auth.setType(AuthType.required);
+			auth.setUserid("user1");
+			auth.setPassword("mypass");
+			l.setAuth(auth);
+
+			a1.setLocation(l);
+
+			HashSet<AudioFile> audioFiles = new HashSet<AudioFile>();
+			audioFiles.add(a1);
+
+			Collection<VoiceMessage> messages = this.client.getVoiceMessageHandler().save(SYSTEM_AND_DOMAIN, p.getId(),
+					"Random Message Label " + RandomStringUtils.randomAlphanumeric(10), audioFiles);
+			Assert.assertEquals(1, messages.size());
+			for (VoiceMessage vm : messages) {
+				logger.debug("VOICEMESSAGE: " + vm.getId() + " " + vm.toString());
+				Assert.assertNotNull(vm.getStatus());
+				// Assert.assertNotNull(vm.getAction()); // not being returned - filed bug against system
+				Assert.assertNotNull(vm.getMsgLength());
+				Assert.assertNotNull(vm.getCreationDate());
+				Assert.assertEquals(2, vm.getProperties().size());
+				for (net.gltd.gtms.extension.openlink.properties.Property tmpP : vm.getProperties()) {
+					if ("callid".equals(tmpP.getId())) {
+						p1 = tmpP;
+					} else if ("comment".equals(tmpP.getId())) {
+						p2 = tmpP;
+					}
+				}
+				Assert.assertEquals("system", p1.getType());
+				Assert.assertEquals("NICEID123455", p1.getValue());
+
+				Assert.assertEquals("user", p2.getType());
+				Assert.assertEquals("My Comment", p2.getValue());
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			Assert.fail(e.getMessage());
+		}
+	}
+
+	@Test
+	public void recordMessage() {
+		try {
+			subscribeInterest();
+			Assert.assertTrue(isConnected());
+			Profile p = getPrimaryProfile(SYSTEM_AND_DOMAIN);
+			Assert.assertNotNull(p);
+
+			Collection<VoiceMessage> messages = this.client.getVoiceMessageHandler().record(SYSTEM_AND_DOMAIN, p.getId(),
+					"Random Message Label " + RandomStringUtils.randomAlphanumeric(10));
+			for (VoiceMessage vm : messages) {
+				logger.debug("VOICEMESSAGE: " + vm.getId() + " " + vm.toString());
+				Assert.assertNotNull(vm.getStatus());
+				Assert.assertNotNull(vm.getAction());
+				Assert.assertNotNull(vm.getExten());
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			Assert.fail(e.getMessage());
+		}
+	}
+
+	@Test
+	public void playbackMessage() {
+
+		try {
+			subscribeInterest();
+			Assert.assertTrue(isConnected());
+			Profile p = getPrimaryProfile(SYSTEM_AND_DOMAIN);
+			Assert.assertNotNull(p);
+
+			Set<String> messageIds = this.getMessageIds(3);
+
+			Collection<VoiceMessage> messages = this.client.getVoiceMessageHandler().playback(SYSTEM_AND_DOMAIN, p.getId(), messageIds);
+
+			String extension = null;
+			if (messages.size() > 0) {
+				extension = messages.iterator().next().getExten();
+			}
+
+			logger.debug("PLAYBACK EXTENSION: " + extension);
+			Assert.assertTrue(StringUtils.isNumericSpace(extension));
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			Assert.fail(e.getMessage());
+		}
+	}
+
+	@Test
+	public void archiveMessage() {
+		try {
+			subscribeInterest();
+			Assert.assertTrue(isConnected());
+			Profile p = getPrimaryProfile(SYSTEM_AND_DOMAIN);
+			Assert.assertNotNull(p);
+
+			Set<String> messageIds = this.getMessageIds();
+			int numMessages = messageIds.size();
+
+			messageIds = this.getMessageIds(2);
+
+			this.client.getVoiceMessageHandler().archive(SYSTEM_AND_DOMAIN, p.getId(), messageIds);
+
+			messageIds = this.getMessageIds();
+			int numMessagesAfter = messageIds.size();
+
+			Assert.assertEquals(numMessages - 2, numMessagesAfter);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			Assert.fail(e.getMessage());
+		}
+	}
+
+	@Test
+	public void createPlaylist() {
+		try {
+			subscribeInterest();
+			Assert.assertTrue(isConnected());
+			Profile p = getPrimaryProfile(SYSTEM_AND_DOMAIN);
+			Assert.assertNotNull(p);
+
+			Set<String> messageIds = this.getMessageIds(3);
+
+			Collection<VoiceMessage> messages = this.client.getVoiceMessageHandler().create(SYSTEM_AND_DOMAIN, p.getId(),
+					"Random Playlist Label " + RandomStringUtils.randomAlphanumeric(10), messageIds);
+
+			String playlistId = null;
+			if (messages.size() > 0) {
+				playlistId = messages.iterator().next().getId();
+			}
+			logger.debug("PLAYLIST: " + playlistId);
+			Assert.assertNotNull(playlistId);
+
+			Set<String> playlistIds = new HashSet<String>();
+			playlistIds.add(playlistId);
+
+			Collection<VoiceMessage> playlistMessages = this.client.getVoiceMessageHandler().query(SYSTEM_AND_DOMAIN, p.getId(), playlistIds);
+			Assert.assertEquals(messageIds.size(), playlistMessages.size());
+			for (VoiceMessage vm : playlistMessages) {
+				logger.debug("PLAYLIST: " + playlistId + " VOICEMESSAGE: " + vm.getId() + " " + vm.toString());
+				Assert.assertNotNull(vm.getId());
+				Assert.assertNotNull(vm.getLabel());
+				Assert.assertNotNull(vm.getMsgLength());
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			Assert.fail(e.getMessage());
+		}
+
+	}
+
+	@Test
+	public void queryMessage() {
+		try {
+			subscribeInterest();
+			Assert.assertTrue(isConnected());
+			Profile p = getPrimaryProfile(SYSTEM_AND_DOMAIN);
+			Assert.assertNotNull(p);
+
+			Set<String> messageIds = this.getMessageIds(3);
+
+			Collection<VoiceMessage> messages = this.client.getVoiceMessageHandler().query(SYSTEM_AND_DOMAIN, p.getId(), messageIds);
+			for (VoiceMessage vm : messages) {
+				logger.debug("VOICEMESSAGE: " + vm.getId() + " " + vm.toString());
+				Assert.assertNotNull(vm.getId());
+				Assert.assertNotNull(vm.getLabel());
+				Assert.assertNotNull(vm.getMsgLength());
+			}
+
+			Set<String> playlistIds = this.getPlaylistIds(3);
+
+			for (String pid : playlistIds) {
+				Collection<VoiceMessage> playlistMessages = this.client.getVoiceMessageHandler().query(SYSTEM_AND_DOMAIN, p.getId(), messageIds);
+				for (VoiceMessage vm : playlistMessages) {
+					logger.debug("PLAYLIST: " + pid + " VOICEMESSAGE: " + vm.getId() + " " + vm.toString());
+					Assert.assertNotNull(vm.getId());
+					Assert.assertNotNull(vm.getLabel());
+					Assert.assertNotNull(vm.getMsgLength());
+				}
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			Assert.fail(e.getMessage());
+		}
+	}
+
+	@Test
+	public void editMessage() {
+		try {
+			subscribeInterest();
+			Assert.assertTrue(isConnected());
+			Profile p = getPrimaryProfile(SYSTEM_AND_DOMAIN);
+			Assert.assertNotNull(p);
+
+			Set<String> messageIds = this.getMessageIds(1);
+
+			Collection<VoiceMessage> messages = this.client.getVoiceMessageHandler().query(SYSTEM_AND_DOMAIN, p.getId(), messageIds);
+			for (VoiceMessage vm : messages) {
+				logger.debug("VOICEMESSAGE: " + vm.getId() + " " + vm.toString());
+				Assert.assertNotNull(vm.getId());
+				Assert.assertNotNull(vm.getLabel());
+				Assert.assertNotNull(vm.getMsgLength());
+			}
+
+			String messageLabel = "Random Message Label " + RandomStringUtils.randomAlphanumeric(10);
+
+			Collection<VoiceMessage> playlistMessages = this.client.getVoiceMessageHandler().edit(SYSTEM_AND_DOMAIN, p.getId(), messageLabel,
+					messageIds);
+
+			messages = this.client.getVoiceMessageHandler().query(SYSTEM_AND_DOMAIN, p.getId(), messageIds);
+			for (VoiceMessage vm : messages) {
+				logger.debug("VOICEMESSAGE: " + vm.getId() + " " + vm.toString());
+				Assert.assertNotNull(vm.getId());
+				Assert.assertEquals(messageLabel, vm.getLabel());
+				Assert.assertNotNull(vm.getMsgLength());
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			Assert.fail(e.getMessage());
+		}
+
+	}
+
+	@Test
+	public void queryRandom() {
+		try {
+			subscribeInterest();
+			Assert.assertTrue(isConnected());
+			Profile p = getPrimaryProfile(SYSTEM_AND_DOMAIN);
+			Assert.assertNotNull(p);
+
+			Set<String> messageIds = new HashSet<String>();
+			messageIds.add("PL1033");
+
+			Collection<VoiceMessage> messages = this.client.getVoiceMessageHandler().query(SYSTEM_AND_DOMAIN, p.getId(), messageIds);
+			for (VoiceMessage vm : messages) {
+				logger.debug("VOICEMESSAGE: " + vm.getId() + " " + vm.toString());
+				Assert.assertNotNull(vm.getId());
+				Assert.assertNotNull(vm.getLabel());
+				Assert.assertNotNull(vm.getMsgLength());
+			}
+
+			Set<String> playlistIds = this.getPlaylistIds(3);
+
+			for (String pid : playlistIds) {
+				Collection<VoiceMessage> playlistMessages = this.client.getVoiceMessageHandler().query(SYSTEM_AND_DOMAIN, p.getId(), messageIds);
+				for (VoiceMessage vm : playlistMessages) {
+					logger.debug("PLAYLIST: " + pid + " VOICEMESSAGE: " + vm.getId() + " " + vm.toString());
+					Assert.assertNotNull(vm.getId());
+					Assert.assertNotNull(vm.getLabel());
+					Assert.assertNotNull(vm.getMsgLength());
+				}
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			Assert.fail(e.getMessage());
+		}
+	}
+
+	@Test
+	public void playbackMessageMakeCallHangup() {
+
+		try {
+			subscribeInterest();
+			Assert.assertTrue(isConnected());
+			Profile p = getPrimaryProfile(SYSTEM_AND_DOMAIN);
+			Assert.assertNotNull(p);
+
+			Set<String> messageIds = this.getMessageIds(3);
+
+			Collection<VoiceMessage> messages = this.client.getVoiceMessageHandler().playback(SYSTEM_AND_DOMAIN, p.getId(), messageIds);
+
+			String extension = null;
+			if (messages.size() > 0) {
+				extension = messages.iterator().next().getExten();
+			}
+
+			logger.debug("PLAYBACK EXTENSION: " + extension);
+			Assert.assertTrue(StringUtils.isNumericSpace(extension));
+
+			this.client.addCallListener(new CallListener() {
+				@Override
+				public void callEvent(Collection<Call> calls) {
+					for (Call c : calls) {
+						Assert.assertNotNull(c.getId());
+						logger.debug("CALL EV: " + c.getId() + c);
+					}
+				}
+			});
+
+			Interest i = getPrimaryInterest(SYSTEM_AND_DOMAIN, p.getId());
+			Assert.assertNotNull(i);
+			Collection<Call> calls = this.client.makeCall(SYSTEM_AND_DOMAIN, i, extension, null, new HashSet<Property>());
+
+			Thread.sleep(1000);
+			Assert.assertNotNull(calls);
+			Assert.assertTrue(calls.size() > 0);
+
+			for (Call c : calls) {
+				Assert.assertNotNull(c.getId());
+				logger.debug("CALL: " + c.getId() + c);
+				logger.debug("CALL : " + c.getId() + marshal(c));
+				for (Property p2 : c.getOriginatorRef()) {
+					logger.debug("CALL PROPERTY: ID: " + p2.getId() + " : " + p2.getValue());
+				}
+			}
+			Call call = calls.iterator().next();
+			Thread.sleep(10000);
+
+			this.client.requestAction(SYSTEM_AND_DOMAIN, call, RequestActionAction.ClearConnection, null, null);
+			Thread.sleep(2000);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			Assert.fail(e.getMessage());
+		}
+	}
+
 	@Ignore
 	@Test
 	public void makeCallAndRequestActionSimple() {
@@ -467,6 +904,7 @@ public class OpenlinkClientMvmTest extends XmlTest {
 	@Ignore
 	@Test
 	public void debugTrace() {
+		this.subscribeInterest();
 		while (true) {
 			try {
 				Thread.sleep(10);

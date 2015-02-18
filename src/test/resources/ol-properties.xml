@@ -1,0 +1,8 @@
+<properties xmlns="http://xmpp.org/protocol/openlink:01:00:00/properties">
+	<property id="callId" type="sumType">
+		<value>myVal</value>
+	</property>
+	<property id="sysId" type="randomType">
+		<value>myVal2</value>
+	</property>
+</properties>

@@ -87,7 +87,7 @@ public class OpenlinkClientTest extends XmlTest {
 	private OpenlinkClient client = null;
 
 	public OpenlinkClientTest() throws JAXBException, XMLStreamException {
-		super(Property.class, Headers.class, Header.class, Event.class, Command.class, Note.class, Message.class, IQ.class, IoData.class,
+		super(Property.class, net.gltd.gtms.extension.openlink.properties.Property.class, Headers.class, Header.class, Event.class, Command.class, Note.class, Message.class, IQ.class, IoData.class,
 				Profiles.class, Profile.class, Action.class, Interests.class, Interest.class, Features.class, Feature.class, CallStatus.class,
 				Call.class, CallerCallee.class, CallFeature.class, Participant.class, CallAction.class, AddThirdParty.class, AnswerCall.class,
 				ClearCall.class, ClearConnection.class, ConferenceFail.class, ConnectSpeaker.class, ConsultationCall.class, DisconnectSpeaker.class,
@@ -292,7 +292,7 @@ public class OpenlinkClientTest extends XmlTest {
 			Assert.assertNotNull(p);
 			Interest i = getPrimaryInterest(SYSTEM_AND_DOMAIN, p.getId());
 			Assert.assertNotNull(i);
-			Thread.sleep(5000);
+			Thread.sleep(500);
 			Subscription result = this.client.subscribe(i);
 			Assert.assertNotNull(result);
 			Collection<Subscription> subs = this.client.getSubscriptions(i);
@@ -302,14 +302,13 @@ public class OpenlinkClientTest extends XmlTest {
 			logger.debug("SUBSCRIPTIONS: SIZE: " + subs.size());
 			// Assert.assertTrue(subs.isEmpty()); // Not sure if a bug in Openfire's caching strategy which prevents
 			// subscriptions from removing correctly
-			Thread.sleep(5000);
+			Thread.sleep(500);
 		} catch (Exception e) {
 			e.printStackTrace();
 			Assert.fail(e.getMessage());
 		}
 	}
 
-	@Ignore
 	@Test
 	public void makeCallAndRequestActionSimple() {
 		try {
@@ -359,7 +358,6 @@ public class OpenlinkClientTest extends XmlTest {
 		}
 	}
 
-	@Ignore
 	@Test
 	public void makeCallAndRequestActionFull() {
 		try {
