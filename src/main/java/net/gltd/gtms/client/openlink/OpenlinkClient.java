@@ -65,6 +65,8 @@ import net.gltd.gtms.extension.openlink.command.ManageVoiceMessage.ManageVoiceMe
 import net.gltd.gtms.extension.openlink.command.ManageVoiceMessage.ManageVoiceMessageIn;
 import net.gltd.gtms.extension.openlink.command.RequestAction;
 import net.gltd.gtms.extension.openlink.command.RequestAction.RequestActionAction;
+import net.gltd.gtms.extension.openlink.command.SetFeatures;
+import net.gltd.gtms.extension.openlink.command.SetFeatures.SetFeaturesIn;
 import net.gltd.gtms.extension.openlink.devicestatus.DeviceStatus;
 import net.gltd.gtms.extension.openlink.devicestatus.DeviceStatusFeature;
 import net.gltd.gtms.extension.openlink.features.Feature;
@@ -168,7 +170,7 @@ public class OpenlinkClient {
 						StopVoiceDrop.class, TransferCall.class,
 
 						Call.class, CallerCallee.class, CallFeature.class, CallStatus.class, Participant.class, Property.class, GetFeatures.class,
-						GetFeatures.GetFeaturesIn.class, GetInterests.class, GetInterests.GetInterestsIn.class, MakeCall.class,
+						GetFeatures.GetFeaturesIn.class, SetFeatures.class, SetFeaturesIn.class, GetInterests.class, GetInterests.GetInterestsIn.class, MakeCall.class,
 						MakeCall.MakeCallIn.class, MakeCall.MakeCallIn.MakeCallFeature.class,
 
 						ManageVoiceMessage.class, ManageVoiceMessageIn.class, ManageVoiceMessageFeature.class,
@@ -179,12 +181,12 @@ public class OpenlinkClient {
 
 						Feature.class, Features.class, Interest.class, Interests.class, Action.class, Profile.class, Profiles.class,
 
-						DeviceStatus.class, DeviceStatusFeature.class, 
-						
+						DeviceStatus.class, DeviceStatusFeature.class,
+
 						AudioFile.class, AudioFile.Location.class, AudioFile.Location.Auth.class,
-						
+
 						net.gltd.gtms.extension.openlink.properties.Property.class,
-						
+
 						VoiceMessage.class, Callback.class, Callback.Active.class, Dtmf.class));
 
 		if (isDebug()) {
@@ -581,6 +583,44 @@ public class OpenlinkClient {
 			}
 		}
 		return result;
+	}
+
+	/**
+	 * Implements 'http://xmpp.org/protocol/openlink:01:00:00#set-features'.
+	 *
+	 * @param to
+	 *            Openlink XMPP component.
+	 * @param profile
+	 *            User's profile.
+	 * @param feature
+	 *            Feature to update.
+	 * @param values
+	 *            Up to three values representing value1, value2, value3 from the Openlink Set Features command.
+	 * 
+	 */
+	public void setFeatures(String to, Profile profile, Feature feature, String... values) throws XmppException, JAXBException {
+		SetFeatures sf = new SetFeatures();
+		sf.getIn().setProfile(profile.getId());
+		sf.getIn().setFeature(feature.getId());
+
+		if (values.length > 0) {
+			sf.getIn().setValue1(values[0]);
+		}
+		if (values.length > 1) {
+			sf.getIn().setValue2(values[1]);
+		}
+		if (values.length > 2) {
+			sf.getIn().setValue3(values[2]);
+		}
+
+		IQ iq = new IQ(Jid.valueOf(to), IQ.Type.SET, sf);
+		IQ iqResult = xmppSession.query(iq);
+
+		Command command = iqResult.getExtension(Command.class);
+		if (command != null) {
+			Command.Status status = command.getStatus();
+			logger.debug("SET FEATURE STATUS: " + status);
+		}
 	}
 
 	/**

@@ -26,6 +26,8 @@ public class OpenlinkNamespaces {
 	public static final String NS_OPENLINK_GETINTEREST = "http://xmpp.org/protocol/openlink:01:00:00#get-interest";
 
 	public static final String NS_OPENLINK_GETFEATURES = "http://xmpp.org/protocol/openlink:01:00:00#get-features";
+	
+	public static final String NS_OPENLINK_SETFEATURES = "http://xmpp.org/protocol/openlink:01:00:00#set-features";
 
 	public static final String NS_OPENLINK_MAKECALL = "http://xmpp.org/protocol/openlink:01:00:00#make-call";
 

@@ -42,6 +42,7 @@ import net.gltd.gtms.extension.openlink.callstatus.action.StopVoiceDrop;
 import net.gltd.gtms.extension.openlink.callstatus.action.TransferCall;
 import net.gltd.gtms.extension.openlink.command.MakeCall.MakeCallIn.MakeCallFeature;
 import net.gltd.gtms.extension.openlink.command.RequestAction.RequestActionAction;
+import net.gltd.gtms.extension.openlink.command.SetFeatures;
 import net.gltd.gtms.extension.openlink.devicestatus.DeviceStatus;
 import net.gltd.gtms.extension.openlink.devicestatus.DeviceStatusFeature;
 import net.gltd.gtms.extension.openlink.features.Feature;
@@ -106,6 +107,7 @@ public class OpenlinkClientMvmTest extends XmlTest {
 				ConnectSpeaker.class, ConsultationCall.class, DisconnectSpeaker.class, HoldCall.class, IntercomTransfer.class, JoinCall.class,
 				PrivateCall.class, PublicCall.class, RemoveThirdParty.class, RetrieveCall.class, SendDigit.class, SendDigits.class,
 				SingleStepTransfer.class, RemoveThirdParty.class, SendDigits.class, StartVoiceDrop.class, StopVoiceDrop.class, TransferCall.class,
+				SetFeatures.class,
 
 				DeviceStatus.class, DeviceStatusFeature.class,
 
@@ -249,6 +251,27 @@ public class OpenlinkClientMvmTest extends XmlTest {
 				Assert.assertNotNull(f.getType());
 				logger.debug("FEATURE: " + f.getId() + " " + f.getLabel() + " " + f.getType());
 			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			Assert.fail(e.getMessage());
+		}
+	}
+
+	@Test
+	public void setFeatures() {
+		try {
+			Assert.assertTrue(isConnected());
+			Profile p = getPrimaryProfile(SYSTEM_AND_DOMAIN);
+			Assert.assertNotNull(p);
+
+			Collection<Feature> features = this.client.getFeatures(SYSTEM_AND_DOMAIN, p);
+			Feature feature = null;
+			for (Feature f : features) {
+				if ("CallBack".equals(f.getId())) {
+					feature = f;
+				}
+			}
+			this.client.setFeatures(SYSTEM_AND_DOMAIN, p, feature, "true", DESTINATION);
 		} catch (Exception e) {
 			e.printStackTrace();
 			Assert.fail(e.getMessage());
@@ -432,7 +455,7 @@ public class OpenlinkClientMvmTest extends XmlTest {
 			HashSet<AudioFile> audioFiles = new HashSet<AudioFile>();
 			audioFiles.add(a1);
 
-			Collection<VoiceMessage> messages = this.client.getVoiceMessageHandler().save(SYSTEM_AND_DOMAIN, p.getId(),
+			Collection<VoiceMessage> messages = this.client.getVoiceMessageHandler().save(SYSTEM_AND_DOMAIN, p,
 					"Random Message Label " + RandomStringUtils.randomAlphanumeric(10), audioFiles);
 			Assert.assertEquals(1, messages.size());
 			for (VoiceMessage vm : messages) {
@@ -470,7 +493,7 @@ public class OpenlinkClientMvmTest extends XmlTest {
 			Profile p = getPrimaryProfile(SYSTEM_AND_DOMAIN);
 			Assert.assertNotNull(p);
 
-			Collection<VoiceMessage> messages = this.client.getVoiceMessageHandler().record(SYSTEM_AND_DOMAIN, p.getId(),
+			Collection<VoiceMessage> messages = this.client.getVoiceMessageHandler().record(SYSTEM_AND_DOMAIN, p,
 					"Random Message Label " + RandomStringUtils.randomAlphanumeric(10));
 			for (VoiceMessage vm : messages) {
 				logger.debug("VOICEMESSAGE: " + vm.getId() + " " + vm.toString());
@@ -496,7 +519,7 @@ public class OpenlinkClientMvmTest extends XmlTest {
 
 			Set<String> messageIds = this.getMessageIds(3);
 
-			Collection<VoiceMessage> messages = this.client.getVoiceMessageHandler().playback(SYSTEM_AND_DOMAIN, p.getId(), messageIds);
+			Collection<VoiceMessage> messages = this.client.getVoiceMessageHandler().playback(SYSTEM_AND_DOMAIN, p, messageIds);
 
 			String extension = null;
 			if (messages.size() > 0) {
@@ -525,7 +548,7 @@ public class OpenlinkClientMvmTest extends XmlTest {
 
 			messageIds = this.getMessageIds(2);
 
-			this.client.getVoiceMessageHandler().archive(SYSTEM_AND_DOMAIN, p.getId(), messageIds);
+			this.client.getVoiceMessageHandler().archive(SYSTEM_AND_DOMAIN, p, messageIds);
 
 			messageIds = this.getMessageIds();
 			int numMessagesAfter = messageIds.size();
@@ -548,7 +571,7 @@ public class OpenlinkClientMvmTest extends XmlTest {
 
 			Set<String> messageIds = this.getMessageIds(3);
 
-			Collection<VoiceMessage> messages = this.client.getVoiceMessageHandler().create(SYSTEM_AND_DOMAIN, p.getId(),
+			Collection<VoiceMessage> messages = this.client.getVoiceMessageHandler().create(SYSTEM_AND_DOMAIN, p,
 					"Random Playlist Label " + RandomStringUtils.randomAlphanumeric(10), messageIds);
 
 			String playlistId = null;
@@ -561,7 +584,7 @@ public class OpenlinkClientMvmTest extends XmlTest {
 			Set<String> playlistIds = new HashSet<String>();
 			playlistIds.add(playlistId);
 
-			Collection<VoiceMessage> playlistMessages = this.client.getVoiceMessageHandler().query(SYSTEM_AND_DOMAIN, p.getId(), playlistIds);
+			Collection<VoiceMessage> playlistMessages = this.client.getVoiceMessageHandler().query(SYSTEM_AND_DOMAIN, p, playlistIds);
 			Assert.assertEquals(messageIds.size(), playlistMessages.size());
 			for (VoiceMessage vm : playlistMessages) {
 				logger.debug("PLAYLIST: " + playlistId + " VOICEMESSAGE: " + vm.getId() + " " + vm.toString());
@@ -587,7 +610,7 @@ public class OpenlinkClientMvmTest extends XmlTest {
 
 			Set<String> messageIds = this.getMessageIds(3);
 
-			Collection<VoiceMessage> messages = this.client.getVoiceMessageHandler().query(SYSTEM_AND_DOMAIN, p.getId(), messageIds);
+			Collection<VoiceMessage> messages = this.client.getVoiceMessageHandler().query(SYSTEM_AND_DOMAIN, p, messageIds);
 			for (VoiceMessage vm : messages) {
 				logger.debug("VOICEMESSAGE: " + vm.getId() + " " + vm.toString());
 				Assert.assertNotNull(vm.getId());
@@ -598,7 +621,7 @@ public class OpenlinkClientMvmTest extends XmlTest {
 			Set<String> playlistIds = this.getPlaylistIds(3);
 
 			for (String pid : playlistIds) {
-				Collection<VoiceMessage> playlistMessages = this.client.getVoiceMessageHandler().query(SYSTEM_AND_DOMAIN, p.getId(), messageIds);
+				Collection<VoiceMessage> playlistMessages = this.client.getVoiceMessageHandler().query(SYSTEM_AND_DOMAIN, p, messageIds);
 				for (VoiceMessage vm : playlistMessages) {
 					logger.debug("PLAYLIST: " + pid + " VOICEMESSAGE: " + vm.getId() + " " + vm.toString());
 					Assert.assertNotNull(vm.getId());
@@ -623,7 +646,7 @@ public class OpenlinkClientMvmTest extends XmlTest {
 
 			Set<String> messageIds = this.getMessageIds(1);
 
-			Collection<VoiceMessage> messages = this.client.getVoiceMessageHandler().query(SYSTEM_AND_DOMAIN, p.getId(), messageIds);
+			Collection<VoiceMessage> messages = this.client.getVoiceMessageHandler().query(SYSTEM_AND_DOMAIN, p, messageIds);
 			for (VoiceMessage vm : messages) {
 				logger.debug("VOICEMESSAGE: " + vm.getId() + " " + vm.toString());
 				Assert.assertNotNull(vm.getId());
@@ -633,10 +656,9 @@ public class OpenlinkClientMvmTest extends XmlTest {
 
 			String messageLabel = "Random Message Label " + RandomStringUtils.randomAlphanumeric(10);
 
-			Collection<VoiceMessage> playlistMessages = this.client.getVoiceMessageHandler().edit(SYSTEM_AND_DOMAIN, p.getId(), messageLabel,
-					messageIds);
+			Collection<VoiceMessage> playlistMessages = this.client.getVoiceMessageHandler().edit(SYSTEM_AND_DOMAIN, p, messageLabel, messageIds);
 
-			messages = this.client.getVoiceMessageHandler().query(SYSTEM_AND_DOMAIN, p.getId(), messageIds);
+			messages = this.client.getVoiceMessageHandler().query(SYSTEM_AND_DOMAIN, p, messageIds);
 			for (VoiceMessage vm : messages) {
 				logger.debug("VOICEMESSAGE: " + vm.getId() + " " + vm.toString());
 				Assert.assertNotNull(vm.getId());
@@ -662,7 +684,7 @@ public class OpenlinkClientMvmTest extends XmlTest {
 			Set<String> messageIds = new HashSet<String>();
 			messageIds.add("PL1033");
 
-			Collection<VoiceMessage> messages = this.client.getVoiceMessageHandler().query(SYSTEM_AND_DOMAIN, p.getId(), messageIds);
+			Collection<VoiceMessage> messages = this.client.getVoiceMessageHandler().query(SYSTEM_AND_DOMAIN, p, messageIds);
 			for (VoiceMessage vm : messages) {
 				logger.debug("VOICEMESSAGE: " + vm.getId() + " " + vm.toString());
 				Assert.assertNotNull(vm.getId());
@@ -673,7 +695,7 @@ public class OpenlinkClientMvmTest extends XmlTest {
 			Set<String> playlistIds = this.getPlaylistIds(3);
 
 			for (String pid : playlistIds) {
-				Collection<VoiceMessage> playlistMessages = this.client.getVoiceMessageHandler().query(SYSTEM_AND_DOMAIN, p.getId(), messageIds);
+				Collection<VoiceMessage> playlistMessages = this.client.getVoiceMessageHandler().query(SYSTEM_AND_DOMAIN, p, messageIds);
 				for (VoiceMessage vm : playlistMessages) {
 					logger.debug("PLAYLIST: " + pid + " VOICEMESSAGE: " + vm.getId() + " " + vm.toString());
 					Assert.assertNotNull(vm.getId());
@@ -699,7 +721,7 @@ public class OpenlinkClientMvmTest extends XmlTest {
 
 			Set<String> messageIds = this.getMessageIds(3);
 
-			Collection<VoiceMessage> messages = this.client.getVoiceMessageHandler().playback(SYSTEM_AND_DOMAIN, p.getId(), messageIds);
+			Collection<VoiceMessage> messages = this.client.getVoiceMessageHandler().playback(SYSTEM_AND_DOMAIN, p, messageIds);
 
 			String extension = null;
 			if (messages.size() > 0) {

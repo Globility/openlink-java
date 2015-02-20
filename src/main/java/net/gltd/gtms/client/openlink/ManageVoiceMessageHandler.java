@@ -14,6 +14,7 @@ import net.gltd.gtms.extension.openlink.command.ManageVoiceMessage.ManageVoiceMe
 import net.gltd.gtms.extension.openlink.devicestatus.DeviceStatus;
 import net.gltd.gtms.extension.openlink.devicestatus.DeviceStatusFeature;
 import net.gltd.gtms.extension.openlink.features.voicemessage.VoiceMessage;
+import net.gltd.gtms.extension.openlink.profiles.Profile;
 import rocks.xmpp.core.Jid;
 import rocks.xmpp.core.XmppException;
 import rocks.xmpp.core.session.XmppSession;
@@ -39,9 +40,9 @@ public class ManageVoiceMessageHandler {
 	 * @return a collection of messages.
 	 * @throws XmppException
 	 */
-	public Collection<VoiceMessage> record(String to, String profile, String label) throws XmppException {
+	public Collection<VoiceMessage> record(String to, Profile profile, String label) throws XmppException {
 		ManageVoiceMessage mvm = new ManageVoiceMessage();
-		mvm.getIn().setProfile(profile);
+		mvm.getIn().setProfile(profile.getId());
 		mvm.getIn().setAction(ManageVoiceMessageAction.Record);
 		mvm.getIn().setLabel(label);
 
@@ -69,9 +70,9 @@ public class ManageVoiceMessageHandler {
 	 * @return a collection of playlists.
 	 * @throws XmppException
 	 */
-	public Collection<VoiceMessage> create(String to, String profile, String label, Set<String> messageIds) throws XmppException {
+	public Collection<VoiceMessage> create(String to, Profile profile, String label, Set<String> messageIds) throws XmppException {
 		ManageVoiceMessage mvm = new ManageVoiceMessage();
-		mvm.getIn().setProfile(profile);
+		mvm.getIn().setProfile(profile.getId());
 		mvm.getIn().setAction(ManageVoiceMessageAction.Create);
 		mvm.getIn().setLabel(label);
 
@@ -103,9 +104,9 @@ public class ManageVoiceMessageHandler {
 	 * @return a collection of messages and playlists.
 	 * @throws XmppException
 	 */
-	public Collection<VoiceMessage> query(String to, String profile, Set<String> messageIds) throws XmppException {
+	public Collection<VoiceMessage> query(String to, Profile profile, Set<String> messageIds) throws XmppException {
 		ManageVoiceMessage mvm = new ManageVoiceMessage();
-		mvm.getIn().setProfile(profile);
+		mvm.getIn().setProfile(profile.getId());
 		mvm.getIn().setAction(ManageVoiceMessageAction.Query);
 
 		Set<ManageVoiceMessageFeature> mvmFeatures = new HashSet<ManageVoiceMessage.ManageVoiceMessageFeature>();
@@ -136,9 +137,9 @@ public class ManageVoiceMessageHandler {
 	 * @return a collection of messages and playlists.
 	 * @throws XmppException
 	 */
-	public Collection<VoiceMessage> playback(String to, String profile, Set<String> messageIds) throws XmppException {
+	public Collection<VoiceMessage> playback(String to, Profile profile, Set<String> messageIds) throws XmppException {
 		ManageVoiceMessage mvm = new ManageVoiceMessage();
-		mvm.getIn().setProfile(profile);
+		mvm.getIn().setProfile(profile.getId());
 		mvm.getIn().setAction(ManageVoiceMessageAction.Playback);
 
 		Set<ManageVoiceMessageFeature> mvmFeatures = new HashSet<ManageVoiceMessage.ManageVoiceMessageFeature>();
@@ -157,11 +158,11 @@ public class ManageVoiceMessageHandler {
 		return messages;
 	}
 
-	public Collection<VoiceMessage> archive(String to, String profile, Set<String> messageIds) throws XmppException {
+	public Collection<VoiceMessage> archive(String to, Profile profile, Set<String> messageIds) throws XmppException {
 		Collection<VoiceMessage> messages = new ArrayList<VoiceMessage>();
 
 		ManageVoiceMessage mvm = new ManageVoiceMessage();
-		mvm.getIn().setProfile(profile);
+		mvm.getIn().setProfile(profile.getId());
 		mvm.getIn().setAction(ManageVoiceMessageAction.Archive);
 
 		Set<ManageVoiceMessageFeature> mvmFeatures = new HashSet<ManageVoiceMessage.ManageVoiceMessageFeature>();
@@ -194,11 +195,11 @@ public class ManageVoiceMessageHandler {
 	 * @return a collection of messages and playlists.
 	 * @throws XmppException
 	 */
-	public Collection<VoiceMessage> edit(String to, String profile, String label, Set<String> messageIds) throws XmppException {
+	public Collection<VoiceMessage> edit(String to, Profile profile, String label, Set<String> messageIds) throws XmppException {
 		Collection<VoiceMessage> messages = new ArrayList<VoiceMessage>();
 
 		ManageVoiceMessage mvm = new ManageVoiceMessage();
-		mvm.getIn().setProfile(profile);
+		mvm.getIn().setProfile(profile.getId());
 		mvm.getIn().setAction(ManageVoiceMessageAction.Edit);
 		mvm.getIn().setLabel(label);
 
@@ -232,11 +233,11 @@ public class ManageVoiceMessageHandler {
 	 * @return a collection of messages and playlists.
 	 * @throws XmppException
 	 */
-	public Collection<VoiceMessage> save(String to, String profile, String label, Set<AudioFile> audioFiles) throws XmppException {
+	public Collection<VoiceMessage> save(String to, Profile profile, String label, Set<AudioFile> audioFiles) throws XmppException {
 		Collection<VoiceMessage> messages = new ArrayList<VoiceMessage>();
 
 		ManageVoiceMessage mvm = new ManageVoiceMessage();
-		mvm.getIn().setProfile(profile);
+		mvm.getIn().setProfile(profile.getId());
 		mvm.getIn().setAction(ManageVoiceMessageAction.Save);
 		mvm.getIn().setLabel(label);
 		mvm.getIn().setAudioFiles(audioFiles);
