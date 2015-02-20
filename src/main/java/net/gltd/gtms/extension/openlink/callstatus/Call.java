@@ -19,8 +19,8 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 @XmlRootElement(name = "call")
-@XmlType(propOrder = { "id", "profile", "interest", "originatorRef", "changed", "state", "direction", "duration",
-		"caller", "called", "participants", "features", "actions" })
+@XmlType(propOrder = { "id", "profile", "interest", "originatorRef", "changed", "state", "direction", "duration", "caller", "called", "participants",
+		"features", "actions" })
 public class Call {
 
 	@XmlElement(required = true)

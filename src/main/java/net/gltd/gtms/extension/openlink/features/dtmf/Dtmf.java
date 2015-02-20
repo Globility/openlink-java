@@ -3,6 +3,9 @@ package net.gltd.gtms.extension.openlink.features.dtmf;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
 import net.gltd.gtms.extension.openlink.callstatus.Participant;
 
 @XmlRootElement(name = "dtmf")
@@ -54,6 +57,11 @@ public class Dtmf {
 
 	public enum DtmfDirection {
 		sent, received
+	}
+
+	@Override
+	public String toString() {
+		return ToStringBuilder.reflectionToString(this, ToStringStyle.SIMPLE_STYLE);
 	}
 
 }

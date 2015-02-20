@@ -719,6 +719,16 @@ public class OpenlinkClientMvmTest extends XmlTest {
 				}
 			});
 
+			this.client.addDeviceListener(new DeviceListener() {
+				@Override
+				public void deviceEvent(String profile, Collection<DeviceStatusFeature> features) {
+					for (DeviceStatusFeature f : features) {
+						Assert.assertNotNull(f.getId());
+						logger.debug("DEVICE EV: " + f.getId() + f);
+					}
+				}
+			});
+
 			Interest i = getPrimaryInterest(SYSTEM_AND_DOMAIN, p.getId());
 			Assert.assertNotNull(i);
 			Collection<Call> calls = this.client.makeCall(SYSTEM_AND_DOMAIN, i, extension, null, new HashSet<Property>());

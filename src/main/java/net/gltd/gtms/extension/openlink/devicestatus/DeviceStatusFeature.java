@@ -3,6 +3,9 @@ package net.gltd.gtms.extension.openlink.devicestatus;
 import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlAttribute;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
 /**
  * ARGH - and yet another implementation of feature.
  * 
@@ -33,4 +36,10 @@ public class DeviceStatusFeature {
 		this.value = value;
 	}
 
+
+	@Override
+	public String toString() {
+		return ToStringBuilder.reflectionToString(this, ToStringStyle.SIMPLE_STYLE);
+	}
+	
 }
