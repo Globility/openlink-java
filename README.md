@@ -66,10 +66,33 @@ These can be listened for by adding a rocks.xmpp.core.session.SessionStatusListe
 
 A call handler can be registered to simplify the process of receiving pubsub call events. Simply call before connecting:
 
-	CallListener listener = new CallListener();
+	CallListener listener = 
+		new CallListener() {
+			@Override
+			public void callEvent(Collection<Call> calls) {
+				...
+			}
+		};
 	client.addCallListener(listener);
 
 The method `callEvent(Collection<Call> calls)` will be called with a list of call objects on a call event change.
+
+###Device Events
+
+A device status handler can be registered to simplify the process of receiving pubsub device status events. Simply call before connecting:
+
+	DeviceListener listener = 
+		new DeviceListener() {
+			@Override
+			public void deviceEvent(String profile, Collection<DeviceStatusFeature> features) {
+				...
+			}
+		};
+	client.addDeviceListener(listener);
+
+The method `deviceEvent(String profile, Collection<DeviceStatusFeature> features)` will be called with a list of call objects on a call event change.
+
+`DeviceStatusFeature.getValue()` returns the feature type carried by the `<device-status>` element. It can for instance be a `Callback, Dtmf or VoiceMessage` instance.
 
 ##License
 
