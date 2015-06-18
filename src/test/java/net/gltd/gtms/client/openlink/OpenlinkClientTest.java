@@ -9,6 +9,8 @@ import javax.xml.stream.XMLStreamException;
 
 import net.gltd.gtms.extension.command.Command;
 import net.gltd.gtms.extension.command.Note;
+import net.gltd.gtms.extension.gtx.privatedata.GtxProfile;
+import net.gltd.gtms.extension.gtx.privatedata.GtxSystem;
 import net.gltd.gtms.extension.iodata.IoData;
 import net.gltd.gtms.extension.openlink.callstatus.Call;
 import net.gltd.gtms.extension.openlink.callstatus.Call.CallState;
@@ -62,6 +64,7 @@ import rocks.xmpp.core.Jid;
 import rocks.xmpp.core.XmlTest;
 import rocks.xmpp.core.stanza.model.client.IQ;
 import rocks.xmpp.core.stanza.model.client.Message;
+import rocks.xmpp.extensions.privatedata.PrivateDataManager;
 import rocks.xmpp.extensions.pubsub.model.Subscription;
 import rocks.xmpp.extensions.pubsub.model.event.Event;
 import rocks.xmpp.extensions.shim.model.Header;
@@ -76,7 +79,7 @@ public class OpenlinkClientTest extends XmlTest {
 	private static final String RESOURCE = "office";
 
 	private static final String DOMAIN = "clarabel";
-	private static final String HOST = "clarabel";
+	private static final String HOST = "localhost";
 
 	private static final String SYSTEM = "avaya1";
 
@@ -87,13 +90,16 @@ public class OpenlinkClientTest extends XmlTest {
 	private OpenlinkClient client = null;
 
 	public OpenlinkClientTest() throws JAXBException, XMLStreamException {
-		super(Property.class, net.gltd.gtms.extension.openlink.properties.Property.class, Headers.class, Header.class, Event.class, Command.class, Note.class, Message.class, IQ.class, IoData.class,
-				Profiles.class, Profile.class, Action.class, Interests.class, Interest.class, Features.class, Feature.class, CallStatus.class,
-				Call.class, CallerCallee.class, CallFeature.class, Participant.class, CallAction.class, AddThirdParty.class, AnswerCall.class,
-				ClearCall.class, ClearConnection.class, ConferenceFail.class, ConnectSpeaker.class, ConsultationCall.class, DisconnectSpeaker.class,
-				HoldCall.class, IntercomTransfer.class, JoinCall.class, PrivateCall.class, PublicCall.class, RemoveThirdParty.class,
-				RetrieveCall.class, SendDigit.class, SendDigits.class, SingleStepTransfer.class, RemoveThirdParty.class, SendDigits.class,
-				StartVoiceDrop.class, StopVoiceDrop.class, TransferCall.class);
+		super(Property.class, net.gltd.gtms.extension.openlink.properties.Property.class, Headers.class, Header.class, Event.class, Command.class,
+				Note.class, Message.class, IQ.class, IoData.class, Profiles.class, Profile.class, Action.class, Interests.class, Interest.class,
+				Features.class, Feature.class, CallStatus.class, Call.class, CallerCallee.class, CallFeature.class, Participant.class,
+				CallAction.class, AddThirdParty.class, AnswerCall.class, ClearCall.class, ClearConnection.class, ConferenceFail.class,
+				ConnectSpeaker.class, ConsultationCall.class, DisconnectSpeaker.class, HoldCall.class, IntercomTransfer.class, JoinCall.class,
+				PrivateCall.class, PublicCall.class, RemoveThirdParty.class, RetrieveCall.class, SendDigit.class, SendDigits.class,
+				SingleStepTransfer.class, RemoveThirdParty.class, SendDigits.class, StartVoiceDrop.class, StopVoiceDrop.class, TransferCall.class,
+
+				net.gltd.gtms.extension.gtx.privatedata.Feature.class, GtxProfile.class, GtxSystem.class,
+				net.gltd.gtms.extension.gtx.privatedata.Profile.class, net.gltd.gtms.extension.gtx.privatedata.Property.class);
 	}
 
 	@Before
@@ -276,8 +282,8 @@ public class OpenlinkClientTest extends XmlTest {
 			Assert.assertNotNull(result);
 			this.client.unsubscribe(i);
 			Collection<Subscription> subs = this.client.getSubscriptions(i);
-			// Assert.assertTrue(subs.isEmpty()); // Not sure if a bug in Openfire's caching strategy which prevents
-			// subscriptions from removing correctly
+			Assert.assertTrue(subs.isEmpty()); // Not sure if a bug in Openfire's caching strategy which prevents subscriptions from removing
+												// correctly
 		} catch (Exception e) {
 			e.printStackTrace();
 			Assert.fail(e.getMessage());
@@ -299,6 +305,31 @@ public class OpenlinkClientTest extends XmlTest {
 			Assert.assertFalse(subs.isEmpty());
 			this.client.unsubscribe(i);
 			subs = this.client.getSubscriptions(i);
+			logger.debug("SUBSCRIPTIONS: SIZE: " + subs.size());
+			// Assert.assertTrue(subs.isEmpty()); // Not sure if a bug in Openfire's caching strategy which prevents
+			// subscriptions from removing correctly
+			Thread.sleep(500);
+		} catch (Exception e) {
+			e.printStackTrace();
+			Assert.fail(e.getMessage());
+		}
+	}
+
+	@Test
+	public void getSubscriptions2() {
+		try {
+			Assert.assertTrue(isConnected());
+			Profile p = getPrimaryProfile(SYSTEM_AND_DOMAIN);
+			Assert.assertNotNull(p);
+			Interest i = getPrimaryInterest(SYSTEM_AND_DOMAIN, p.getId());
+			Assert.assertNotNull(i);
+			Thread.sleep(500);
+			// Subscription result = this.client.subscribe(i);
+			// Assert.assertNotNull(result);
+			Collection<Subscription> subs = this.client.getSubscriptions(i);
+			// Assert.assertFalse(subs.isEmpty());
+			// this.client.unsubscribe(i);
+			// subs = this.client.getSubscriptions(i);
 			logger.debug("SUBSCRIPTIONS: SIZE: " + subs.size());
 			// Assert.assertTrue(subs.isEmpty()); // Not sure if a bug in Openfire's caching strategy which prevents
 			// subscriptions from removing correctly
@@ -455,6 +486,20 @@ public class OpenlinkClientTest extends XmlTest {
 			Thread.sleep(8000);
 			this.client.requestAction(SYSTEM_AND_DOMAIN, call, RequestActionAction.ClearConnection, null, null);
 			Thread.sleep(2000);
+		} catch (Exception e) {
+			e.printStackTrace();
+			Assert.fail(e.getMessage());
+		}
+	}
+
+	@Test
+	public void getGtxProfile() {
+		try {
+			Thread.sleep(500);
+			Assert.assertTrue(this.client.isConnected());
+			Thread.sleep(500);
+			this.client.getXmppSession().getExtensionManager(PrivateDataManager.class).getData(GtxProfile.class);
+			Thread.sleep(500);
 		} catch (Exception e) {
 			e.printStackTrace();
 			Assert.fail(e.getMessage());

@@ -101,6 +101,7 @@ import rocks.xmpp.core.stanza.PresenceListener;
 import rocks.xmpp.core.stanza.model.StanzaException;
 import rocks.xmpp.core.stanza.model.client.IQ;
 import rocks.xmpp.core.stanza.model.client.Presence;
+import rocks.xmpp.extensions.privatedata.PrivateDataManager;
 import rocks.xmpp.extensions.pubsub.PubSubManager;
 import rocks.xmpp.extensions.pubsub.PubSubNode;
 import rocks.xmpp.extensions.pubsub.PubSubService;
@@ -138,6 +139,8 @@ public class OpenlinkClient {
 
 	private ManageVoiceMessageHandler voiceMessageHandler;
 
+	private PrivateDataHandler privateDataHandler;
+	
 	public OpenlinkClient(String username, String password, String resource, String domain, String host) {
 		this.username = username;
 		this.password = password;
@@ -170,8 +173,8 @@ public class OpenlinkClient {
 						StopVoiceDrop.class, TransferCall.class,
 
 						Call.class, CallerCallee.class, CallFeature.class, CallStatus.class, Participant.class, Property.class, GetFeatures.class,
-						GetFeatures.GetFeaturesIn.class, SetFeatures.class, SetFeaturesIn.class, GetInterests.class, GetInterests.GetInterestsIn.class, MakeCall.class,
-						MakeCall.MakeCallIn.class, MakeCall.MakeCallIn.MakeCallFeature.class,
+						GetFeatures.GetFeaturesIn.class, SetFeatures.class, SetFeaturesIn.class, GetInterests.class,
+						GetInterests.GetInterestsIn.class, MakeCall.class, MakeCall.MakeCallIn.class, MakeCall.MakeCallIn.MakeCallFeature.class,
 
 						ManageVoiceMessage.class, ManageVoiceMessageIn.class, ManageVoiceMessageFeature.class,
 
@@ -295,7 +298,8 @@ public class OpenlinkClient {
 			this.setXmppSession(new XmppSession(this.domain, getSessionConfiguration(), tcpConfiguration));
 
 			this.voiceMessageHandler = new ManageVoiceMessageHandler(this.getXmppSession());
-
+			this.privateDataHandler = new PrivateDataHandler(this.getXmppSession());
+			
 			// Listen for presence changes
 			xmppSession.addPresenceListener(new PresenceListener() {
 				@Override
@@ -353,6 +357,10 @@ public class OpenlinkClient {
 
 	public ManageVoiceMessageHandler getVoiceMessageHandler() {
 		return voiceMessageHandler;
+	}
+
+	public PrivateDataHandler getPrivateDataHandler() {
+		return privateDataHandler;
 	}
 
 	private MessageListener getCallStatusMessageListener() {

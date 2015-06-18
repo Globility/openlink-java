@@ -22,7 +22,7 @@ import rocks.xmpp.core.stanza.model.client.IQ;
 
 public class ManageVoiceMessageHandler {
 
-	private XmppSession xmppSession;
+	private final XmppSession xmppSession;
 
 	public ManageVoiceMessageHandler(XmppSession xmppSession) {
 		this.xmppSession = xmppSession;
