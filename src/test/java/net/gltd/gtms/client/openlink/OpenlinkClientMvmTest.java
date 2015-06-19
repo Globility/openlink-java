@@ -57,7 +57,7 @@ import net.gltd.gtms.extension.openlink.originatorref.Property;
 import net.gltd.gtms.extension.openlink.profiles.Action;
 import net.gltd.gtms.extension.openlink.profiles.Profile;
 import net.gltd.gtms.extension.openlink.profiles.Profiles;
-import net.gltd.util.log.GtmsLog;
+import net.gltd.gtms.client.TestUtil;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -118,7 +118,7 @@ public class OpenlinkClientMvmTest extends XmlTest {
 
 	@Before
 	public void initialize() throws Exception {
-		logger = GtmsLog.initializeConsoleLogger("net.gltd.gtms", GtmsLog.DEFAULT_DEBUG_CONVERSION_PATTERN, "DEBUG");
+		logger = TestUtil.initializeConsoleLogger("net.gltd.gtms", TestUtil.DEFAULT_DEBUG_CONVERSION_PATTERN, "DEBUG");
 		client = new OpenlinkClient(USERNAME, PASSWORD, RESOURCE, DOMAIN, HOST);
 		client.setDebug(true);
 		client.addCallListener(this.getCallListener());

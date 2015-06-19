@@ -44,7 +44,7 @@ import net.gltd.gtms.extension.openlink.originatorref.Property;
 import net.gltd.gtms.extension.openlink.profiles.Action;
 import net.gltd.gtms.extension.openlink.profiles.Profile;
 import net.gltd.gtms.extension.openlink.profiles.Profiles;
-import net.gltd.util.log.GtmsLog;
+import net.gltd.gtms.client.TestUtil;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -78,7 +78,7 @@ public class OriginatorRefTest extends XmlTest {
 
 	@Before
 	public void initialize() throws Exception {
-		logger = GtmsLog.initializeConsoleLogger("net.gltd.gtms", GtmsLog.DEFAULT_DEBUG_CONVERSION_PATTERN, "DEBUG");
+		logger = TestUtil.initializeConsoleLogger("net.gltd.gtms", TestUtil.DEFAULT_DEBUG_CONVERSION_PATTERN, "DEBUG");
 	}
 
 	@After

@@ -3,14 +3,13 @@ package net.gltd.gtms.client.extension.openlink.interests;
 import javax.xml.bind.JAXBException;
 import javax.xml.stream.XMLStreamException;
 
-import junit.framework.Assert;
+import org.junit.Assert;
+import net.gltd.gtms.client.TestUtil;
 import net.gltd.gtms.client.openlink.OpenlinkNamespaces;
 import net.gltd.gtms.client.openlink.OpenlinkTestHelper;
 import net.gltd.gtms.extension.openlink.interests.Interest;
 import net.gltd.gtms.extension.openlink.interests.Interests;
 import net.gltd.gtms.extension.openlink.profiles.Action;
-import net.gltd.util.log.GtmsLog;
-import net.gltd.util.xml.XmlUtil;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -32,7 +31,7 @@ public class InterestsTest extends XmlTest {
 
 	@Before
 	public void initialize() throws Exception {
-		logger = GtmsLog.initializeConsoleLogger("net.gltd.gtms", GtmsLog.DEFAULT_DEBUG_CONVERSION_PATTERN, "DEBUG");
+		logger = TestUtil.initializeConsoleLogger("net.gltd.gtms", TestUtil.DEFAULT_DEBUG_CONVERSION_PATTERN, "DEBUG");
 	}
 
 	@After

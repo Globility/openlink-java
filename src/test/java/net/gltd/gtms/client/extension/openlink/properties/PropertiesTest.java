@@ -6,15 +6,10 @@ import java.io.IOException;
 import javax.xml.bind.JAXBException;
 import javax.xml.stream.XMLStreamException;
 
+import net.gltd.gtms.client.TestUtil;
 import net.gltd.gtms.client.openlink.OpenlinkNamespaces;
-import net.gltd.gtms.extension.command.Command;
-import net.gltd.gtms.extension.iodata.IoData;
-import net.gltd.gtms.extension.openlink.profiles.Profile;
-import net.gltd.gtms.extension.openlink.profiles.Profiles;
 import net.gltd.gtms.extension.openlink.properties.Properties;
 import net.gltd.gtms.extension.openlink.properties.Property;
-import net.gltd.util.log.GtmsLog;
-import net.gltd.util.string.StringUtil;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -25,7 +20,6 @@ import org.junit.Test;
 
 import rocks.xmpp.core.Jid;
 import rocks.xmpp.core.XmlTest;
-import rocks.xmpp.core.stanza.model.client.IQ;
 import rocks.xmpp.core.stanza.model.client.Message;
 
 public class PropertiesTest extends XmlTest {
@@ -38,7 +32,7 @@ public class PropertiesTest extends XmlTest {
 
 	@Before
 	public void initialize() throws Exception {
-		logger = GtmsLog.initializeConsoleLogger("net.gltd.gtms", GtmsLog.DEFAULT_DEBUG_CONVERSION_PATTERN, "DEBUG");
+		logger = TestUtil.initializeConsoleLogger("net.gltd.gtms", TestUtil.DEFAULT_DEBUG_CONVERSION_PATTERN, "DEBUG");
 	}
 
 	@After
@@ -87,7 +81,7 @@ public class PropertiesTest extends XmlTest {
 	@Test
 	public void testPropertiesMarshalUnmarshal() throws FileNotFoundException, XMLStreamException, JAXBException,
 			IOException {
-		String xmlIn = StringUtil.readFileAsString("ol-properties.xml");
+		String xmlIn = TestUtil.readFileAsString("ol-properties.xml");
 
 		Properties ps = unmarshal(xmlIn, Properties.class);
 

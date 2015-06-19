@@ -26,6 +26,8 @@ import javax.xml.bind.JAXBException;
 import net.gltd.gtms.client.openlink.logging.LogFormatter;
 import net.gltd.gtms.extension.command.Command;
 import net.gltd.gtms.extension.command.Note;
+import net.gltd.gtms.extension.gtx.privatedata.GtxProfile;
+import net.gltd.gtms.extension.gtx.privatedata.GtxSystem;
 import net.gltd.gtms.extension.iodata.IoData;
 import net.gltd.gtms.extension.openlink.audiofiles.AudioFile;
 import net.gltd.gtms.extension.openlink.callstatus.Call;
@@ -91,6 +93,7 @@ import rocks.xmpp.core.session.SessionStatusEvent;
 import rocks.xmpp.core.session.SessionStatusListener;
 import rocks.xmpp.core.session.TcpConnectionConfiguration;
 import rocks.xmpp.core.session.XmppSession;
+import rocks.xmpp.core.session.XmppSession.Status;
 import rocks.xmpp.core.session.XmppSessionConfiguration;
 import rocks.xmpp.core.session.context.extensions.ExtensionContext;
 import rocks.xmpp.core.session.debug.ConsoleDebugger;
@@ -101,7 +104,6 @@ import rocks.xmpp.core.stanza.PresenceListener;
 import rocks.xmpp.core.stanza.model.StanzaException;
 import rocks.xmpp.core.stanza.model.client.IQ;
 import rocks.xmpp.core.stanza.model.client.Presence;
-import rocks.xmpp.extensions.privatedata.PrivateDataManager;
 import rocks.xmpp.extensions.pubsub.PubSubManager;
 import rocks.xmpp.extensions.pubsub.PubSubNode;
 import rocks.xmpp.extensions.pubsub.PubSubService;
@@ -140,7 +142,9 @@ public class OpenlinkClient {
 	private ManageVoiceMessageHandler voiceMessageHandler;
 
 	private PrivateDataHandler privateDataHandler;
-	
+
+	private GtxProfile profile;
+
 	public OpenlinkClient(String username, String password, String resource, String domain, String host) {
 		this.username = username;
 		this.password = password;
@@ -190,7 +194,12 @@ public class OpenlinkClient {
 
 						net.gltd.gtms.extension.openlink.properties.Property.class,
 
-						VoiceMessage.class, Callback.class, Callback.Active.class, Dtmf.class));
+						VoiceMessage.class, Callback.class, Callback.Active.class, Dtmf.class,
+
+						net.gltd.gtms.extension.gtx.privatedata.Feature.class, GtxProfile.class, GtxSystem.class,
+						net.gltd.gtms.extension.gtx.privatedata.Profile.class, net.gltd.gtms.extension.gtx.privatedata.Property.class
+
+				));
 
 		if (isDebug()) {
 			builder.debugger(ConsoleDebugger.class);
@@ -299,7 +308,7 @@ public class OpenlinkClient {
 
 			this.voiceMessageHandler = new ManageVoiceMessageHandler(this.getXmppSession());
 			this.privateDataHandler = new PrivateDataHandler(this.getXmppSession());
-			
+
 			// Listen for presence changes
 			xmppSession.addPresenceListener(new PresenceListener() {
 				@Override
@@ -315,7 +324,13 @@ public class OpenlinkClient {
 				@Override
 				public void sessionStatusChanged(SessionStatusEvent e) {
 					logger.debug("CONNECTION EV: " + e.getStatus() + " : " + e.getSource() + " : " + e.getException());
-
+					if (Status.CONNECTED == e.getStatus()) {
+						try {
+							profile = privateDataHandler.getGtxProfile();
+						} catch (XmppException e1) {
+							e1.printStackTrace();
+						}
+					}
 				}
 			});
 
@@ -353,6 +368,48 @@ public class OpenlinkClient {
 			// Login failed, due to wrong username/password
 			e.printStackTrace();
 		}
+	}
+
+	public String applySiteIdOnSystem(String system) {
+		String node = null;
+		String domain = null;
+		String siteId = null;
+
+		if (system != null) {
+			if (system.contains(".")) {
+				node = system.split("\\.", 2)[0];
+				domain = system.split("\\.", 2)[1];
+			} else {
+				node = system;
+			}
+
+			if (profile == null) {
+				try {
+					profile = privateDataHandler.getGtxProfile();
+				} catch (XmppException e) {
+					e.printStackTrace();
+				}
+			}
+
+			net.gltd.gtms.extension.gtx.privatedata.Profile tmpProfile = profile.getProfile(resource);
+			if (tmpProfile != null) {
+				GtxSystem gtxSystem = tmpProfile.getGtxSystem(node);
+				if (gtxSystem != null) {
+					net.gltd.gtms.extension.gtx.privatedata.Property property = gtxSystem.getProperty(PrivateDataHandler.PROFILE_PROPERTY_SITE_ID);
+					if (property != null) {
+						siteId = property.getValue();
+						if (system.contains(".")) {
+							node = node + siteId + "." + domain;
+						} else {
+							node = node + siteId;
+						}
+					}
+				}
+			}
+		}
+
+		logger.debug("Site ID for system: " + node + " site: " + siteId);
+		return node;
 	}
 
 	public ManageVoiceMessageHandler getVoiceMessageHandler() {
@@ -506,7 +563,8 @@ public class OpenlinkClient {
 		} else {
 			gp.getIn().setJid(jid);
 		}
-		IQ iq = new IQ(Jid.valueOf(to), IQ.Type.SET, gp);
+
+		IQ iq = new IQ(Jid.valueOf(applySiteIdOnSystem(to)), IQ.Type.SET, gp);
 		IQ iqResult = xmppSession.query(iq);
 
 		Command command = iqResult.getExtension(Command.class);
@@ -547,7 +605,7 @@ public class OpenlinkClient {
 
 		GetInterests gi = new GetInterests();
 		gi.getIn().setProfile(profile.getId());
-		IQ iq = new IQ(Jid.valueOf(to), IQ.Type.SET, gi);
+		IQ iq = new IQ(Jid.valueOf(applySiteIdOnSystem(to)), IQ.Type.SET, gi);
 		IQ iqResult = xmppSession.query(iq);
 
 		Command command = iqResult.getExtension(Command.class);
@@ -577,7 +635,7 @@ public class OpenlinkClient {
 
 		GetFeatures gf = new GetFeatures();
 		gf.getIn().setProfile(profile.getId());
-		IQ iq = new IQ(Jid.valueOf(to), IQ.Type.SET, gf);
+		IQ iq = new IQ(Jid.valueOf(applySiteIdOnSystem(to)), IQ.Type.SET, gf);
 		IQ iqResult = xmppSession.query(iq);
 
 		Command command = iqResult.getExtension(Command.class);
@@ -621,7 +679,7 @@ public class OpenlinkClient {
 			sf.getIn().setValue3(values[2]);
 		}
 
-		IQ iq = new IQ(Jid.valueOf(to), IQ.Type.SET, sf);
+		IQ iq = new IQ(Jid.valueOf(applySiteIdOnSystem(to)), IQ.Type.SET, sf);
 		IQ iqResult = xmppSession.query(iq);
 
 		Command command = iqResult.getExtension(Command.class);
@@ -725,7 +783,7 @@ public class OpenlinkClient {
 		if (originatorRef != null) {
 			mc.getIn().setOriginatorRef(originatorRef);
 		}
-		IQ iq = new IQ(Jid.valueOf(to), IQ.Type.SET, mc);
+		IQ iq = new IQ(Jid.valueOf(applySiteIdOnSystem(to)), IQ.Type.SET, mc);
 		IQ iqResult = xmppSession.query(iq);
 
 		Command command = iqResult.getExtension(Command.class);
@@ -769,7 +827,7 @@ public class OpenlinkClient {
 		ra.getIn().setValue1(value1);
 		ra.getIn().setValue2(value2);
 
-		IQ iq = new IQ(Jid.valueOf(to), IQ.Type.SET, ra);
+		IQ iq = new IQ(Jid.valueOf(applySiteIdOnSystem(to)), IQ.Type.SET, ra);
 		IQ iqResult = xmppSession.query(iq);
 
 		Command command = iqResult.getExtension(Command.class);

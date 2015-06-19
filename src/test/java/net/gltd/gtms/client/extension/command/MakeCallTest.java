@@ -10,7 +10,7 @@ import net.gltd.gtms.extension.command.Note;
 import net.gltd.gtms.extension.iodata.IoData;
 import net.gltd.gtms.extension.openlink.command.MakeCall;
 import net.gltd.gtms.extension.openlink.originatorref.Property;
-import net.gltd.util.log.GtmsLog;
+import net.gltd.gtms.client.TestUtil;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.log4j.LogManager;
@@ -36,7 +36,7 @@ public class MakeCallTest extends XmlTest {
 
 	@Before
 	public void initialize() throws Exception {
-		logger = GtmsLog.initializeConsoleLogger("net.gltd.gtms", GtmsLog.DEFAULT_DEBUG_CONVERSION_PATTERN, "DEBUG");
+		logger = TestUtil.initializeConsoleLogger("net.gltd.gtms", TestUtil.DEFAULT_DEBUG_CONVERSION_PATTERN, "DEBUG");
 	}
 
 	@After

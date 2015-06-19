@@ -7,6 +7,7 @@ import java.util.Set;
 import javax.xml.bind.JAXBException;
 import javax.xml.stream.XMLStreamException;
 
+import net.gltd.gtms.client.TestUtil;
 import net.gltd.gtms.extension.command.Command;
 import net.gltd.gtms.extension.command.Note;
 import net.gltd.gtms.extension.gtx.privatedata.GtxProfile;
@@ -47,10 +48,10 @@ import net.gltd.gtms.extension.openlink.features.Features;
 import net.gltd.gtms.extension.openlink.interests.Interest;
 import net.gltd.gtms.extension.openlink.interests.Interests;
 import net.gltd.gtms.extension.openlink.originatorref.Property;
+import net.gltd.gtms.extension.openlink.originatorref.Property2;
 import net.gltd.gtms.extension.openlink.profiles.Action;
 import net.gltd.gtms.extension.openlink.profiles.Profile;
 import net.gltd.gtms.extension.openlink.profiles.Profiles;
-import net.gltd.util.log.GtmsLog;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -81,7 +82,7 @@ public class OpenlinkClientTest extends XmlTest {
 	private static final String DOMAIN = "clarabel";
 	private static final String HOST = "localhost";
 
-	private static final String SYSTEM = "avaya1";
+	private static final String SYSTEM = "avaya";
 
 	private static final String SYSTEM_AND_DOMAIN = SYSTEM + "." + DOMAIN;
 
@@ -90,12 +91,12 @@ public class OpenlinkClientTest extends XmlTest {
 	private OpenlinkClient client = null;
 
 	public OpenlinkClientTest() throws JAXBException, XMLStreamException {
-		super(Property.class, net.gltd.gtms.extension.openlink.properties.Property.class, Headers.class, Header.class, Event.class, Command.class,
-				Note.class, Message.class, IQ.class, IoData.class, Profiles.class, Profile.class, Action.class, Interests.class, Interest.class,
-				Features.class, Feature.class, CallStatus.class, Call.class, CallerCallee.class, CallFeature.class, Participant.class,
-				CallAction.class, AddThirdParty.class, AnswerCall.class, ClearCall.class, ClearConnection.class, ConferenceFail.class,
-				ConnectSpeaker.class, ConsultationCall.class, DisconnectSpeaker.class, HoldCall.class, IntercomTransfer.class, JoinCall.class,
-				PrivateCall.class, PublicCall.class, RemoveThirdParty.class, RetrieveCall.class, SendDigit.class, SendDigits.class,
+		super(Property2.class, Property.class, net.gltd.gtms.extension.openlink.properties.Property.class, Headers.class, Header.class, Event.class,
+				Command.class, Note.class, Message.class, IQ.class, IoData.class, Profiles.class, Profile.class, Action.class, Interests.class,
+				Interest.class, Features.class, Feature.class, CallStatus.class, Call.class, CallerCallee.class, CallFeature.class,
+				Participant.class, CallAction.class, AddThirdParty.class, AnswerCall.class, ClearCall.class, ClearConnection.class,
+				ConferenceFail.class, ConnectSpeaker.class, ConsultationCall.class, DisconnectSpeaker.class, HoldCall.class, IntercomTransfer.class,
+				JoinCall.class, PrivateCall.class, PublicCall.class, RemoveThirdParty.class, RetrieveCall.class, SendDigit.class, SendDigits.class,
 				SingleStepTransfer.class, RemoveThirdParty.class, SendDigits.class, StartVoiceDrop.class, StopVoiceDrop.class, TransferCall.class,
 
 				net.gltd.gtms.extension.gtx.privatedata.Feature.class, GtxProfile.class, GtxSystem.class,
@@ -104,7 +105,7 @@ public class OpenlinkClientTest extends XmlTest {
 
 	@Before
 	public void initialize() throws Exception {
-		logger = GtmsLog.initializeConsoleLogger("net.gltd.gtms", GtmsLog.DEFAULT_DEBUG_CONVERSION_PATTERN, "DEBUG");
+		logger = TestUtil.initializeConsoleLogger("net.gltd.gtms", TestUtil.DEFAULT_DEBUG_CONVERSION_PATTERN, "DEBUG");
 		client = new OpenlinkClient(USERNAME, PASSWORD, RESOURCE, DOMAIN, HOST);
 		client.setDebug(true);
 		client.addCallListener(this.getCallListener());
@@ -495,15 +496,30 @@ public class OpenlinkClientTest extends XmlTest {
 	@Test
 	public void getGtxProfile() {
 		try {
-			Thread.sleep(500);
-			Assert.assertTrue(this.client.isConnected());
-			Thread.sleep(500);
-			this.client.getXmppSession().getExtensionManager(PrivateDataManager.class).getData(GtxProfile.class);
-			Thread.sleep(500);
+			Assert.assertNotNull(this.client.getPrivateDataHandler().getGtxProfile());
 		} catch (Exception e) {
 			e.printStackTrace();
 			Assert.fail(e.getMessage());
 		}
+	}
+
+	@Test
+	public void testApplySiteIdOnSystem() {
+		String system = "avaya.example.com";
+		Assert.assertEquals("avaya1.example.com", this.client.applySiteIdOnSystem(system));
+
+		system = "avaya.example";
+		Assert.assertEquals("avaya1.example", this.client.applySiteIdOnSystem(system));
+
+		system = "avaya";
+		Assert.assertEquals("avaya1", this.client.applySiteIdOnSystem(system));
+
+		system = null;
+		Assert.assertEquals(null, this.client.applySiteIdOnSystem(system));
+
+		system = "";
+		Assert.assertEquals("", this.client.applySiteIdOnSystem(system));
+
 	}
 
 	@Ignore

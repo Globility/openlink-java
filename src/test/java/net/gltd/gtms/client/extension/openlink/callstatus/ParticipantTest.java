@@ -3,12 +3,11 @@ package net.gltd.gtms.client.extension.openlink.callstatus;
 import javax.xml.bind.JAXBException;
 import javax.xml.stream.XMLStreamException;
 
-import junit.framework.Assert;
+import org.junit.Assert;
+import net.gltd.gtms.client.TestUtil;
 import net.gltd.gtms.extension.openlink.callstatus.Call.CallDirection;
 import net.gltd.gtms.extension.openlink.callstatus.Participant;
 import net.gltd.gtms.extension.openlink.callstatus.Participant.ParticipantType;
-import net.gltd.util.log.GtmsLog;
-import net.gltd.util.xml.XmlUtil;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -29,7 +28,7 @@ public class ParticipantTest extends XmlTest {
 
 	@Before
 	public void initialize() throws Exception {
-		logger = GtmsLog.initializeConsoleLogger("net.gltd.gtms", GtmsLog.DEFAULT_DEBUG_CONVERSION_PATTERN, "DEBUG");
+		logger = TestUtil.initializeConsoleLogger("net.gltd.gtms", TestUtil.DEFAULT_DEBUG_CONVERSION_PATTERN, "DEBUG");
 	}
 
 	@After

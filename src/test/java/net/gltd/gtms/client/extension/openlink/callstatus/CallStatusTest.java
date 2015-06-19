@@ -7,6 +7,7 @@ import java.util.List;
 import javax.xml.bind.JAXBException;
 import javax.xml.stream.XMLStreamException;
 
+import net.gltd.gtms.client.TestUtil;
 import net.gltd.gtms.client.openlink.OpenlinkTestHelper;
 import net.gltd.gtms.extension.command.Command;
 import net.gltd.gtms.extension.command.Note;
@@ -48,8 +49,6 @@ import net.gltd.gtms.extension.openlink.originatorref.Property;
 import net.gltd.gtms.extension.openlink.profiles.Action;
 import net.gltd.gtms.extension.openlink.profiles.Profile;
 import net.gltd.gtms.extension.openlink.profiles.Profiles;
-import net.gltd.util.log.GtmsLog;
-import net.gltd.util.string.StringUtil;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -83,7 +82,7 @@ public class CallStatusTest extends XmlTest {
 
 	@Before
 	public void initialize() throws Exception {
-		logger = GtmsLog.initializeConsoleLogger("net.gltd.gtms", GtmsLog.DEFAULT_DEBUG_CONVERSION_PATTERN, "DEBUG");
+		logger = TestUtil.initializeConsoleLogger("net.gltd.gtms", TestUtil.DEFAULT_DEBUG_CONVERSION_PATTERN, "DEBUG");
 	}
 
 	@After
@@ -111,7 +110,7 @@ public class CallStatusTest extends XmlTest {
 
 	@Test
 	public void testCallStatusUnmarshal() throws FileNotFoundException, XMLStreamException, JAXBException, IOException {
-		String xmlIn = StringUtil.readFileAsString("ol-callstatus.xml");
+		String xmlIn = TestUtil.readFileAsString("ol-callstatus.xml");
 
 		Message message = unmarshal(xmlIn, Message.class);
 
