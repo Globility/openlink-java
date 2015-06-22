@@ -1,6 +1,6 @@
 package net.gltd.gtms.client.openlink;
 
-import net.gltd.gtms.extension.gtx.privatedata.GtxProfile;
+import net.gltd.gtms.profiler.gtx.profile.GtxProfile;
 import rocks.xmpp.core.XmppException;
 import rocks.xmpp.core.session.XmppSession;
 import rocks.xmpp.extensions.privatedata.PrivateDataManager;

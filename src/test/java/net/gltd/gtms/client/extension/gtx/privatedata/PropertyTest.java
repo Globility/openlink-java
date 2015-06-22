@@ -9,9 +9,9 @@ import javax.xml.stream.XMLStreamException;
 import net.gltd.gtms.client.TestUtil;
 import net.gltd.gtms.extension.command.Command;
 import net.gltd.gtms.extension.command.Note;
-import net.gltd.gtms.extension.gtx.privatedata.GtxProfile;
-import net.gltd.gtms.extension.gtx.privatedata.GtxSystem;
-import net.gltd.gtms.extension.gtx.privatedata.Property;
+import net.gltd.gtms.profiler.gtx.profile.GtxProfile;
+import net.gltd.gtms.profiler.gtx.profile.GtxSystem;
+import net.gltd.gtms.profiler.gtx.profile.Property;
 import net.gltd.gtms.extension.iodata.IoData;
 import net.gltd.gtms.extension.openlink.callstatus.Call;
 import net.gltd.gtms.extension.openlink.callstatus.CallFeature;
@@ -79,8 +79,8 @@ public class PropertyTest extends XmlTest {
 				IntercomTransfer.class, JoinCall.class, PrivateCall.class, PublicCall.class, RemoveThirdParty.class, RetrieveCall.class,
 				SendDigit.class, SendDigits.class, SingleStepTransfer.class, RemoveThirdParty.class, SendDigits.class, StartVoiceDrop.class,
 				StopVoiceDrop.class, TransferCall.class, DeviceStatus.class, DeviceStatusFeature.class, VoiceMessage.class, Callback.class,
-				Callback.Active.class, Dtmf.class, net.gltd.gtms.extension.gtx.privatedata.Feature.class, GtxProfile.class, GtxSystem.class,
-				net.gltd.gtms.extension.gtx.privatedata.Profile.class, Property.class);
+				Callback.Active.class, Dtmf.class, net.gltd.gtms.profiler.gtx.profile.Feature.class, GtxProfile.class, GtxSystem.class,
+				net.gltd.gtms.profiler.gtx.profile.Profile.class, Property.class);
 	}
 
 	@Before

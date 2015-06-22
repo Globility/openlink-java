@@ -10,8 +10,8 @@ import javax.xml.stream.XMLStreamException;
 import net.gltd.gtms.client.TestUtil;
 import net.gltd.gtms.extension.command.Command;
 import net.gltd.gtms.extension.command.Note;
-import net.gltd.gtms.extension.gtx.privatedata.GtxProfile;
-import net.gltd.gtms.extension.gtx.privatedata.GtxSystem;
+import net.gltd.gtms.profiler.gtx.profile.GtxProfile;
+import net.gltd.gtms.profiler.gtx.profile.GtxSystem;
 import net.gltd.gtms.extension.iodata.IoData;
 import net.gltd.gtms.extension.openlink.callstatus.Call;
 import net.gltd.gtms.extension.openlink.callstatus.Call.CallState;
@@ -171,16 +171,16 @@ public class OpenlinkClientGtxProfileTest extends XmlTest {
 			GtxProfile profile = this.client.getXmppSession().getExtensionManager(PrivateDataManager.class).getData(GtxProfile.class);
 
 			String uid = profile.getUid();
-			Collection<net.gltd.gtms.extension.gtx.privatedata.Property> gtxProfileProps = profile.getProperties();
-			Collection<net.gltd.gtms.extension.gtx.privatedata.Profile> profiles = profile.getProfiles();
-			for (net.gltd.gtms.extension.gtx.privatedata.Property gtxProfileProp : gtxProfileProps) {
+			Collection<net.gltd.gtms.profiler.gtx.profile.Property> gtxProfileProps = profile.getProperties();
+			Collection<net.gltd.gtms.profiler.gtx.profile.Profile> profiles = profile.getProfiles();
+			for (net.gltd.gtms.profiler.gtx.profile.Property gtxProfileProp : gtxProfileProps) {
 				logger.debug(gtxProfileProp);
 			}
 
-			for (net.gltd.gtms.extension.gtx.privatedata.Profile p : profiles) {
+			for (net.gltd.gtms.profiler.gtx.profile.Profile p : profiles) {
 				String profileId = p.getId();
-				Collection<net.gltd.gtms.extension.gtx.privatedata.Property> profileProps = p.getProperties();
-				for (net.gltd.gtms.extension.gtx.privatedata.Property profileProp : profileProps) {
+				Collection<net.gltd.gtms.profiler.gtx.profile.Property> profileProps = p.getProperties();
+				for (net.gltd.gtms.profiler.gtx.profile.Property profileProp : profileProps) {
 					logger.debug(profileProp);
 				}
 
@@ -188,8 +188,8 @@ public class OpenlinkClientGtxProfileTest extends XmlTest {
 					String id = s.getId();
 					String category = s.getCategory();
 					boolean enabled = s.getEnabled();
-					Collection<net.gltd.gtms.extension.gtx.privatedata.Property> systemProps = s.getProperties();
-					for (net.gltd.gtms.extension.gtx.privatedata.Property sysProp : systemProps) {
+					Collection<net.gltd.gtms.profiler.gtx.profile.Property> systemProps = s.getProperties();
+					for (net.gltd.gtms.profiler.gtx.profile.Property sysProp : systemProps) {
 						logger.debug("profile " + profileId + " system: " + id + " property: " + sysProp.getId() + " : " + sysProp.getValue());
 					}
 				}

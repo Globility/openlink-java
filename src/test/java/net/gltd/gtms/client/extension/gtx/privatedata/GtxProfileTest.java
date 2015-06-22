@@ -10,8 +10,8 @@ import javax.xml.stream.XMLStreamException;
 
 import net.gltd.gtms.extension.command.Command;
 import net.gltd.gtms.extension.command.Note;
-import net.gltd.gtms.extension.gtx.privatedata.GtxProfile;
-import net.gltd.gtms.extension.gtx.privatedata.GtxSystem;
+import net.gltd.gtms.profiler.gtx.profile.GtxProfile;
+import net.gltd.gtms.profiler.gtx.profile.GtxSystem;
 import net.gltd.gtms.extension.iodata.IoData;
 import net.gltd.gtms.extension.openlink.callstatus.Call;
 import net.gltd.gtms.extension.openlink.callstatus.CallFeature;
@@ -85,9 +85,9 @@ public class GtxProfileTest extends XmlTest {
 				RetrieveCall.class, SendDigit.class, SendDigits.class, SingleStepTransfer.class, RemoveThirdParty.class, SendDigits.class,
 				StartVoiceDrop.class, StopVoiceDrop.class, TransferCall.class, DeviceStatus.class, DeviceStatusFeature.class, VoiceMessage.class,
 				Callback.class, Callback.Active.class, Dtmf.class, 
-				net.gltd.gtms.extension.gtx.privatedata.Feature.class, GtxProfile.class,
-				GtxSystem.class, net.gltd.gtms.extension.gtx.privatedata.Profile.class, 
-				net.gltd.gtms.extension.gtx.privatedata.Property.class);
+				net.gltd.gtms.profiler.gtx.profile.Feature.class, GtxProfile.class,
+				GtxSystem.class, net.gltd.gtms.profiler.gtx.profile.Profile.class, 
+				net.gltd.gtms.profiler.gtx.profile.Property.class);
 	}
 
 	@Before
@@ -180,7 +180,7 @@ public class GtxProfileTest extends XmlTest {
 
 		gp.updateProperty("randomId", "SOMERANDOMVALUE");
 
-		net.gltd.gtms.extension.gtx.privatedata.Profile pr = new net.gltd.gtms.extension.gtx.privatedata.Profile();
+		net.gltd.gtms.profiler.gtx.profile.Profile pr = new net.gltd.gtms.profiler.gtx.profile.Profile();
 		pr.setId("office");
 
 		GtxSystem sys = new GtxSystem();
@@ -216,7 +216,7 @@ public class GtxProfileTest extends XmlTest {
 		Assert.assertEquals("user1", gp.getUid());
 		Assert.assertEquals(1, gp.getProfiles().size());
 		
-		net.gltd.gtms.extension.gtx.privatedata.Profile p = gp.getProfile("office");
+		net.gltd.gtms.profiler.gtx.profile.Profile p = gp.getProfile("office");
 		Assert.assertNotNull(p);
 		
 		GtxSystem sys = p.getGtxSystem("speakerbus");
@@ -226,14 +226,14 @@ public class GtxProfileTest extends XmlTest {
 		Assert.assertEquals("speakerbus", sys.getId());
 		Assert.assertEquals(true, sys.isEnabled());
 		
-		Set<net.gltd.gtms.extension.gtx.privatedata.Property> ps = sys.getProperties();
+		Set<net.gltd.gtms.profiler.gtx.profile.Property> ps = sys.getProperties();
 		Assert.assertEquals(2, sys.getProperties().size());
 		
-		net.gltd.gtms.extension.gtx.privatedata.Property p1 = sys.getProperty("extension");
+		net.gltd.gtms.profiler.gtx.profile.Property p1 = sys.getProperty("extension");
 		Assert.assertEquals(false, p1.getRequired());
 //		Assert.assertEquals("1234", p1.getValue());
 		
-		net.gltd.gtms.extension.gtx.privatedata.Property p2 = sys.getProperty("deviceId");
+		net.gltd.gtms.profiler.gtx.profile.Property p2 = sys.getProperty("deviceId");
 		Assert.assertEquals(true, p2.getRequired());
 		Assert.assertEquals("10", p2.getValue());
 		

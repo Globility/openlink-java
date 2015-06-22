@@ -135,12 +135,6 @@
 			<version>3.2.1</version>
 		</dependency>
 
-	<!-- 	<dependency>
-			<groupId>net.gltd.gtms.profiler</groupId>
-			<artifactId>profilerlib</artifactId>
-			<version>1.1.3-SNAPSHOT</version>
-		</dependency> -->
-
 		<!-- GTMS -->
 		<dependency>
 			<groupId>org.igniterealtime.openfire</groupId>
@@ -148,11 +142,11 @@
 			<version>3.8.1</version>
 			<scope>test</scope>
 		</dependency>
-		<dependence>
+		<dependency>
 			<groupId>net.gltd.gtms.xmpp.extensions</groupId>
 			<artifactId>xmpp-extensions-gtx</artifactId>
 			<version>1.0.0-SNAPSHOT</version>
-		</dependence>
+		</dependency>
 
 
 	</dependencies>

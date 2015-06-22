@@ -26,8 +26,8 @@ import javax.xml.bind.JAXBException;
 import net.gltd.gtms.client.openlink.logging.LogFormatter;
 import net.gltd.gtms.extension.command.Command;
 import net.gltd.gtms.extension.command.Note;
-import net.gltd.gtms.extension.gtx.privatedata.GtxProfile;
-import net.gltd.gtms.extension.gtx.privatedata.GtxSystem;
+import net.gltd.gtms.profiler.gtx.profile.GtxProfile;
+import net.gltd.gtms.profiler.gtx.profile.GtxSystem;
 import net.gltd.gtms.extension.iodata.IoData;
 import net.gltd.gtms.extension.openlink.audiofiles.AudioFile;
 import net.gltd.gtms.extension.openlink.callstatus.Call;
@@ -196,8 +196,8 @@ public class OpenlinkClient {
 
 						VoiceMessage.class, Callback.class, Callback.Active.class, Dtmf.class,
 
-						net.gltd.gtms.extension.gtx.privatedata.Feature.class, GtxProfile.class, GtxSystem.class,
-						net.gltd.gtms.extension.gtx.privatedata.Profile.class, net.gltd.gtms.extension.gtx.privatedata.Property.class
+						net.gltd.gtms.profiler.gtx.profile.Feature.class, GtxProfile.class, GtxSystem.class,
+						net.gltd.gtms.profiler.gtx.profile.Profile.class, net.gltd.gtms.profiler.gtx.profile.Property.class
 
 				));
 
@@ -391,11 +391,11 @@ public class OpenlinkClient {
 				}
 			}
 
-			net.gltd.gtms.extension.gtx.privatedata.Profile tmpProfile = profile.getProfile(resource);
+			net.gltd.gtms.profiler.gtx.profile.Profile tmpProfile = profile.getProfile(resource);
 			if (tmpProfile != null) {
 				GtxSystem gtxSystem = tmpProfile.getGtxSystem(node);
 				if (gtxSystem != null) {
-					net.gltd.gtms.extension.gtx.privatedata.Property property = gtxSystem.getProperty(PrivateDataHandler.PROFILE_PROPERTY_SITE_ID);
+					net.gltd.gtms.profiler.gtx.profile.Property property = gtxSystem.getProperty(PrivateDataHandler.PROFILE_PROPERTY_SITE_ID);
 					if (property != null) {
 						siteId = property.getValue();
 						if (system.contains(".")) {
