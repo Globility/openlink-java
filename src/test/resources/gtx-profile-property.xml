@@ -1,0 +1,4 @@
+<property xmlns="http://gltd.net/protocol/gtx/properties" id="deviceId"
+	required="true">
+	<value xmlns="http://gltd.net/protocol/gtx/properties">leon</value>
+</property>

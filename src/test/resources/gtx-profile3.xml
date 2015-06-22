@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ns3:gtx-profile xmlns:ns3="http://gltd.net/protocol/gtx/profile"
+	xmlns:ns2="http://gltd.net/protocol/gtx/properties" xmlns:ns4="http://gltd.net/protocol/gtx/features"
+	uid="andy@andy-laptop">
+	<ns2:properties>
+		<ns2:property required="true" id="NationalDialPrefix">
+			<value>0</value>
+		</ns2:property>
+		<ns2:property required="true" id="InterNationalDialPrefix">
+			<value>00</value>
+		</ns2:property>
+	</ns2:properties>
+	<ns3:profiles>
+		<ns3:profile id="office">
+			<ns2:properties>
+				<ns2:property required="true" id="kmEnabled">
+					<value>true</value>
+				</ns2:property>
+			</ns2:properties>
+			<ns3:systems>
+				<ns3:system type="vmstsp" id="vmstsp" category="telephony">
+					<ns2:properties>
+						<ns2:property required="true" id="extension">
+							<value>6001</value>
+						</ns2:property>
+						<ns2:property required="false" id="callerId">
+							<value>02071231234</value>
+						</ns2:property>
+						<ns2:property required="true" id="interest">
+							<value>default</value>
+						</ns2:property>
+					</ns2:properties>
+				</ns3:system>
+			</ns3:systems>
+		</ns3:profile>
+	</ns3:profiles>
+</ns3:gtx-profile>

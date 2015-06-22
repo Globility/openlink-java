@@ -1,0 +1,82 @@
+<gtx-profile xmlns="http://gltd.net/protocol/gtx/profile"
+	uid="andy@andy.com">
+	<properties xmlns="http://gltd.net/protocol/gtx/properties">
+		<property id="InterNationalDialPrefix" required="true">
+			<value>00</value>
+		</property>
+		<property id="NationalDialPrefix">
+			<value>0</value>
+		</property>
+		<property id="CountryCode">
+			<value>44</value>
+		</property>
+	</properties>
+	<profiles>
+		<profile id="office">
+			<properties xmlns="http://gltd.net/protocol/gtx/properties">
+				<property id="kmEnabled">
+					<value>true</value>
+				</property>
+			</properties>
+			<systems>
+				<system id="cisco">
+					<properties xmlns="http://gltd.net/protocol/gtx/properties">
+						<property required="true" id="username">
+							<value>leon</value>
+						</property>
+						<property type="optional" id="device">
+							<value>SEP1234567890</value>
+						</property>
+						<property type="optional" id="password">
+							<value>0000</value>
+						</property>
+						<property type="optional" id="extension">
+							<value>3805</value>
+						</property>
+						<property type="optional" id="cli">
+							<value>02071001499</value>
+						</property>
+					</properties>
+					<features xmlns="http://gltd.net/protocol/gtx/features">
+						<feature id="cisco_trunk_1">
+							<trunk id="1_72" xmlns="http://gltd.net/protocol/gtx/features#trunk">
+								<label>EXT</label>
+								<prefix>9</prefix>
+							</trunk>
+						</feature>
+						<feature id="cisco_trunk_2">
+							<trunk id="1_73" xmlns="http://gltd.net/protocol/gtx/features#trunk">
+								<label>INT</label>
+								<prefix />
+							</trunk>
+						</feature>
+					</features>
+				</system>
+				<system id="etrali">
+					<properties xmlns="http://gltd.net/protocol/gtx/properties">
+						<property required="true" id="userId">
+							<value>LEON</value>
+						</property>
+						<property type="optional" id="systemId">
+							<value>1</value>
+						</property>
+					</properties>
+				</system>
+			</systems>
+		</profile>
+		<profile id="mobile">
+			<systems>
+				<system id="etrali">
+					<properties xmlns="http://gltd.net/protocol/gtx/properties">
+						<property required="true" id="userId">
+							<value>LEON</value>
+						</property>
+						<property type="optional" id="systemId">
+							<value>1</value>
+						</property>
+					</properties>
+				</system>
+			</systems>
+		</profile>
+	</profiles>
+</gtx-profile>

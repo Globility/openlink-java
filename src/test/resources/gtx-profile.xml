@@ -1,0 +1,23 @@
+<ns4:gtx-profile xmlns:ns4="http://gltd.net/protocol/gtx/profile"
+	xmlns:ns2="http://gltd.net/protocol/gtx" xmlns:ns3="http://gltd.net/protocol/gtx/properties"
+	xmlns:ns5="http://gltd.net/protocol/gtx/features" uid="user1">
+	<ns4:profiles>
+		<ns4:profile id="office">
+			<ns4:systems>
+				<ns4:system enabled="true" category="telephony" type="speakerbus"
+					id="speakerbus">
+					<ns3:properties>
+						<ns3:property required="false" id="extension">
+							<value2>1234</value2>
+						</ns3:property>
+						<ns3:property required="true" id="deviceId">
+							<value2>10</value2>
+						</ns3:property>
+					</ns3:properties>
+				</ns4:system>
+			</ns4:systems>
+		</ns4:profile>
+	</ns4:profiles>
+</ns4:gtx-profile>
+
+

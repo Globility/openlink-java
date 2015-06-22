@@ -1,0 +1,20 @@
+<gtx-profile xmlns="http://gltd.net/protocol/gtx/profile"
+	uid="user1">
+	<profiles>
+		<profile id="office">
+			<systems>
+				<system id="speakerbus" type="speakerbus" category="telephony"
+					enabled="true">
+					<properties xmlns="http://gltd.net/protocol/gtx/properties">
+						<property id="extension" required="false">
+							<value>1234</value>
+						</property>
+						<property id="deviceId" required="true">
+							<value>10</value>
+						</property>
+					</properties>
+				</system>
+			</systems>
+		</profile>
+	</profiles>
+</gtx-profile>
