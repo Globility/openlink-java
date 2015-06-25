@@ -8,6 +8,7 @@ import java.util.Set;
 import javax.xml.bind.JAXBException;
 import javax.xml.stream.XMLStreamException;
 
+import net.gltd.gtms.client.IntegrationTest;
 import net.gltd.gtms.client.TestUtil;
 import net.gltd.gtms.extension.command.Command;
 import net.gltd.gtms.extension.command.Note;
@@ -69,6 +70,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import rocks.xmpp.core.Jid;
 import rocks.xmpp.core.XmlTest;
@@ -79,7 +81,8 @@ import rocks.xmpp.extensions.pubsub.model.event.Event;
 import rocks.xmpp.extensions.shim.model.Header;
 import rocks.xmpp.extensions.shim.model.Headers;
 
-public class OpenlinkClientMvmTest extends XmlTest {
+@Category(IntegrationTest.class)
+public class OpenlinkClientMvmIntegrationTest extends XmlTest {
 
 	protected Logger logger = Logger.getLogger("net.gltd.gtms");
 	public static final String CLIENT_PROPERTIES = "clientmvm.properties";
@@ -93,9 +96,8 @@ public class OpenlinkClientMvmTest extends XmlTest {
 	private OpenlinkClient client = null;
 
 	private Properties clientProperties;
-	private Properties callProperties;
 
-	public OpenlinkClientMvmTest() throws JAXBException, XMLStreamException {
+	public OpenlinkClientMvmIntegrationTest() throws JAXBException, XMLStreamException {
 		super(Property.class, net.gltd.gtms.extension.openlink.properties.Property.class, Headers.class, Header.class, Event.class, Command.class,
 				Note.class, Message.class, IQ.class, IoData.class, Profiles.class, Profile.class, Action.class, Interests.class, Interest.class,
 				Features.class, Feature.class, CallStatus.class, Call.class, CallerCallee.class, CallFeature.class, Participant.class,

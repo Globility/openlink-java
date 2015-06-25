@@ -1,8 +1,5 @@
 package net.gltd.gtms.client.openlink;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Properties;
@@ -11,6 +8,7 @@ import java.util.Set;
 import javax.xml.bind.JAXBException;
 import javax.xml.stream.XMLStreamException;
 
+import net.gltd.gtms.client.IntegrationTest;
 import net.gltd.gtms.client.TestUtil;
 import net.gltd.gtms.extension.command.Command;
 import net.gltd.gtms.extension.command.Note;
@@ -64,6 +62,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import rocks.xmpp.core.Jid;
 import rocks.xmpp.core.XmlTest;
@@ -75,7 +74,8 @@ import rocks.xmpp.extensions.pubsub.model.event.Event;
 import rocks.xmpp.extensions.shim.model.Header;
 import rocks.xmpp.extensions.shim.model.Headers;
 
-public class OpenlinkClientTest extends XmlTest {
+@Category(IntegrationTest.class)
+public class OpenlinkClientIntegrationTest extends XmlTest {
 
 	protected Logger logger = Logger.getLogger("net.gltd.gtms");
 	public static final String CLIENT_PROPERTIES = "client.properties";
@@ -88,9 +88,8 @@ public class OpenlinkClientTest extends XmlTest {
 	private OpenlinkClient client = null;
 
 	private Properties clientProperties;
-	private Properties callProperties;
 	
-	public OpenlinkClientTest() throws JAXBException, XMLStreamException {
+	public OpenlinkClientIntegrationTest() throws JAXBException, XMLStreamException {
 		super(Property2.class, Property.class, net.gltd.gtms.extension.openlink.properties.Property.class, Headers.class, Header.class, Event.class,
 				Command.class, Note.class, Message.class, IQ.class, IoData.class, Profiles.class, Profile.class, Action.class, Interests.class,
 				Interest.class, Features.class, Feature.class, CallStatus.class, Call.class, CallerCallee.class, CallFeature.class,
