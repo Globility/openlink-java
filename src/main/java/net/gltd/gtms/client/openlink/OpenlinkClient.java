@@ -398,17 +398,17 @@ public class OpenlinkClient {
 					net.gltd.gtms.profiler.gtx.profile.Property property = gtxSystem.getProperty(PrivateDataHandler.PROFILE_PROPERTY_SITE_ID);
 					if (property != null) {
 						siteId = property.getValue();
-						if (system.contains(".")) {
-							node = node + siteId + "." + domain;
-						} else {
-							node = node + siteId;
-						}
+						node = node + siteId;
 					}
 				}
+			}
+			if (system.contains(".")) {
+				node = node + "." + domain;
 			}
 		}
 
 		logger.debug("Site ID for system: " + node + " site: " + siteId);
+
 		return node;
 	}
 

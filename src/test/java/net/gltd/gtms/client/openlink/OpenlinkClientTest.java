@@ -82,7 +82,7 @@ public class OpenlinkClientTest extends XmlTest {
 	private static final String DOMAIN = "clarabel";
 	private static final String HOST = "localhost";
 
-	private static final String SYSTEM = "avaya";
+	private static final String SYSTEM = "avaya1";
 
 	private static final String SYSTEM_AND_DOMAIN = SYSTEM + "." + DOMAIN;
 
@@ -510,7 +510,16 @@ public class OpenlinkClientTest extends XmlTest {
 
 		system = "avaya.example";
 		Assert.assertEquals("avaya1.example", this.client.applySiteIdOnSystem(system));
+		
+		system = "avaya1.example.com";
+		Assert.assertEquals("avaya1.example.com", this.client.applySiteIdOnSystem(system));
 
+		system = "avaya1.example";
+		Assert.assertEquals("avaya1.example", this.client.applySiteIdOnSystem(system));
+		
+		system = "avaya1";
+		Assert.assertEquals("avaya1", this.client.applySiteIdOnSystem(system));
+		
 		system = "avaya";
 		Assert.assertEquals("avaya1", this.client.applySiteIdOnSystem(system));
 
