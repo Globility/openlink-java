@@ -3,6 +3,7 @@ package net.gltd.gtms.client;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Properties;
 import java.util.Scanner;
 
 import org.apache.log4j.ConsoleAppender;
@@ -17,6 +18,18 @@ public class TestUtil {
 	public static final String DEFAULT_DEBUG_CONVERSION_PATTERN = "%d{ISO8601} %-5p %-7c{1} (%C:%M:%L) - %m%n";
 
 	private TestUtil() {
+	}
+
+	public static Properties getProperties(Class clazz, String filename) throws FileNotFoundException, IOException {
+		Properties properties = new Properties();
+
+		InputStream inputStream = clazz.getClassLoader().getResourceAsStream(filename);
+		if (inputStream != null) {
+			properties.load(inputStream);
+		} else {
+			throw new FileNotFoundException("Property file " + filename + " not found in classpath");
+		}
+		return properties;
 	}
 
 	/**

@@ -2,11 +2,13 @@ package net.gltd.gtms.client.openlink;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Properties;
 import java.util.Set;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.stream.XMLStreamException;
 
+import net.gltd.gtms.client.TestUtil;
 import net.gltd.gtms.extension.command.Command;
 import net.gltd.gtms.extension.command.Note;
 import net.gltd.gtms.extension.iodata.IoData;
@@ -57,7 +59,6 @@ import net.gltd.gtms.extension.openlink.originatorref.Property;
 import net.gltd.gtms.extension.openlink.profiles.Action;
 import net.gltd.gtms.extension.openlink.profiles.Profile;
 import net.gltd.gtms.extension.openlink.profiles.Profiles;
-import net.gltd.gtms.client.TestUtil;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -81,23 +82,18 @@ import rocks.xmpp.extensions.shim.model.Headers;
 public class OpenlinkClientMvmTest extends XmlTest {
 
 	protected Logger logger = Logger.getLogger("net.gltd.gtms");
+	public static final String CLIENT_PROPERTIES = "clientmvm.properties";
 
-	private static final String USERNAME = "gary";
-	private static final String PASSWORD = "gary";
-	private static final String RESOURCE = "office";
+	private String username;
+	private String domain;
+	private String defaultProfile;
 
-	private static final String DOMAIN = "garyvms.gltd.local";
-	private static final String HOST = "garyvms.gltd.local";
-
-	private static final String SYSTEM = "vmstsp";
-
-	private static final String DEFAULT_PROFILE = USERNAME + "_office";
-
-	private static final String SYSTEM_AND_DOMAIN = SYSTEM + "." + DOMAIN;
-
-	private static final String DESTINATION = "662";
+	private String systemAndDomain;
 
 	private OpenlinkClient client = null;
+
+	private Properties clientProperties;
+	private Properties callProperties;
 
 	public OpenlinkClientMvmTest() throws JAXBException, XMLStreamException {
 		super(Property.class, net.gltd.gtms.extension.openlink.properties.Property.class, Headers.class, Header.class, Event.class, Command.class,
@@ -119,7 +115,15 @@ public class OpenlinkClientMvmTest extends XmlTest {
 	@Before
 	public void initialize() throws Exception {
 		logger = TestUtil.initializeConsoleLogger("net.gltd.gtms", TestUtil.DEFAULT_DEBUG_CONVERSION_PATTERN, "DEBUG");
-		client = new OpenlinkClient(USERNAME, PASSWORD, RESOURCE, DOMAIN, HOST);
+
+		this.clientProperties = TestUtil.getProperties(this.getClass(), CLIENT_PROPERTIES);
+		this.username = clientProperties.getProperty("client.xmpp.username");
+		this.domain = clientProperties.getProperty("client.xmpp.domain");
+
+		this.systemAndDomain = clientProperties.getProperty("client.xmpp.system") + "." + this.domain;
+		this.defaultProfile = username + "_" + clientProperties.getProperty("client.xmpp.resource");
+		client = new OpenlinkClient(this.username, clientProperties.getProperty("client.xmpp.password"),
+				clientProperties.getProperty("client.xmpp.resource"), this.domain, clientProperties.getProperty("client.xmpp.host"));
 		client.setDebug(true);
 		client.addCallListener(this.getCallListener());
 		client.connect();
@@ -156,13 +160,13 @@ public class OpenlinkClientMvmTest extends XmlTest {
 	public Profile getPrimaryProfile(String to) throws Exception {
 		Profile result = null;
 		Assert.assertTrue(isConnected());
-		Collection<Profile> profiles = this.client.getProfiles(SYSTEM_AND_DOMAIN);
+		Collection<Profile> profiles = this.client.getProfiles(this.systemAndDomain);
 		Assert.assertNotNull(profiles);
 		Assert.assertTrue(profiles.size() > 0);
 
-		if (DEFAULT_PROFILE != null) {
+		if (defaultProfile != null) {
 			for (Profile p : profiles) {
-				if (DEFAULT_PROFILE.equals(p.getId())) {
+				if (defaultProfile.equals(p.getId())) {
 					result = p;
 					break;
 				}
@@ -176,12 +180,12 @@ public class OpenlinkClientMvmTest extends XmlTest {
 
 	public Interest getPrimaryInterest(String to, String profileId) throws Exception {
 		Assert.assertTrue(isConnected());
-		Collection<Profile> profiles = this.client.getProfiles(SYSTEM_AND_DOMAIN);
+		Collection<Profile> profiles = this.client.getProfiles(this.systemAndDomain);
 		Assert.assertNotNull(profiles);
 		Assert.assertTrue(profiles.size() > 0);
 		for (Profile p : profiles) {
 			if (profileId.equals(p.getId())) {
-				Collection<Interest> interests = this.client.getInterests(SYSTEM_AND_DOMAIN, p);
+				Collection<Interest> interests = this.client.getInterests(this.systemAndDomain, p);
 				Assert.assertTrue(interests.size() > 0);
 				return interests.iterator().next();
 			}
@@ -198,10 +202,10 @@ public class OpenlinkClientMvmTest extends XmlTest {
 
 	@Test
 	public void getProfilesAsAdmin() throws Exception {
-		if (this.USERNAME.equals("admin")) {
+		if (this.username.equals("admin")) {
 			try {
 				Assert.assertTrue(isConnected());
-				Collection<Profile> profiles = this.client.getProfiles(SYSTEM_AND_DOMAIN, Jid.valueOf("betty.bidder" + "@" + this.DOMAIN));
+				Collection<Profile> profiles = this.client.getProfiles(this.systemAndDomain, Jid.valueOf("betty.bidder" + "@" + this.domain));
 				Assert.assertNotNull(profiles);
 				Assert.assertTrue(profiles.size() > 0);
 				logger.debug(marshal(profiles));
@@ -221,7 +225,7 @@ public class OpenlinkClientMvmTest extends XmlTest {
 	public void getProfiles() throws Exception {
 		try {
 			Assert.assertTrue(isConnected());
-			Collection<Profile> profiles = this.client.getProfiles(SYSTEM_AND_DOMAIN);
+			Collection<Profile> profiles = this.client.getProfiles(this.systemAndDomain);
 			Assert.assertNotNull(profiles);
 			Assert.assertTrue(profiles.size() > 0);
 			logger.debug(marshal(profiles));
@@ -240,9 +244,9 @@ public class OpenlinkClientMvmTest extends XmlTest {
 	public void getFeatures() {
 		try {
 			Assert.assertTrue(isConnected());
-			Profile p = getPrimaryProfile(SYSTEM_AND_DOMAIN);
+			Profile p = getPrimaryProfile(this.systemAndDomain);
 			Assert.assertNotNull(p);
-			Collection<Feature> features = this.client.getFeatures(SYSTEM_AND_DOMAIN, p);
+			Collection<Feature> features = this.client.getFeatures(this.systemAndDomain, p);
 			Assert.assertTrue(features.size() > 0);
 			logger.debug(marshal(features));
 			for (Feature f : features) {
@@ -261,17 +265,17 @@ public class OpenlinkClientMvmTest extends XmlTest {
 	public void setFeatures() {
 		try {
 			Assert.assertTrue(isConnected());
-			Profile p = getPrimaryProfile(SYSTEM_AND_DOMAIN);
+			Profile p = getPrimaryProfile(this.systemAndDomain);
 			Assert.assertNotNull(p);
 
-			Collection<Feature> features = this.client.getFeatures(SYSTEM_AND_DOMAIN, p);
+			Collection<Feature> features = this.client.getFeatures(this.systemAndDomain, p);
 			Feature feature = null;
 			for (Feature f : features) {
 				if ("CallBack".equals(f.getId())) {
 					feature = f;
 				}
 			}
-			this.client.setFeatures(SYSTEM_AND_DOMAIN, p, feature, "true", DESTINATION);
+			this.client.setFeatures(this.systemAndDomain, p, feature, "true", clientProperties.getProperty("client.call.destination"));
 		} catch (Exception e) {
 			e.printStackTrace();
 			Assert.fail(e.getMessage());
@@ -282,9 +286,9 @@ public class OpenlinkClientMvmTest extends XmlTest {
 	public void getInterests() {
 		try {
 			Assert.assertTrue(isConnected());
-			Profile p = getPrimaryProfile(SYSTEM_AND_DOMAIN);
+			Profile p = getPrimaryProfile(this.systemAndDomain);
 			Assert.assertNotNull(p);
-			Collection<Interest> interests = this.client.getInterests(SYSTEM_AND_DOMAIN, p);
+			Collection<Interest> interests = this.client.getInterests(this.systemAndDomain, p);
 			Assert.assertTrue(interests.size() > 0);
 			logger.debug(marshal(interests));
 			for (Interest i : interests) {
@@ -303,9 +307,9 @@ public class OpenlinkClientMvmTest extends XmlTest {
 	public void subscribeInterest() {
 		try {
 			Assert.assertTrue(isConnected());
-			Profile p = getPrimaryProfile(SYSTEM_AND_DOMAIN);
+			Profile p = getPrimaryProfile(this.systemAndDomain);
 			Assert.assertNotNull(p);
-			Interest i = getPrimaryInterest(SYSTEM_AND_DOMAIN, p.getId());
+			Interest i = getPrimaryInterest(this.systemAndDomain, p.getId());
 			Assert.assertNotNull(i);
 			Subscription result = this.client.subscribe(i);
 			Assert.assertNotNull(result);
@@ -322,9 +326,9 @@ public class OpenlinkClientMvmTest extends XmlTest {
 	public void unsubscribeInterest() {
 		try {
 			Assert.assertTrue(isConnected());
-			Profile p = getPrimaryProfile(SYSTEM_AND_DOMAIN);
+			Profile p = getPrimaryProfile(this.systemAndDomain);
 			Assert.assertNotNull(p);
-			Interest i = getPrimaryInterest(SYSTEM_AND_DOMAIN, p.getId());
+			Interest i = getPrimaryInterest(this.systemAndDomain, p.getId());
 			Assert.assertNotNull(i);
 			Subscription result = this.client.subscribe(i);
 			Assert.assertNotNull(result);
@@ -342,9 +346,9 @@ public class OpenlinkClientMvmTest extends XmlTest {
 	public void getSubscriptions() {
 		try {
 			Assert.assertTrue(isConnected());
-			Profile p = getPrimaryProfile(SYSTEM_AND_DOMAIN);
+			Profile p = getPrimaryProfile(this.systemAndDomain);
 			Assert.assertNotNull(p);
-			Interest i = getPrimaryInterest(SYSTEM_AND_DOMAIN, p.getId());
+			Interest i = getPrimaryInterest(this.systemAndDomain, p.getId());
 			Assert.assertNotNull(i);
 			Thread.sleep(5000);
 			Subscription result = this.client.subscribe(i);
@@ -366,11 +370,11 @@ public class OpenlinkClientMvmTest extends XmlTest {
 	public Set<String> getFeatureIds(FeatureType type, int limit) throws Exception {
 
 		Set<String> result = new HashSet<String>();
-		Profile p = getPrimaryProfile(SYSTEM_AND_DOMAIN);
+		Profile p = getPrimaryProfile(this.systemAndDomain);
 		Assert.assertNotNull(p);
 
 		Set<String> messageIds = new HashSet<String>();
-		Collection<Feature> features = this.client.getFeatures(SYSTEM_AND_DOMAIN, p);
+		Collection<Feature> features = this.client.getFeatures(this.systemAndDomain, p);
 		Assert.assertTrue(features.size() > 0);
 		logger.debug(marshal(features));
 		for (Feature f : features) {
@@ -418,7 +422,7 @@ public class OpenlinkClientMvmTest extends XmlTest {
 		try {
 			subscribeInterest();
 			Assert.assertTrue(isConnected());
-			Profile p = getPrimaryProfile(SYSTEM_AND_DOMAIN);
+			Profile p = getPrimaryProfile(this.systemAndDomain);
 			Assert.assertNotNull(p);
 
 			AudioFile a1 = new AudioFile();
@@ -455,7 +459,7 @@ public class OpenlinkClientMvmTest extends XmlTest {
 			HashSet<AudioFile> audioFiles = new HashSet<AudioFile>();
 			audioFiles.add(a1);
 
-			Collection<VoiceMessage> messages = this.client.getVoiceMessageHandler().save(SYSTEM_AND_DOMAIN, p,
+			Collection<VoiceMessage> messages = this.client.getVoiceMessageHandler().save(this.systemAndDomain, p,
 					"Random Message Label " + RandomStringUtils.randomAlphanumeric(10), audioFiles);
 			Assert.assertEquals(1, messages.size());
 			for (VoiceMessage vm : messages) {
@@ -490,10 +494,10 @@ public class OpenlinkClientMvmTest extends XmlTest {
 		try {
 			subscribeInterest();
 			Assert.assertTrue(isConnected());
-			Profile p = getPrimaryProfile(SYSTEM_AND_DOMAIN);
+			Profile p = getPrimaryProfile(this.systemAndDomain);
 			Assert.assertNotNull(p);
 
-			Collection<VoiceMessage> messages = this.client.getVoiceMessageHandler().record(SYSTEM_AND_DOMAIN, p,
+			Collection<VoiceMessage> messages = this.client.getVoiceMessageHandler().record(this.systemAndDomain, p,
 					"Random Message Label " + RandomStringUtils.randomAlphanumeric(10));
 			for (VoiceMessage vm : messages) {
 				logger.debug("VOICEMESSAGE: " + vm.getId() + " " + vm.toString());
@@ -514,12 +518,12 @@ public class OpenlinkClientMvmTest extends XmlTest {
 		try {
 			subscribeInterest();
 			Assert.assertTrue(isConnected());
-			Profile p = getPrimaryProfile(SYSTEM_AND_DOMAIN);
+			Profile p = getPrimaryProfile(this.systemAndDomain);
 			Assert.assertNotNull(p);
 
 			Set<String> messageIds = this.getMessageIds(3);
 
-			Collection<VoiceMessage> messages = this.client.getVoiceMessageHandler().playback(SYSTEM_AND_DOMAIN, p, messageIds);
+			Collection<VoiceMessage> messages = this.client.getVoiceMessageHandler().playback(this.systemAndDomain, p, messageIds);
 
 			String extension = null;
 			if (messages.size() > 0) {
@@ -540,7 +544,7 @@ public class OpenlinkClientMvmTest extends XmlTest {
 		try {
 			subscribeInterest();
 			Assert.assertTrue(isConnected());
-			Profile p = getPrimaryProfile(SYSTEM_AND_DOMAIN);
+			Profile p = getPrimaryProfile(this.systemAndDomain);
 			Assert.assertNotNull(p);
 
 			Set<String> messageIds = this.getMessageIds();
@@ -548,7 +552,7 @@ public class OpenlinkClientMvmTest extends XmlTest {
 
 			messageIds = this.getMessageIds(2);
 
-			this.client.getVoiceMessageHandler().archive(SYSTEM_AND_DOMAIN, p, messageIds);
+			this.client.getVoiceMessageHandler().archive(this.systemAndDomain, p, messageIds);
 
 			messageIds = this.getMessageIds();
 			int numMessagesAfter = messageIds.size();
@@ -566,12 +570,12 @@ public class OpenlinkClientMvmTest extends XmlTest {
 		try {
 			subscribeInterest();
 			Assert.assertTrue(isConnected());
-			Profile p = getPrimaryProfile(SYSTEM_AND_DOMAIN);
+			Profile p = getPrimaryProfile(this.systemAndDomain);
 			Assert.assertNotNull(p);
 
 			Set<String> messageIds = this.getMessageIds(3);
 
-			Collection<VoiceMessage> messages = this.client.getVoiceMessageHandler().create(SYSTEM_AND_DOMAIN, p,
+			Collection<VoiceMessage> messages = this.client.getVoiceMessageHandler().create(this.systemAndDomain, p,
 					"Random Playlist Label " + RandomStringUtils.randomAlphanumeric(10), messageIds);
 
 			String playlistId = null;
@@ -584,7 +588,7 @@ public class OpenlinkClientMvmTest extends XmlTest {
 			Set<String> playlistIds = new HashSet<String>();
 			playlistIds.add(playlistId);
 
-			Collection<VoiceMessage> playlistMessages = this.client.getVoiceMessageHandler().query(SYSTEM_AND_DOMAIN, p, playlistIds);
+			Collection<VoiceMessage> playlistMessages = this.client.getVoiceMessageHandler().query(this.systemAndDomain, p, playlistIds);
 			Assert.assertEquals(messageIds.size(), playlistMessages.size());
 			for (VoiceMessage vm : playlistMessages) {
 				logger.debug("PLAYLIST: " + playlistId + " VOICEMESSAGE: " + vm.getId() + " " + vm.toString());
@@ -605,12 +609,12 @@ public class OpenlinkClientMvmTest extends XmlTest {
 		try {
 			subscribeInterest();
 			Assert.assertTrue(isConnected());
-			Profile p = getPrimaryProfile(SYSTEM_AND_DOMAIN);
+			Profile p = getPrimaryProfile(this.systemAndDomain);
 			Assert.assertNotNull(p);
 
 			Set<String> messageIds = this.getMessageIds(3);
 
-			Collection<VoiceMessage> messages = this.client.getVoiceMessageHandler().query(SYSTEM_AND_DOMAIN, p, messageIds);
+			Collection<VoiceMessage> messages = this.client.getVoiceMessageHandler().query(this.systemAndDomain, p, messageIds);
 			for (VoiceMessage vm : messages) {
 				logger.debug("VOICEMESSAGE: " + vm.getId() + " " + vm.toString());
 				Assert.assertNotNull(vm.getId());
@@ -621,7 +625,7 @@ public class OpenlinkClientMvmTest extends XmlTest {
 			Set<String> playlistIds = this.getPlaylistIds(3);
 
 			for (String pid : playlistIds) {
-				Collection<VoiceMessage> playlistMessages = this.client.getVoiceMessageHandler().query(SYSTEM_AND_DOMAIN, p, messageIds);
+				Collection<VoiceMessage> playlistMessages = this.client.getVoiceMessageHandler().query(this.systemAndDomain, p, messageIds);
 				for (VoiceMessage vm : playlistMessages) {
 					logger.debug("PLAYLIST: " + pid + " VOICEMESSAGE: " + vm.getId() + " " + vm.toString());
 					Assert.assertNotNull(vm.getId());
@@ -641,12 +645,12 @@ public class OpenlinkClientMvmTest extends XmlTest {
 		try {
 			subscribeInterest();
 			Assert.assertTrue(isConnected());
-			Profile p = getPrimaryProfile(SYSTEM_AND_DOMAIN);
+			Profile p = getPrimaryProfile(this.systemAndDomain);
 			Assert.assertNotNull(p);
 
 			Set<String> messageIds = this.getMessageIds(1);
 
-			Collection<VoiceMessage> messages = this.client.getVoiceMessageHandler().query(SYSTEM_AND_DOMAIN, p, messageIds);
+			Collection<VoiceMessage> messages = this.client.getVoiceMessageHandler().query(this.systemAndDomain, p, messageIds);
 			for (VoiceMessage vm : messages) {
 				logger.debug("VOICEMESSAGE: " + vm.getId() + " " + vm.toString());
 				Assert.assertNotNull(vm.getId());
@@ -656,9 +660,9 @@ public class OpenlinkClientMvmTest extends XmlTest {
 
 			String messageLabel = "Random Message Label " + RandomStringUtils.randomAlphanumeric(10);
 
-			Collection<VoiceMessage> playlistMessages = this.client.getVoiceMessageHandler().edit(SYSTEM_AND_DOMAIN, p, messageLabel, messageIds);
+			Collection<VoiceMessage> playlistMessages = this.client.getVoiceMessageHandler().edit(this.systemAndDomain, p, messageLabel, messageIds);
 
-			messages = this.client.getVoiceMessageHandler().query(SYSTEM_AND_DOMAIN, p, messageIds);
+			messages = this.client.getVoiceMessageHandler().query(this.systemAndDomain, p, messageIds);
 			for (VoiceMessage vm : messages) {
 				logger.debug("VOICEMESSAGE: " + vm.getId() + " " + vm.toString());
 				Assert.assertNotNull(vm.getId());
@@ -678,13 +682,13 @@ public class OpenlinkClientMvmTest extends XmlTest {
 		try {
 			subscribeInterest();
 			Assert.assertTrue(isConnected());
-			Profile p = getPrimaryProfile(SYSTEM_AND_DOMAIN);
+			Profile p = getPrimaryProfile(this.systemAndDomain);
 			Assert.assertNotNull(p);
 
 			Set<String> messageIds = new HashSet<String>();
 			messageIds.add("PL1033");
 
-			Collection<VoiceMessage> messages = this.client.getVoiceMessageHandler().query(SYSTEM_AND_DOMAIN, p, messageIds);
+			Collection<VoiceMessage> messages = this.client.getVoiceMessageHandler().query(this.systemAndDomain, p, messageIds);
 			for (VoiceMessage vm : messages) {
 				logger.debug("VOICEMESSAGE: " + vm.getId() + " " + vm.toString());
 				Assert.assertNotNull(vm.getId());
@@ -695,7 +699,7 @@ public class OpenlinkClientMvmTest extends XmlTest {
 			Set<String> playlistIds = this.getPlaylistIds(3);
 
 			for (String pid : playlistIds) {
-				Collection<VoiceMessage> playlistMessages = this.client.getVoiceMessageHandler().query(SYSTEM_AND_DOMAIN, p, messageIds);
+				Collection<VoiceMessage> playlistMessages = this.client.getVoiceMessageHandler().query(this.systemAndDomain, p, messageIds);
 				for (VoiceMessage vm : playlistMessages) {
 					logger.debug("PLAYLIST: " + pid + " VOICEMESSAGE: " + vm.getId() + " " + vm.toString());
 					Assert.assertNotNull(vm.getId());
@@ -716,12 +720,12 @@ public class OpenlinkClientMvmTest extends XmlTest {
 		try {
 			subscribeInterest();
 			Assert.assertTrue(isConnected());
-			Profile p = getPrimaryProfile(SYSTEM_AND_DOMAIN);
+			Profile p = getPrimaryProfile(this.systemAndDomain);
 			Assert.assertNotNull(p);
 
 			Set<String> messageIds = this.getMessageIds(3);
 
-			Collection<VoiceMessage> messages = this.client.getVoiceMessageHandler().playback(SYSTEM_AND_DOMAIN, p, messageIds);
+			Collection<VoiceMessage> messages = this.client.getVoiceMessageHandler().playback(this.systemAndDomain, p, messageIds);
 
 			String extension = null;
 			if (messages.size() > 0) {
@@ -751,9 +755,9 @@ public class OpenlinkClientMvmTest extends XmlTest {
 				}
 			});
 
-			Interest i = getPrimaryInterest(SYSTEM_AND_DOMAIN, p.getId());
+			Interest i = getPrimaryInterest(this.systemAndDomain, p.getId());
 			Assert.assertNotNull(i);
-			Collection<Call> calls = this.client.makeCall(SYSTEM_AND_DOMAIN, i, extension, null, new HashSet<Property>());
+			Collection<Call> calls = this.client.makeCall(this.systemAndDomain, i, extension, null, new HashSet<Property>());
 
 			Thread.sleep(1000);
 			Assert.assertNotNull(calls);
@@ -770,7 +774,7 @@ public class OpenlinkClientMvmTest extends XmlTest {
 			Call call = calls.iterator().next();
 			Thread.sleep(10000);
 
-			this.client.requestAction(SYSTEM_AND_DOMAIN, call, RequestActionAction.ClearConnection, null, null);
+			this.client.requestAction(this.systemAndDomain, call, RequestActionAction.ClearConnection, null, null);
 			Thread.sleep(2000);
 
 		} catch (Exception e) {
@@ -803,11 +807,11 @@ public class OpenlinkClientMvmTest extends XmlTest {
 			});
 			subscribeInterest();
 			Assert.assertTrue(isConnected());
-			Profile p = getPrimaryProfile(SYSTEM_AND_DOMAIN);
+			Profile p = getPrimaryProfile(this.systemAndDomain);
 			Assert.assertNotNull(p);
-			Interest i = getPrimaryInterest(SYSTEM_AND_DOMAIN, p.getId());
+			Interest i = getPrimaryInterest(this.systemAndDomain, p.getId());
 			Assert.assertNotNull(i);
-			Collection<Call> calls = this.client.makeCall(SYSTEM_AND_DOMAIN, i, DESTINATION, null, new HashSet<Property>());
+			Collection<Call> calls = this.client.makeCall(this.systemAndDomain, i, clientProperties.getProperty("client.call.destination"), null, new HashSet<Property>());
 			Thread.sleep(1000);
 			Assert.assertNotNull(calls);
 			Assert.assertTrue(calls.size() > 0);
@@ -821,7 +825,7 @@ public class OpenlinkClientMvmTest extends XmlTest {
 			}
 			Call call = calls.iterator().next();
 			Thread.sleep(8000);
-			this.client.requestAction(SYSTEM_AND_DOMAIN, call, RequestActionAction.ClearConnection, null, null);
+			this.client.requestAction(this.systemAndDomain, call, RequestActionAction.ClearConnection, null, null);
 			Thread.sleep(2000);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -894,9 +898,9 @@ public class OpenlinkClientMvmTest extends XmlTest {
 			});
 			subscribeInterest();
 			Assert.assertTrue(isConnected());
-			Profile p = getPrimaryProfile(SYSTEM_AND_DOMAIN);
+			Profile p = getPrimaryProfile(this.systemAndDomain);
 			Assert.assertNotNull(p);
-			Interest i = getPrimaryInterest(SYSTEM_AND_DOMAIN, p.getId());
+			Interest i = getPrimaryInterest(this.systemAndDomain, p.getId());
 			Assert.assertNotNull(i);
 
 			Set<MakeCallFeature> features = new HashSet<MakeCallFeature>();
@@ -911,7 +915,7 @@ public class OpenlinkClientMvmTest extends XmlTest {
 			p1.setValue("dummy-value-ABC-1234");
 			originatorReferences.add(p1);
 
-			Collection<Call> calls = this.client.makeCall(SYSTEM_AND_DOMAIN, i, DESTINATION, features, originatorReferences);
+			Collection<Call> calls = this.client.makeCall(this.systemAndDomain, i, clientProperties.getProperty("client.call.destination"), features, originatorReferences);
 			Thread.sleep(1000);
 			Assert.assertNotNull(calls);
 			Assert.assertTrue(calls.size() > 0);
@@ -925,7 +929,7 @@ public class OpenlinkClientMvmTest extends XmlTest {
 			}
 			Call call = calls.iterator().next();
 			Thread.sleep(8000);
-			this.client.requestAction(SYSTEM_AND_DOMAIN, call, RequestActionAction.ClearConnection, null, null);
+			this.client.requestAction(this.systemAndDomain, call, RequestActionAction.ClearConnection, null, null);
 			Thread.sleep(2000);
 		} catch (Exception e) {
 			e.printStackTrace();

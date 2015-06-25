@@ -1,7 +1,11 @@
 package net.gltd.gtms.client.openlink;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Properties;
 import java.util.Set;
 
 import javax.xml.bind.JAXBException;
@@ -10,8 +14,6 @@ import javax.xml.stream.XMLStreamException;
 import net.gltd.gtms.client.TestUtil;
 import net.gltd.gtms.extension.command.Command;
 import net.gltd.gtms.extension.command.Note;
-import net.gltd.gtms.profiler.gtx.profile.GtxProfile;
-import net.gltd.gtms.profiler.gtx.profile.GtxSystem;
 import net.gltd.gtms.extension.iodata.IoData;
 import net.gltd.gtms.extension.openlink.callstatus.Call;
 import net.gltd.gtms.extension.openlink.callstatus.Call.CallState;
@@ -52,6 +54,8 @@ import net.gltd.gtms.extension.openlink.originatorref.Property2;
 import net.gltd.gtms.extension.openlink.profiles.Action;
 import net.gltd.gtms.extension.openlink.profiles.Profile;
 import net.gltd.gtms.extension.openlink.profiles.Profiles;
+import net.gltd.gtms.profiler.gtx.profile.GtxProfile;
+import net.gltd.gtms.profiler.gtx.profile.GtxSystem;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -74,22 +78,18 @@ import rocks.xmpp.extensions.shim.model.Headers;
 public class OpenlinkClientTest extends XmlTest {
 
 	protected Logger logger = Logger.getLogger("net.gltd.gtms");
+	public static final String CLIENT_PROPERTIES = "client.properties";
 
-	private static final String USERNAME = "leon";
-	private static final String PASSWORD = "password";
-	private static final String RESOURCE = "office";
+	private String username;
+	private String domain;
 
-	private static final String DOMAIN = "clarabel";
-	private static final String HOST = "localhost";
-
-	private static final String SYSTEM = "avaya1";
-
-	private static final String SYSTEM_AND_DOMAIN = SYSTEM + "." + DOMAIN;
-
-	private static final String DESTINATION = "50203";
+	private String systemAndDomain;
 
 	private OpenlinkClient client = null;
 
+	private Properties clientProperties;
+	private Properties callProperties;
+	
 	public OpenlinkClientTest() throws JAXBException, XMLStreamException {
 		super(Property2.class, Property.class, net.gltd.gtms.extension.openlink.properties.Property.class, Headers.class, Header.class, Event.class,
 				Command.class, Note.class, Message.class, IQ.class, IoData.class, Profiles.class, Profile.class, Action.class, Interests.class,
@@ -103,10 +103,20 @@ public class OpenlinkClientTest extends XmlTest {
 				net.gltd.gtms.profiler.gtx.profile.Profile.class, net.gltd.gtms.profiler.gtx.profile.Property.class);
 	}
 
+	
+
 	@Before
 	public void initialize() throws Exception {
 		logger = TestUtil.initializeConsoleLogger("net.gltd.gtms", TestUtil.DEFAULT_DEBUG_CONVERSION_PATTERN, "DEBUG");
-		client = new OpenlinkClient(USERNAME, PASSWORD, RESOURCE, DOMAIN, HOST);
+
+		this.clientProperties = TestUtil.getProperties(this.getClass(), CLIENT_PROPERTIES);
+		this.username = clientProperties.getProperty("client.xmpp.username");
+		this.domain = clientProperties.getProperty("client.xmpp.domain");
+
+		this.systemAndDomain = clientProperties.getProperty("client.xmpp.system") + "." + this.domain;
+
+		client = new OpenlinkClient(this.username, clientProperties.getProperty("client.xmpp.password"),
+				clientProperties.getProperty("client.xmpp.resource"), this.domain, clientProperties.getProperty("client.xmpp.host"));
 		client.setDebug(true);
 		client.addCallListener(this.getCallListener());
 		client.connect();
@@ -142,7 +152,7 @@ public class OpenlinkClientTest extends XmlTest {
 
 	public Profile getPrimaryProfile(String to) throws Exception {
 		Assert.assertTrue(isConnected());
-		Collection<Profile> profiles = this.client.getProfiles(SYSTEM_AND_DOMAIN);
+		Collection<Profile> profiles = this.client.getProfiles(this.systemAndDomain);
 		Assert.assertNotNull(profiles);
 		Assert.assertTrue(profiles.size() > 0);
 		return profiles.iterator().next();
@@ -150,12 +160,12 @@ public class OpenlinkClientTest extends XmlTest {
 
 	public Interest getPrimaryInterest(String to, String profileId) throws Exception {
 		Assert.assertTrue(isConnected());
-		Collection<Profile> profiles = this.client.getProfiles(SYSTEM_AND_DOMAIN);
+		Collection<Profile> profiles = this.client.getProfiles(this.systemAndDomain);
 		Assert.assertNotNull(profiles);
 		Assert.assertTrue(profiles.size() > 0);
 		for (Profile p : profiles) {
 			if (profileId.equals(p.getId())) {
-				Collection<Interest> interests = this.client.getInterests(SYSTEM_AND_DOMAIN, p);
+				Collection<Interest> interests = this.client.getInterests(this.systemAndDomain, p);
 				Assert.assertTrue(interests.size() > 0);
 				return interests.iterator().next();
 			}
@@ -172,10 +182,10 @@ public class OpenlinkClientTest extends XmlTest {
 
 	@Test
 	public void getProfilesAsAdmin() throws Exception {
-		if (this.USERNAME.equals("admin")) {
+		if (this.username.equals("admin")) {
 			try {
 				Assert.assertTrue(isConnected());
-				Collection<Profile> profiles = this.client.getProfiles(SYSTEM_AND_DOMAIN, Jid.valueOf("betty.bidder" + "@" + this.DOMAIN));
+				Collection<Profile> profiles = this.client.getProfiles(this.systemAndDomain, Jid.valueOf("betty.bidder" + "@" + this.domain));
 				Assert.assertNotNull(profiles);
 				Assert.assertTrue(profiles.size() > 0);
 				logger.debug(marshal(profiles));
@@ -195,7 +205,7 @@ public class OpenlinkClientTest extends XmlTest {
 	public void getProfiles() throws Exception {
 		try {
 			Assert.assertTrue(isConnected());
-			Collection<Profile> profiles = this.client.getProfiles(SYSTEM_AND_DOMAIN);
+			Collection<Profile> profiles = this.client.getProfiles(this.systemAndDomain);
 			Assert.assertNotNull(profiles);
 			Assert.assertTrue(profiles.size() > 0);
 			logger.debug(marshal(profiles));
@@ -214,9 +224,9 @@ public class OpenlinkClientTest extends XmlTest {
 	public void getFeatures() {
 		try {
 			Assert.assertTrue(isConnected());
-			Profile p = getPrimaryProfile(SYSTEM_AND_DOMAIN);
+			Profile p = getPrimaryProfile(this.systemAndDomain);
 			Assert.assertNotNull(p);
-			Collection<Feature> features = this.client.getFeatures(SYSTEM_AND_DOMAIN, p);
+			Collection<Feature> features = this.client.getFeatures(this.systemAndDomain, p);
 			Assert.assertTrue(features.size() > 0);
 			logger.debug(marshal(features));
 			for (Feature f : features) {
@@ -235,9 +245,9 @@ public class OpenlinkClientTest extends XmlTest {
 	public void getInterests() {
 		try {
 			Assert.assertTrue(isConnected());
-			Profile p = getPrimaryProfile(SYSTEM_AND_DOMAIN);
+			Profile p = getPrimaryProfile(this.systemAndDomain);
 			Assert.assertNotNull(p);
-			Collection<Interest> interests = this.client.getInterests(SYSTEM_AND_DOMAIN, p);
+			Collection<Interest> interests = this.client.getInterests(this.systemAndDomain, p);
 			Assert.assertTrue(interests.size() > 0);
 			logger.debug(marshal(interests));
 			for (Interest i : interests) {
@@ -256,9 +266,9 @@ public class OpenlinkClientTest extends XmlTest {
 	public void subscribeInterest() {
 		try {
 			Assert.assertTrue(isConnected());
-			Profile p = getPrimaryProfile(SYSTEM_AND_DOMAIN);
+			Profile p = getPrimaryProfile(this.systemAndDomain);
 			Assert.assertNotNull(p);
-			Interest i = getPrimaryInterest(SYSTEM_AND_DOMAIN, p.getId());
+			Interest i = getPrimaryInterest(this.systemAndDomain, p.getId());
 			Assert.assertNotNull(i);
 			Subscription result = this.client.subscribe(i);
 			Assert.assertNotNull(result);
@@ -275,9 +285,9 @@ public class OpenlinkClientTest extends XmlTest {
 	public void unsubscribeInterest() {
 		try {
 			Assert.assertTrue(isConnected());
-			Profile p = getPrimaryProfile(SYSTEM_AND_DOMAIN);
+			Profile p = getPrimaryProfile(this.systemAndDomain);
 			Assert.assertNotNull(p);
-			Interest i = getPrimaryInterest(SYSTEM_AND_DOMAIN, p.getId());
+			Interest i = getPrimaryInterest(this.systemAndDomain, p.getId());
 			Assert.assertNotNull(i);
 			Subscription result = this.client.subscribe(i);
 			Assert.assertNotNull(result);
@@ -295,9 +305,9 @@ public class OpenlinkClientTest extends XmlTest {
 	public void getSubscriptions() {
 		try {
 			Assert.assertTrue(isConnected());
-			Profile p = getPrimaryProfile(SYSTEM_AND_DOMAIN);
+			Profile p = getPrimaryProfile(this.systemAndDomain);
 			Assert.assertNotNull(p);
-			Interest i = getPrimaryInterest(SYSTEM_AND_DOMAIN, p.getId());
+			Interest i = getPrimaryInterest(this.systemAndDomain, p.getId());
 			Assert.assertNotNull(i);
 			Thread.sleep(500);
 			Subscription result = this.client.subscribe(i);
@@ -320,9 +330,9 @@ public class OpenlinkClientTest extends XmlTest {
 	public void getSubscriptions2() {
 		try {
 			Assert.assertTrue(isConnected());
-			Profile p = getPrimaryProfile(SYSTEM_AND_DOMAIN);
+			Profile p = getPrimaryProfile(this.systemAndDomain);
 			Assert.assertNotNull(p);
-			Interest i = getPrimaryInterest(SYSTEM_AND_DOMAIN, p.getId());
+			Interest i = getPrimaryInterest(this.systemAndDomain, p.getId());
 			Assert.assertNotNull(i);
 			Thread.sleep(500);
 			// Subscription result = this.client.subscribe(i);
@@ -364,11 +374,12 @@ public class OpenlinkClientTest extends XmlTest {
 			});
 			subscribeInterest();
 			Assert.assertTrue(isConnected());
-			Profile p = getPrimaryProfile(SYSTEM_AND_DOMAIN);
+			Profile p = getPrimaryProfile(this.systemAndDomain);
 			Assert.assertNotNull(p);
-			Interest i = getPrimaryInterest(SYSTEM_AND_DOMAIN, p.getId());
+			Interest i = getPrimaryInterest(this.systemAndDomain, p.getId());
 			Assert.assertNotNull(i);
-			Collection<Call> calls = this.client.makeCall(SYSTEM_AND_DOMAIN, i, DESTINATION, null, new HashSet<Property>());
+			Collection<Call> calls = this.client.makeCall(this.systemAndDomain, i, clientProperties.getProperty("client.call.destination"), null,
+					new HashSet<Property>());
 			Thread.sleep(1000);
 			Assert.assertNotNull(calls);
 			Assert.assertTrue(calls.size() > 0);
@@ -382,7 +393,7 @@ public class OpenlinkClientTest extends XmlTest {
 			}
 			Call call = calls.iterator().next();
 			Thread.sleep(8000);
-			this.client.requestAction(SYSTEM_AND_DOMAIN, call, RequestActionAction.ClearConnection, null, null);
+			this.client.requestAction(this.systemAndDomain, call, RequestActionAction.ClearConnection, null, null);
 			Thread.sleep(2000);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -454,9 +465,9 @@ public class OpenlinkClientTest extends XmlTest {
 			});
 			subscribeInterest();
 			Assert.assertTrue(isConnected());
-			Profile p = getPrimaryProfile(SYSTEM_AND_DOMAIN);
+			Profile p = getPrimaryProfile(this.systemAndDomain);
 			Assert.assertNotNull(p);
-			Interest i = getPrimaryInterest(SYSTEM_AND_DOMAIN, p.getId());
+			Interest i = getPrimaryInterest(this.systemAndDomain, p.getId());
 			Assert.assertNotNull(i);
 
 			Set<MakeCallFeature> features = new HashSet<MakeCallFeature>();
@@ -471,7 +482,8 @@ public class OpenlinkClientTest extends XmlTest {
 			p1.setValue("dummy-value-ABC-1234");
 			originatorReferences.add(p1);
 
-			Collection<Call> calls = this.client.makeCall(SYSTEM_AND_DOMAIN, i, DESTINATION, features, originatorReferences);
+			Collection<Call> calls = this.client.makeCall(this.systemAndDomain, i, clientProperties.getProperty("client.call.destination"), features,
+					originatorReferences);
 			Thread.sleep(1000);
 			Assert.assertNotNull(calls);
 			Assert.assertTrue(calls.size() > 0);
@@ -485,18 +497,8 @@ public class OpenlinkClientTest extends XmlTest {
 			}
 			Call call = calls.iterator().next();
 			Thread.sleep(8000);
-			this.client.requestAction(SYSTEM_AND_DOMAIN, call, RequestActionAction.ClearConnection, null, null);
+			this.client.requestAction(this.systemAndDomain, call, RequestActionAction.ClearConnection, null, null);
 			Thread.sleep(2000);
-		} catch (Exception e) {
-			e.printStackTrace();
-			Assert.fail(e.getMessage());
-		}
-	}
-
-	@Test
-	public void getGtxProfile() {
-		try {
-			Assert.assertNotNull(this.client.getPrivateDataHandler().getGtxProfile());
 		} catch (Exception e) {
 			e.printStackTrace();
 			Assert.fail(e.getMessage());
@@ -510,16 +512,16 @@ public class OpenlinkClientTest extends XmlTest {
 
 		system = "avaya.example";
 		Assert.assertEquals("avaya1.example", this.client.applySiteIdOnSystem(system));
-		
+
 		system = "avaya1.example.com";
 		Assert.assertEquals("avaya1.example.com", this.client.applySiteIdOnSystem(system));
 
 		system = "avaya1.example";
 		Assert.assertEquals("avaya1.example", this.client.applySiteIdOnSystem(system));
-		
+
 		system = "avaya1";
 		Assert.assertEquals("avaya1", this.client.applySiteIdOnSystem(system));
-		
+
 		system = "avaya";
 		Assert.assertEquals("avaya1", this.client.applySiteIdOnSystem(system));
 
@@ -529,6 +531,53 @@ public class OpenlinkClientTest extends XmlTest {
 		system = "";
 		Assert.assertEquals("", this.client.applySiteIdOnSystem(system));
 
+	}
+
+	@Test
+	public void getGtxProfile() {
+		boolean hasProfile = false;
+		boolean hasSystem = false;
+
+		try {
+			Assert.assertTrue(this.client.isConnected());
+			GtxProfile profile = this.client.getXmppSession().getExtensionManager(PrivateDataManager.class).getData(GtxProfile.class);
+
+			String uid = profile.getUid();
+			Collection<net.gltd.gtms.profiler.gtx.profile.Property> gtxProfileProps = profile.getProperties();
+			Collection<net.gltd.gtms.profiler.gtx.profile.Profile> profiles = profile.getProfiles();
+			for (net.gltd.gtms.profiler.gtx.profile.Property gtxProfileProp : gtxProfileProps) {
+				logger.debug(gtxProfileProp);
+			}
+
+			for (net.gltd.gtms.profiler.gtx.profile.Profile p : profiles) {
+				String profileId = p.getId();
+				if (profileId != null && !"".equals(profileId)) {
+					hasProfile = true;
+				}
+
+				Collection<net.gltd.gtms.profiler.gtx.profile.Property> profileProps = p.getProperties();
+				for (net.gltd.gtms.profiler.gtx.profile.Property profileProp : profileProps) {
+					logger.debug(profileProp);
+				}
+
+				for (GtxSystem s : p.getSystems()) {
+					String id = s.getId();
+					if (id != null && !"".equals(id)) {
+						hasSystem = true;
+					}
+					String category = s.getCategory();
+					boolean enabled = s.getEnabled();
+					Collection<net.gltd.gtms.profiler.gtx.profile.Property> systemProps = s.getProperties();
+					for (net.gltd.gtms.profiler.gtx.profile.Property sysProp : systemProps) {
+						logger.debug("profile " + profileId + " system: " + id + " property: " + sysProp.getId() + " : " + sysProp.getValue());
+					}
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			Assert.fail(e.getMessage());
+		}
+		Assert.assertTrue(hasProfile && hasSystem);
 	}
 
 	@Ignore
