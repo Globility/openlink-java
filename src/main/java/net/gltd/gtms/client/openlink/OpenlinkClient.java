@@ -324,7 +324,7 @@ public class OpenlinkClient {
 				@Override
 				public void sessionStatusChanged(SessionStatusEvent e) {
 					logger.debug("CONNECTION EV: " + e.getStatus() + " : " + e.getSource() + " : " + e.getException());
-					if (Status.CONNECTED == e.getStatus()) {
+					if (Status.AUTHENTICATED == e.getStatus()) {
 						try {
 							profile = privateDataHandler.getGtxProfile();
 						} catch (XmppException e1) {
@@ -393,8 +393,19 @@ public class OpenlinkClient {
 
 			net.gltd.gtms.profiler.gtx.profile.Profile tmpProfile = profile.getProfile(resource);
 			if (tmpProfile != null) {
+				/* commented due to bug in avaya plugin with systemId being incorrect - using type instead (see below)
 				GtxSystem gtxSystem = tmpProfile.getGtxSystem(node);
 				if (gtxSystem != null) {
+					net.gltd.gtms.profiler.gtx.profile.Property property = gtxSystem.getProperty(PrivateDataHandler.PROFILE_PROPERTY_SITE_ID);
+					if (property != null) {
+						siteId = property.getValue();
+						node = node + siteId;
+					}
+				}
+				*/
+				Set<GtxSystem> gtxSystems = tmpProfile.getGtxSystemsByType(node);
+				if (!gtxSystems.isEmpty()) {
+					GtxSystem gtxSystem = gtxSystems.iterator().next();
 					net.gltd.gtms.profiler.gtx.profile.Property property = gtxSystem.getProperty(PrivateDataHandler.PROFILE_PROPERTY_SITE_ID);
 					if (property != null) {
 						siteId = property.getValue();
