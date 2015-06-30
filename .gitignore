@@ -12,3 +12,5 @@ release.properties
 /bin/
 /target/
 /scratch/
+cache/
+test/
