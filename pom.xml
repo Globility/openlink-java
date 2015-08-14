@@ -209,7 +209,6 @@
 					<excludedGroups>net.gltd.gtms.client.IntegrationTest</excludedGroups>
 				</configuration>
 			</plugin>
-
 		</plugins>
 	</build>
 

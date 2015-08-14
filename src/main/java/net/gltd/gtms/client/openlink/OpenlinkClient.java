@@ -21,13 +21,10 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import javax.security.auth.login.FailedLoginException;
 import javax.security.auth.login.LoginException;
-import javax.xml.bind.JAXBException;
 
 import net.gltd.gtms.client.openlink.logging.LogFormatter;
 import net.gltd.gtms.extension.command.Command;
 import net.gltd.gtms.extension.command.Note;
-import net.gltd.gtms.profiler.gtx.profile.GtxProfile;
-import net.gltd.gtms.profiler.gtx.profile.GtxSystem;
 import net.gltd.gtms.extension.iodata.IoData;
 import net.gltd.gtms.extension.openlink.audiofiles.AudioFile;
 import net.gltd.gtms.extension.openlink.callstatus.Call;
@@ -82,6 +79,8 @@ import net.gltd.gtms.extension.openlink.originatorref.Property;
 import net.gltd.gtms.extension.openlink.profiles.Action;
 import net.gltd.gtms.extension.openlink.profiles.Profile;
 import net.gltd.gtms.extension.openlink.profiles.Profiles;
+import net.gltd.gtms.profiler.gtx.profile.GtxProfile;
+import net.gltd.gtms.profiler.gtx.profile.GtxSystem;
 
 import org.apache.log4j.Logger;
 
@@ -641,7 +640,7 @@ public class OpenlinkClient {
 	 *            User's profile.
 	 * @return collection of features.
 	 */
-	public Collection<Feature> getFeatures(String to, Profile profile) throws XmppException, JAXBException {
+	public Collection<Feature> getFeatures(String to, Profile profile) throws XmppException {
 		Collection<Feature> result = new ArrayList<Feature>();
 
 		GetFeatures gf = new GetFeatures();
@@ -675,7 +674,7 @@ public class OpenlinkClient {
 	 *            Up to three values representing value1, value2, value3 from the Openlink Set Features command.
 	 * 
 	 */
-	public void setFeatures(String to, Profile profile, Feature feature, String... values) throws XmppException, JAXBException {
+	public void setFeatures(String to, Profile profile, Feature feature, String... values) throws XmppException {
 		SetFeatures sf = new SetFeatures();
 		sf.getIn().setProfile(profile.getId());
 		sf.getIn().setFeature(feature.getId());

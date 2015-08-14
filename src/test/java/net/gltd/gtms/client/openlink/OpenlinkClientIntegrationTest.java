@@ -60,7 +60,6 @@ import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -88,7 +87,7 @@ public class OpenlinkClientIntegrationTest extends XmlTest {
 	private OpenlinkClient client = null;
 
 	private Properties clientProperties;
-	
+
 	public OpenlinkClientIntegrationTest() throws JAXBException, XMLStreamException {
 		super(Property2.class, Property.class, net.gltd.gtms.extension.openlink.properties.Property.class, Headers.class, Header.class, Event.class,
 				Command.class, Note.class, Message.class, IQ.class, IoData.class, Profiles.class, Profile.class, Action.class, Interests.class,
@@ -101,8 +100,6 @@ public class OpenlinkClientIntegrationTest extends XmlTest {
 				net.gltd.gtms.profiler.gtx.profile.Feature.class, GtxProfile.class, GtxSystem.class,
 				net.gltd.gtms.profiler.gtx.profile.Profile.class, net.gltd.gtms.profiler.gtx.profile.Property.class);
 	}
-
-	
 
 	@Before
 	public void initialize() throws Exception {
@@ -544,8 +541,10 @@ public class OpenlinkClientIntegrationTest extends XmlTest {
 			String uid = profile.getUid();
 			Collection<net.gltd.gtms.profiler.gtx.profile.Property> gtxProfileProps = profile.getProperties();
 			Collection<net.gltd.gtms.profiler.gtx.profile.Profile> profiles = profile.getProfiles();
-			for (net.gltd.gtms.profiler.gtx.profile.Property gtxProfileProp : gtxProfileProps) {
-				logger.debug(gtxProfileProp);
+			if (gtxProfileProps != null) {
+				for (net.gltd.gtms.profiler.gtx.profile.Property gtxProfileProp : gtxProfileProps) {
+					logger.debug(gtxProfileProp);
+				}
 			}
 
 			for (net.gltd.gtms.profiler.gtx.profile.Profile p : profiles) {
@@ -555,8 +554,10 @@ public class OpenlinkClientIntegrationTest extends XmlTest {
 				}
 
 				Collection<net.gltd.gtms.profiler.gtx.profile.Property> profileProps = p.getProperties();
-				for (net.gltd.gtms.profiler.gtx.profile.Property profileProp : profileProps) {
-					logger.debug(profileProp);
+				if (gtxProfileProps != null) {
+					for (net.gltd.gtms.profiler.gtx.profile.Property profileProp : profileProps) {
+						logger.debug(profileProp);
+					}
 				}
 
 				for (GtxSystem s : p.getSystems()) {
@@ -579,17 +580,51 @@ public class OpenlinkClientIntegrationTest extends XmlTest {
 		Assert.assertTrue(hasProfile && hasSystem);
 	}
 
-	@Ignore
 	@Test
 	public void debugTrace() {
+		this.client.addCallListener(new MyCallListener());
 		while (true) {
 			try {
 				Thread.sleep(10);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
-				Assert.fail(e.getMessage());
+			}
+
+		}
+	}
+
+	class MyCallListener implements CallListener {
+
+		public MyCallListener() {
+			super();
+			try {
+				Assert.assertTrue(isConnected());
+				Profile p = getPrimaryProfile(systemAndDomain);
+				Assert.assertNotNull(p);
+				Interest i = getPrimaryInterest(systemAndDomain, p.getId());
+				Assert.assertNotNull(i);
+				Subscription result = client.subscribe(i);
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		}
+
+		@Override
+		public void callEvent(Collection<Call> calls) {
+			for (Call c : calls) {
+				Assert.assertNotNull(c.getId());
+				logger.debug("CALL EV: " + c.getId() + c);
+				try {
+					if (c.getState() == CallState.CallDelivered) {
+						logger.debug("ANSWER CALL: " + c.getId() + marshal(c));
+						client.requestAction(systemAndDomain, c, RequestActionAction.AnswerCall, null, null);
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+
 	}
 
 }
