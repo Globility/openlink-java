@@ -66,7 +66,7 @@ import rocks.xmpp.extensions.shim.model.Headers;
 public class OpenlinkClientIntegrationBatchTest extends XmlTest {
 
 	protected Logger logger = Logger.getLogger("net.gltd.gtms");
-	public static final String CLIENT_PROPERTIES = "client2.properties";
+	public static final String CLIENT_PROPERTIES = "clientbatch.properties";
 
 	private String username;
 	private String domain;
