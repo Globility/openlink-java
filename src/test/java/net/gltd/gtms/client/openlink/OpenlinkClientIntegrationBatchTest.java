@@ -56,6 +56,7 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import rocks.xmpp.core.XmlTest;
+import rocks.xmpp.core.XmppException;
 import rocks.xmpp.core.stanza.model.client.IQ;
 import rocks.xmpp.core.stanza.model.client.Message;
 import rocks.xmpp.extensions.pubsub.model.Subscription;
@@ -65,7 +66,7 @@ import rocks.xmpp.extensions.shim.model.Headers;
 
 public class OpenlinkClientIntegrationBatchTest extends XmlTest {
 
-	protected Logger logger = Logger.getLogger("net.gltd.gtms");
+	protected static Logger logger = Logger.getLogger("net.gltd.gtms");
 	public static final String CLIENT_PROPERTIES = "clientbatch.properties";
 
 	private String username;
@@ -74,6 +75,8 @@ public class OpenlinkClientIntegrationBatchTest extends XmlTest {
 	private String systemAndDomain;
 
 	private HashMap<String, OpenlinkClient> clients = new HashMap<String, OpenlinkClient>();;
+
+	private HashMap<String, Interest> interests = new HashMap<String, Interest>();;
 
 	private Properties clientProperties;
 
@@ -113,10 +116,18 @@ public class OpenlinkClientIntegrationBatchTest extends XmlTest {
 		}
 	}
 
-	public void shutdown() throws Exception {
+	public void shutdown() {
 		logger.debug("SHUTDOWN");
 		for (OpenlinkClient client : this.clients.values()) {
 			if (client != null) {
+				if (interests.get(client.getBareJid()) != null) {
+					logger.debug("CLIENT " + client.getBareJid() + " UNSUBSCRIBE");
+					try {
+						client.unsubscribe(interests.get(client.getBareJid()));
+					} catch (XmppException e) {
+						e.printStackTrace();
+					}
+				}
 				logger.debug("CLIENT " + client.getBareJid() + " DISCONNECTING");
 				client.disconnect();
 			}
@@ -155,23 +166,6 @@ public class OpenlinkClientIntegrationBatchTest extends XmlTest {
 		return result;
 	}
 
-	public void subscribeInterest(OpenlinkClient client, Interest interest) {
-		try {
-			Subscription result = client.subscribe(interest);
-			logger.debug("CLIENT " + client.getBareJid() + " SUBSCRIPTION " + interest.getId() + " ID: " + result.getSubId());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	public void unsubscribeInterest(OpenlinkClient client, Interest interest) {
-		try {
-			client.unsubscribe(interest);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
 	public HashMap<String, OpenlinkClient> getClients() {
 		return clients;
 	}
@@ -180,10 +174,25 @@ public class OpenlinkClientIntegrationBatchTest extends XmlTest {
 		this.clients = clients;
 	}
 
+	public void attachShutDownHook() {
+		Runtime.getRuntime().addShutdownHook(new Thread() {
+			@Override
+			public void run() {
+				try {
+					shutdown();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+		System.out.println("Shut Down Hook Attached.");
+	}
+
 	public static void main(String[] args) {
 		OpenlinkClientIntegrationBatchTest test = null;
 		try {
 			test = new OpenlinkClientIntegrationBatchTest();
+			test.attachShutDownHook();
 			test.initialize();
 			for (OpenlinkClient client : test.getClients().values()) {
 				client.addCallListener(test.new MyCallListener(client));
@@ -198,14 +207,6 @@ public class OpenlinkClientIntegrationBatchTest extends XmlTest {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-		} finally {
-			try {
-				if (test != null) {
-					test.shutdown();
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
 		}
 	}
 
@@ -228,9 +229,16 @@ public class OpenlinkClientIntegrationBatchTest extends XmlTest {
 				if (i == null) {
 					throw new IllegalStateException("CLIENT " + client.getBareJid() + " DEFAULT INTEREST NOT FOUND");
 				}
+				try {
+					client.unsubscribe(i);
+				} catch (XmppException e) {
+					e.printStackTrace();
+				}
 				Subscription s = client.subscribe(i);
 				if (s == null) {
 					throw new IllegalStateException("CLIENT " + client.getBareJid() + " SUBSCRIPTION FAILED");
+				} else {
+					interests.put(client.getBareJid(), i);
 				}
 				logger.debug("CLIENT " + client.getBareJid() + " MONITORING: " + s.getNode() + " " + s.getSubId());
 			} catch (Exception e) {
