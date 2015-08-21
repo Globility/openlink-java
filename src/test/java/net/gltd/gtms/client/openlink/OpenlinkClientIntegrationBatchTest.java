@@ -263,10 +263,8 @@ public class OpenlinkClientIntegrationBatchTest extends XmlTest {
 							client.requestAction(systemAndDomain, c, RequestActionAction.RetrieveCall, null, null);
 						}
 						Thread.sleep(2000);
-						if (c.getState() == CallState.CallEstablished || c.getState() == CallState.CallConferenced) {
-							logger.debug("CLIENT " + client.getBareJid() + " CLEANUP CALL: " + c.getId() + marshal(c));
-							client.requestAction(systemAndDomain, c, RequestActionAction.ClearCall, null, null);
-						}
+						logger.debug("CLIENT " + client.getBareJid() + " CLEANUP CALL: " + c.getId() + marshal(c));
+						client.requestAction(systemAndDomain, c, RequestActionAction.ClearCall, null, null);
 						cleanup = false;
 					}
 				} catch (Exception e) {
