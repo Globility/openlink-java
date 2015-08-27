@@ -210,8 +210,6 @@ public class OpenlinkClientIntegrationBatchTest extends XmlTest {
 		}
 	}
 
-	private boolean cleanup = true;
-
 	public class MyCallListener implements CallListener {
 
 		private OpenlinkClient client;
@@ -256,16 +254,6 @@ public class OpenlinkClientIntegrationBatchTest extends XmlTest {
 					if (c.getState() == CallState.CallDelivered) {
 						logger.debug("CLIENT " + client.getBareJid() + " ANSWER CALL: " + c.getId() + marshal(c));
 						client.requestAction(systemAndDomain, c, RequestActionAction.AnswerCall, null, null);
-					}
-					if (cleanup) {
-						if (c.getState() == CallState.CallHeld) {
-							logger.debug("CLIENT " + client.getBareJid() + " CLEANUP CALL: " + c.getId() + marshal(c));
-							client.requestAction(systemAndDomain, c, RequestActionAction.RetrieveCall, null, null);
-						}
-						Thread.sleep(2000);
-						logger.debug("CLIENT " + client.getBareJid() + " CLEANUP CALL: " + c.getId() + marshal(c));
-						client.requestAction(systemAndDomain, c, RequestActionAction.ClearCall, null, null);
-						cleanup = false;
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
