@@ -246,6 +246,9 @@ public class OpenlinkClientIntegrationBatchTest extends XmlTest {
 			}
 		}
 
+		public boolean ranHangup = false;
+		public static final int RAN_LIMIT = 5;
+
 		@Override
 		public void callEvent(Collection<Call> calls) {
 			for (Call c : calls) {
@@ -255,12 +258,43 @@ public class OpenlinkClientIntegrationBatchTest extends XmlTest {
 						logger.debug("CLIENT " + client.getBareJid() + " ANSWER CALL: " + c.getId() + marshal(c));
 						client.requestAction(systemAndDomain, c, RequestActionAction.AnswerCall, null, null);
 					}
+					if (!ranHangup) {
+						ranHangup = true;
+						for (int i = 0; i < RAN_LIMIT; i++) {
+							// if (c.getState() == CallState.CallDelivered) {
+							logger.debug("CLIENT " + client.getBareJid() + " ANSWER CALL:" + i + ": " + c.getId() + marshal(c));
+							try {
+								client.requestAction(systemAndDomain, c, RequestActionAction.AnswerCall, null, null);
+							} catch (Exception e) {
+								// don't care
+							}
+							// }
+							Thread.sleep(100);
+							// if (c.getState() == CallState.CallHeld) {
+							logger.debug("CLIENT " + client.getBareJid() + " RETRIEVE CALL:" + i + ": " + c.getId() + marshal(c));
+							try {
+								client.requestAction(systemAndDomain, c, RequestActionAction.RetrieveCall, null, null);
+							} catch (Exception e) {
+								// don't care
+							}
+							// }
+							Thread.sleep(100);
+							// if (c.getState() == CallState.CallEstablished) {
+							logger.debug("CLIENT " + client.getBareJid() + " CLEAR CALL:" + i + ": " + c.getId() + marshal(c));
+							try {
+								client.requestAction(systemAndDomain, c, RequestActionAction.ClearCall, null, null);
+							} catch (Exception e) {
+								// don't care
+							}
+							// }
+						}
+					}
+
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
 		}
-
 	}
 
 }

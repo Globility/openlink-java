@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.gltd.gtms.client</groupId>
 	<artifactId>openlink-java</artifactId>
-	<version>2.1.8-SNAPSHOT</version>
+	<version>2.1.8</version>
 	<name>Openlink Java Client Library</name>
 	<description>Openlink Java Client Library</description>
 	<url>https://github.com/Globility/openlink-java</url>
@@ -105,26 +105,26 @@
 		<dependency>
 			<groupId>rocks.xmpp</groupId>
 			<artifactId>xmpp-core-client</artifactId>
-			<version>0.5.0-SNAPSHOT</version>
+			<version>0.5.0-gltd</version>
 		</dependency>
 
 		<dependency>
 			<groupId>rocks.xmpp</groupId>
 			<artifactId>xmpp-extensions-client</artifactId>
-			<version>0.5.0-SNAPSHOT</version>
+			<version>0.5.0-gltd</version>
 		</dependency>
 
 		<dependency>
 			<groupId>rocks.xmpp</groupId>
 			<artifactId>xmpp-core-client</artifactId>
-			<version>0.5.0-SNAPSHOT</version>
+			<version>0.5.0-gltd</version>
 			<scope>test</scope>
 			<type>test-jar</type>
 		</dependency>
 		<dependency>
 			<groupId>rocks.xmpp</groupId>
 			<artifactId>xmpp-core</artifactId>
-			<version>0.5.0-SNAPSHOT</version>
+			<version>0.5.0-gltd</version>
 			<scope>test</scope>
 			<type>test-jar</type>
 		</dependency>
@@ -145,7 +145,7 @@
 		<dependency>
 			<groupId>net.gltd.gtms.xmpp.extensions</groupId>
 			<artifactId>xmpp-extensions-gtx</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
+			<version>1.0.0</version>
 		</dependency>
 
 
