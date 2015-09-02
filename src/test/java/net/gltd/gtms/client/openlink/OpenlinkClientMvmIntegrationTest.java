@@ -127,6 +127,7 @@ public class OpenlinkClientMvmIntegrationTest extends XmlTest {
 		client = new OpenlinkClient(this.username, clientProperties.getProperty("client.xmpp.password"),
 				clientProperties.getProperty("client.xmpp.resource"), this.domain, clientProperties.getProperty("client.xmpp.host"));
 		client.setDebug(true);
+		client.setSecure(false);
 		client.addCallListener(this.getCallListener());
 		client.connect();
 	}

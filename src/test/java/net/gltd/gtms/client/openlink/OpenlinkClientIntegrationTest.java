@@ -48,7 +48,6 @@ import net.gltd.gtms.extension.openlink.features.Features;
 import net.gltd.gtms.extension.openlink.interests.Interest;
 import net.gltd.gtms.extension.openlink.interests.Interests;
 import net.gltd.gtms.extension.openlink.originatorref.Property;
-import net.gltd.gtms.extension.openlink.originatorref.Property2;
 import net.gltd.gtms.extension.openlink.profiles.Action;
 import net.gltd.gtms.extension.openlink.profiles.Profile;
 import net.gltd.gtms.extension.openlink.profiles.Profiles;
@@ -89,12 +88,12 @@ public class OpenlinkClientIntegrationTest extends XmlTest {
 	private Properties clientProperties;
 
 	public OpenlinkClientIntegrationTest() throws JAXBException, XMLStreamException {
-		super(Property2.class, Property.class, net.gltd.gtms.extension.openlink.properties.Property.class, Headers.class, Header.class, Event.class,
-				Command.class, Note.class, Message.class, IQ.class, IoData.class, Profiles.class, Profile.class, Action.class, Interests.class,
-				Interest.class, Features.class, Feature.class, CallStatus.class, Call.class, CallerCallee.class, CallFeature.class,
-				Participant.class, CallAction.class, AddThirdParty.class, AnswerCall.class, ClearCall.class, ClearConnection.class,
-				ConferenceFail.class, ConnectSpeaker.class, ConsultationCall.class, DisconnectSpeaker.class, HoldCall.class, IntercomTransfer.class,
-				JoinCall.class, PrivateCall.class, PublicCall.class, RemoveThirdParty.class, RetrieveCall.class, SendDigit.class, SendDigits.class,
+		super(Property.class, net.gltd.gtms.extension.openlink.properties.Property.class, Headers.class, Header.class, Event.class, Command.class,
+				Note.class, Message.class, IQ.class, IoData.class, Profiles.class, Profile.class, Action.class, Interests.class, Interest.class,
+				Features.class, Feature.class, CallStatus.class, Call.class, CallerCallee.class, CallFeature.class, Participant.class,
+				CallAction.class, AddThirdParty.class, AnswerCall.class, ClearCall.class, ClearConnection.class, ConferenceFail.class,
+				ConnectSpeaker.class, ConsultationCall.class, DisconnectSpeaker.class, HoldCall.class, IntercomTransfer.class, JoinCall.class,
+				PrivateCall.class, PublicCall.class, RemoveThirdParty.class, RetrieveCall.class, SendDigit.class, SendDigits.class,
 				SingleStepTransfer.class, RemoveThirdParty.class, SendDigits.class, StartVoiceDrop.class, StopVoiceDrop.class, TransferCall.class,
 
 				net.gltd.gtms.profiler.gtx.profile.Feature.class, GtxProfile.class, GtxSystem.class,
@@ -114,6 +113,7 @@ public class OpenlinkClientIntegrationTest extends XmlTest {
 		client = new OpenlinkClient(this.username, clientProperties.getProperty("client.xmpp.password"),
 				clientProperties.getProperty("client.xmpp.resource"), this.domain, clientProperties.getProperty("client.xmpp.host"));
 		client.setDebug(true);
+		client.setSecure(false);
 		client.addCallListener(this.getCallListener());
 		client.connect();
 	}

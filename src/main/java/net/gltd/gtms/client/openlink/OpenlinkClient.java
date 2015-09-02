@@ -131,6 +131,7 @@ public class OpenlinkClient {
 	private final String host;
 
 	private boolean debug = false;
+	private boolean isSecure = true;
 
 	private XmppSession xmppSession;
 	private Jid jid;
@@ -206,6 +207,14 @@ public class OpenlinkClient {
 		}
 
 		return builder.build();
+	}
+
+	public boolean isSecure() {
+		return isSecure;
+	}
+
+	public void setSecure(boolean isSecure) {
+		this.isSecure = isSecure;
 	}
 
 	public boolean isDebug() {
@@ -301,7 +310,7 @@ public class OpenlinkClient {
 			} }, new SecureRandom());
 
 			TcpConnectionConfiguration tcpConfiguration = TcpConnectionConfiguration.builder().hostname(this.host).port(OpenlinkClient.PORT)
-					.proxy(Proxy.NO_PROXY).secure(!isDebug()).build();
+					.proxy(Proxy.NO_PROXY).secure(isSecure()).build();
 
 			this.setXmppSession(new XmppSession(this.domain, getSessionConfiguration(), tcpConfiguration));
 
@@ -369,6 +378,10 @@ public class OpenlinkClient {
 		}
 	}
 
+	public void disableConsoleLogging() {
+
+	}
+
 	public String applySiteIdOnSystem(String system) {
 		String node = null;
 		String domain = null;
@@ -392,16 +405,12 @@ public class OpenlinkClient {
 
 			net.gltd.gtms.profiler.gtx.profile.Profile tmpProfile = profile.getProfile(resource);
 			if (tmpProfile != null) {
-				/* commented due to bug in avaya plugin with systemId being incorrect - using type instead (see below)
-				GtxSystem gtxSystem = tmpProfile.getGtxSystem(node);
-				if (gtxSystem != null) {
-					net.gltd.gtms.profiler.gtx.profile.Property property = gtxSystem.getProperty(PrivateDataHandler.PROFILE_PROPERTY_SITE_ID);
-					if (property != null) {
-						siteId = property.getValue();
-						node = node + siteId;
-					}
-				}
-				*/
+				/*
+				 * commented due to bug in avaya plugin with systemId being incorrect - using type instead (see below) GtxSystem gtxSystem =
+				 * tmpProfile.getGtxSystem(node); if (gtxSystem != null) { net.gltd.gtms.profiler.gtx.profile.Property property =
+				 * gtxSystem.getProperty(PrivateDataHandler.PROFILE_PROPERTY_SITE_ID); if (property != null) { siteId = property.getValue(); node =
+				 * node + siteId; } }
+				 */
 				Set<GtxSystem> gtxSystems = tmpProfile.getGtxSystemsByType(node);
 				if (!gtxSystems.isEmpty()) {
 					GtxSystem gtxSystem = gtxSystems.iterator().next();

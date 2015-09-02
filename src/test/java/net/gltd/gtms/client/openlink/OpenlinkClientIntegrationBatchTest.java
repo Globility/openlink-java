@@ -45,7 +45,6 @@ import net.gltd.gtms.extension.openlink.features.Features;
 import net.gltd.gtms.extension.openlink.interests.Interest;
 import net.gltd.gtms.extension.openlink.interests.Interests;
 import net.gltd.gtms.extension.openlink.originatorref.Property;
-import net.gltd.gtms.extension.openlink.originatorref.Property2;
 import net.gltd.gtms.extension.openlink.profiles.Action;
 import net.gltd.gtms.extension.openlink.profiles.Profile;
 import net.gltd.gtms.extension.openlink.profiles.Profiles;
@@ -84,12 +83,12 @@ public class OpenlinkClientIntegrationBatchTest extends XmlTest {
 	private int startIndex = 0;
 
 	public OpenlinkClientIntegrationBatchTest() throws JAXBException, XMLStreamException {
-		super(Property2.class, Property.class, net.gltd.gtms.extension.openlink.properties.Property.class, Headers.class, Header.class, Event.class,
-				Command.class, Note.class, Message.class, IQ.class, IoData.class, Profiles.class, Profile.class, Action.class, Interests.class,
-				Interest.class, Features.class, Feature.class, CallStatus.class, Call.class, CallerCallee.class, CallFeature.class,
-				Participant.class, CallAction.class, AddThirdParty.class, AnswerCall.class, ClearCall.class, ClearConnection.class,
-				ConferenceFail.class, ConnectSpeaker.class, ConsultationCall.class, DisconnectSpeaker.class, HoldCall.class, IntercomTransfer.class,
-				JoinCall.class, PrivateCall.class, PublicCall.class, RemoveThirdParty.class, RetrieveCall.class, SendDigit.class, SendDigits.class,
+		super(Property.class, net.gltd.gtms.extension.openlink.properties.Property.class, Headers.class, Header.class, Event.class, Command.class,
+				Note.class, Message.class, IQ.class, IoData.class, Profiles.class, Profile.class, Action.class, Interests.class, Interest.class,
+				Features.class, Feature.class, CallStatus.class, Call.class, CallerCallee.class, CallFeature.class, Participant.class,
+				CallAction.class, AddThirdParty.class, AnswerCall.class, ClearCall.class, ClearConnection.class, ConferenceFail.class,
+				ConnectSpeaker.class, ConsultationCall.class, DisconnectSpeaker.class, HoldCall.class, IntercomTransfer.class, JoinCall.class,
+				PrivateCall.class, PublicCall.class, RemoveThirdParty.class, RetrieveCall.class, SendDigit.class, SendDigits.class,
 				SingleStepTransfer.class, RemoveThirdParty.class, SendDigits.class, StartVoiceDrop.class, StopVoiceDrop.class, TransferCall.class,
 
 				net.gltd.gtms.profiler.gtx.profile.Feature.class, GtxProfile.class, GtxSystem.class,
@@ -109,7 +108,8 @@ public class OpenlinkClientIntegrationBatchTest extends XmlTest {
 		for (int i = this.startIndex; i < startIndex + maxUsers; i++) {
 			OpenlinkClient client = new OpenlinkClient(this.username + i, clientProperties.getProperty("client.xmpp.password") + i,
 					clientProperties.getProperty("client.xmpp.resource"), this.domain, clientProperties.getProperty("client.xmpp.host"));
-			client.setDebug(true);
+			client.setDebug(false);
+			client.setSecure(false);
 			client.connect();
 			this.clients.put(this.username + i, client);
 			logger.debug("CLIENT " + client.getBareJid() + " CONNECTING");
@@ -199,7 +199,7 @@ public class OpenlinkClientIntegrationBatchTest extends XmlTest {
 			}
 			while (true) {
 				try {
-					Thread.sleep(10);
+					Thread.sleep(100);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
@@ -247,7 +247,7 @@ public class OpenlinkClientIntegrationBatchTest extends XmlTest {
 		}
 
 		public boolean ranHangup = false;
-		public static final int RAN_LIMIT = 5;
+		public static final int RAN_LIMIT = 2;
 
 		@Override
 		public void callEvent(Collection<Call> calls) {
@@ -255,39 +255,45 @@ public class OpenlinkClientIntegrationBatchTest extends XmlTest {
 				logger.debug("CLIENT " + client.getBareJid() + " CALL EV: " + c.getId() + ": " + c);
 				try {
 					if (c.getState() == CallState.CallDelivered) {
-						logger.debug("CLIENT " + client.getBareJid() + " ANSWER CALL: " + c.getId() + marshal(c));
-						client.requestAction(systemAndDomain, c, RequestActionAction.AnswerCall, null, null);
+						logger.debug("CLIENT " + client.getBareJid() + " ANSWER CALL: " + c.getId());
+						try {
+							client.requestAction(systemAndDomain, c, RequestActionAction.AnswerCall, null, null);
+						} catch (Exception e) {
+							// don't care
+						}
 					}
 					if (!ranHangup) {
+						logger.debug("--------------CLIENT " + client.getBareJid() + " CLEANUP START--------------");
 						ranHangup = true;
 						for (int i = 0; i < RAN_LIMIT; i++) {
-							// if (c.getState() == CallState.CallDelivered) {
-							logger.debug("CLIENT " + client.getBareJid() + " ANSWER CALL:" + i + ": " + c.getId() + marshal(c));
-							try {
-								client.requestAction(systemAndDomain, c, RequestActionAction.AnswerCall, null, null);
-							} catch (Exception e) {
-								// don't care
+							if (c.getState() != CallState.ConnectionCleared) {
+								logger.debug("CLIENT " + client.getBareJid() + " ANSWER CALL:" + i + ": " + c.getId());
+								try {
+									client.requestAction(systemAndDomain, c, RequestActionAction.AnswerCall, null, null);
+								} catch (Exception e) {
+									// don't care
+								}
+								// }
+								Thread.sleep(5);
+								// if (c.getState() == CallState.CallHeld) {
+								logger.debug("CLIENT " + client.getBareJid() + " RETRIEVE CALL:" + i + ": " + c.getId());
+								try {
+									client.requestAction(systemAndDomain, c, RequestActionAction.RetrieveCall, null, null);
+								} catch (Exception e) {
+									// don't care
+								}
+								// }
+								Thread.sleep(5);
+								// if (c.getState() == CallState.CallEstablished) {
+								logger.debug("CLIENT " + client.getBareJid() + " CLEAR CALL:" + i + ": " + c.getId());
+								try {
+									client.requestAction(systemAndDomain, c, RequestActionAction.ClearCall, null, null);
+								} catch (Exception e) {
+									// don't care
+								}
 							}
-							// }
-							Thread.sleep(100);
-							// if (c.getState() == CallState.CallHeld) {
-							logger.debug("CLIENT " + client.getBareJid() + " RETRIEVE CALL:" + i + ": " + c.getId() + marshal(c));
-							try {
-								client.requestAction(systemAndDomain, c, RequestActionAction.RetrieveCall, null, null);
-							} catch (Exception e) {
-								// don't care
-							}
-							// }
-							Thread.sleep(100);
-							// if (c.getState() == CallState.CallEstablished) {
-							logger.debug("CLIENT " + client.getBareJid() + " CLEAR CALL:" + i + ": " + c.getId() + marshal(c));
-							try {
-								client.requestAction(systemAndDomain, c, RequestActionAction.ClearCall, null, null);
-							} catch (Exception e) {
-								// don't care
-							}
-							// }
 						}
+						logger.debug("--------------CLIENT " + client.getBareJid() + " CLEANUP STOP--------------");
 					}
 
 				} catch (Exception e) {
