@@ -24,6 +24,7 @@ import javax.security.auth.login.LoginException;
 
 import net.gltd.gtms.client.openlink.logging.LogFormatter;
 import net.gltd.gtms.extension.command.Command;
+import net.gltd.gtms.extension.command.CommandNoteTypeErrorException;
 import net.gltd.gtms.extension.command.Note;
 import net.gltd.gtms.extension.iodata.IoData;
 import net.gltd.gtms.extension.openlink.audiofiles.AudioFile;
@@ -82,6 +83,7 @@ import net.gltd.gtms.extension.openlink.profiles.Profiles;
 import net.gltd.gtms.profiler.gtx.profile.GtxProfile;
 import net.gltd.gtms.profiler.gtx.profile.GtxSystem;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
 import rocks.xmpp.core.Jid;
@@ -290,92 +292,77 @@ public class OpenlinkClient {
 	/**
 	 * Connect to the server.
 	 */
-	public void connect() {
+	public void connect() throws IOException, KeyManagementException, LoginException, FailedLoginException, NoSuchAlgorithmException {
 
-		try {
-			SSLContext sslContext = SSLContext.getInstance("TLS");
-			sslContext.init(null, new TrustManager[] { new X509TrustManager() {
-				@Override
-				public void checkClientTrusted(X509Certificate[] x509Certificates, String s) throws CertificateException {
+		SSLContext sslContext = SSLContext.getInstance("TLS");
+		sslContext.init(null, new TrustManager[] { new X509TrustManager() {
+			@Override
+			public void checkClientTrusted(X509Certificate[] x509Certificates, String s) throws CertificateException {
+			}
+
+			@Override
+			public void checkServerTrusted(X509Certificate[] x509Certificates, String s) throws CertificateException {
+			}
+
+			@Override
+			public X509Certificate[] getAcceptedIssuers() {
+				return new X509Certificate[0];
+			}
+		} }, new SecureRandom());
+
+		TcpConnectionConfiguration tcpConfiguration = TcpConnectionConfiguration.builder().hostname(this.host).port(OpenlinkClient.PORT)
+				.proxy(Proxy.NO_PROXY).secure(isSecure()).build();
+
+		this.setXmppSession(new XmppSession(this.domain, getSessionConfiguration(), tcpConfiguration));
+
+		this.voiceMessageHandler = new ManageVoiceMessageHandler(this.getXmppSession());
+		this.privateDataHandler = new PrivateDataHandler(this.getXmppSession());
+
+		// Listen for presence changes
+		xmppSession.addPresenceListener(new PresenceListener() {
+			@Override
+			public void handlePresence(PresenceEvent e) {
+				if (e.isIncoming()) {
+					// Handle incoming presence.
 				}
+			}
+		});
 
-				@Override
-				public void checkServerTrusted(X509Certificate[] x509Certificates, String s) throws CertificateException {
-				}
-
-				@Override
-				public X509Certificate[] getAcceptedIssuers() {
-					return new X509Certificate[0];
-				}
-			} }, new SecureRandom());
-
-			TcpConnectionConfiguration tcpConfiguration = TcpConnectionConfiguration.builder().hostname(this.host).port(OpenlinkClient.PORT)
-					.proxy(Proxy.NO_PROXY).secure(isSecure()).build();
-
-			this.setXmppSession(new XmppSession(this.domain, getSessionConfiguration(), tcpConfiguration));
-
-			this.voiceMessageHandler = new ManageVoiceMessageHandler(this.getXmppSession());
-			this.privateDataHandler = new PrivateDataHandler(this.getXmppSession());
-
-			// Listen for presence changes
-			xmppSession.addPresenceListener(new PresenceListener() {
-				@Override
-				public void handlePresence(PresenceEvent e) {
-					if (e.isIncoming()) {
-						// Handle incoming presence.
+		// Listen for session changes
+		xmppSession.addSessionStatusListener(new SessionStatusListener() {
+			@Override
+			public void sessionStatusChanged(SessionStatusEvent e) {
+				logger.debug("CONNECTION EV: " + e.getStatus() + " : " + e.getSource() + " : " + e.getException());
+				if (Status.AUTHENTICATED == e.getStatus()) {
+					try {
+						profile = privateDataHandler.getGtxProfile();
+					} catch (XmppException e1) {
+						e1.printStackTrace();
 					}
 				}
-			});
+			}
+		});
 
-			// Listen for session changes
-			xmppSession.addSessionStatusListener(new SessionStatusListener() {
-				@Override
-				public void sessionStatusChanged(SessionStatusEvent e) {
-					logger.debug("CONNECTION EV: " + e.getStatus() + " : " + e.getSource() + " : " + e.getException());
-					if (Status.AUTHENTICATED == e.getStatus()) {
-						try {
-							profile = privateDataHandler.getGtxProfile();
-						} catch (XmppException e1) {
-							e1.printStackTrace();
-						}
-					}
-				}
-			});
+		// Listen for messages
+		xmppSession.addMessageListener(getCallStatusMessageListener());
+		xmppSession.addMessageListener(getDeviceStatusMessageListener());
 
-			// Listen for messages
-			xmppSession.addMessageListener(getCallStatusMessageListener());
-			xmppSession.addMessageListener(getDeviceStatusMessageListener());
+		// Listen for roster pushes
+		xmppSession.getRosterManager().addRosterListener(new RosterListener() {
+			@Override
+			public void rosterChanged(RosterEvent e) {
 
-			// Listen for roster pushes
-			xmppSession.getRosterManager().addRosterListener(new RosterListener() {
-				@Override
-				public void rosterChanged(RosterEvent e) {
+			}
+		});
 
-				}
-			});
+		// Connect
+		xmppSession.connect();
 
-			// Connect
-			xmppSession.connect();
+		// Login
+		xmppSession.login(this.username, this.password, this.resource);
 
-			// Login
-			xmppSession.login(this.username, this.password, this.resource);
-
-			// Send initial presence
-			xmppSession.send(new Presence());
-		} catch (KeyManagementException e) {
-			e.printStackTrace();
-		} catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			// e.g. UnknownHostException
-			e.printStackTrace();
-		} catch (FailedLoginException e) {
-			// Login failed, due to wrong username/password
-			e.printStackTrace();
-		} catch (LoginException e) {
-			// Login failed, due to wrong username/password
-			e.printStackTrace();
-		}
+		// Send initial presence
+		xmppSession.send(new Presence());
 	}
 
 	public void disableConsoleLogging() {
@@ -588,6 +575,7 @@ public class OpenlinkClient {
 
 		Command command = iqResult.getExtension(Command.class);
 		if (command != null) {
+			validateCommandNoteTypeError(command);
 			IoData ioData = command.getExtension(IoData.class);
 			if (ioData != null && ioData.getOut() != null) {
 				Profiles profiles = ioData.getOut().getExtension(Profiles.class);
@@ -629,6 +617,7 @@ public class OpenlinkClient {
 
 		Command command = iqResult.getExtension(Command.class);
 		if (command != null) {
+			validateCommandNoteTypeError(command);
 			IoData ioData = command.getExtension(IoData.class);
 			if (ioData != null && ioData.getOut() != null) {
 				Interests interests = ioData.getOut().getExtension(Interests.class);
@@ -659,6 +648,7 @@ public class OpenlinkClient {
 
 		Command command = iqResult.getExtension(Command.class);
 		if (command != null) {
+			validateCommandNoteTypeError(command);
 			IoData ioData = command.getExtension(IoData.class);
 			if (ioData != null && ioData.getOut() != null) {
 				Features features = ioData.getOut().getExtension(Features.class);
@@ -668,6 +658,13 @@ public class OpenlinkClient {
 			}
 		}
 		return result;
+	}
+
+	public void validateCommandNoteTypeError(Command command) throws XmppException {
+		String noteMessage = OpenlinkClientUtil.getNoteError(command);
+		if (!StringUtils.isEmpty(noteMessage)) {
+			throw new CommandNoteTypeErrorException(noteMessage);
+		}
 	}
 
 	/**
@@ -703,6 +700,7 @@ public class OpenlinkClient {
 
 		Command command = iqResult.getExtension(Command.class);
 		if (command != null) {
+			validateCommandNoteTypeError(command);
 			Command.Status status = command.getStatus();
 			logger.debug("SET FEATURE STATUS: " + status);
 		}
@@ -807,6 +805,7 @@ public class OpenlinkClient {
 
 		Command command = iqResult.getExtension(Command.class);
 		if (command != null) {
+			validateCommandNoteTypeError(command);
 			IoData ioData = command.getExtension(IoData.class);
 			if (ioData != null && ioData.getOut() != null) {
 				CallStatus callStatus = ioData.getOut().getExtension(CallStatus.class);
@@ -833,10 +832,12 @@ public class OpenlinkClient {
 	 *            RequestAction value1.
 	 * @param value2
 	 *            RequestAction value2.
+	 * @param timeout
+	 *            Timeout in milliseconds.
 	 * @return Collection of calls made as a result of the request.
 	 */
-	public Collection<Call> requestAction(String to, String interest, String callId, RequestActionAction action, String value1, String value2)
-			throws XmppException {
+	public Collection<Call> requestAction(String to, String interest, String callId, RequestActionAction action, String value1, String value2,
+			long timeout) throws XmppException {
 		Collection<Call> result = new ArrayList<Call>();
 
 		RequestAction ra = new RequestAction();
@@ -847,10 +848,15 @@ public class OpenlinkClient {
 		ra.getIn().setValue2(value2);
 
 		IQ iq = new IQ(Jid.valueOf(applySiteIdOnSystem(to)), IQ.Type.SET, ra);
-		IQ iqResult = xmppSession.query(iq);
-
+		IQ iqResult;
+		if (timeout > 0) {
+			iqResult = xmppSession.query(iq, timeout);
+		} else {
+			iqResult = xmppSession.query(iq);
+		}
 		Command command = iqResult.getExtension(Command.class);
 		if (command != null) {
+			validateCommandNoteTypeError(command);
 			IoData ioData = command.getExtension(IoData.class);
 			if (ioData != null && ioData.getOut() != null) {
 				CallStatus callStatus = ioData.getOut().getExtension(CallStatus.class);
@@ -879,7 +885,17 @@ public class OpenlinkClient {
 	 * @return Collection of calls made as a result of the request.
 	 */
 	public Collection<Call> requestAction(String to, Call call, RequestActionAction action, String value1, String value2) throws XmppException {
-		return this.requestAction(to, call.getInterest(), call.getId(), action, value1, value2);
+		return this.requestAction(to, call.getInterest(), call.getId(), action, value1, value2, 0);
+	}
+
+	public Collection<Call> requestAction(String to, String interest, String callId, RequestActionAction action, String value1, String value2)
+			throws XmppException {
+		return this.requestAction(to, interest, callId, action, value1, value2, 0);
+	}
+
+	public Collection<Call> requestAction(String to, Call call, RequestActionAction action, String value1, String value2, long timeout)
+			throws XmppException {
+		return this.requestAction(to, call.getInterest(), call.getId(), action, value1, value2, timeout);
 	}
 
 	public PubSubService getPubSubService() throws XmppException {

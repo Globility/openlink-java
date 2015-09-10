@@ -64,6 +64,7 @@ import org.junit.experimental.categories.Category;
 
 import rocks.xmpp.core.Jid;
 import rocks.xmpp.core.XmlTest;
+import rocks.xmpp.core.XmppException;
 import rocks.xmpp.core.stanza.model.client.IQ;
 import rocks.xmpp.core.stanza.model.client.Message;
 import rocks.xmpp.extensions.privatedata.PrivateDataManager;
@@ -231,6 +232,29 @@ public class OpenlinkClientIntegrationTest extends XmlTest {
 				Assert.assertNotNull(f.getType());
 				logger.debug("FEATURE: " + f.getId() + " " + f.getLabel() + " " + f.getType());
 			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			Assert.fail(e.getMessage());
+		}
+	}
+
+	@Test
+	public void getFeaturesError() {
+		try {
+			Assert.assertTrue(isConnected());
+			Profile p = new Profile();
+			p.setId("this_profile_does_not_exist");
+			Exception e = null;
+			try {
+				this.client.getFeatures(this.systemAndDomain, p);
+			} catch (XmppException xe) {
+				e = xe;
+				xe.printStackTrace();
+			}
+			if (e == null) {
+				Assert.fail("Expected XMPPException to be thrown");
+			}
+			System.out.println("EXCEPTION MESSAGE: " + e.getMessage());
 		} catch (Exception e) {
 			e.printStackTrace();
 			Assert.fail(e.getMessage());

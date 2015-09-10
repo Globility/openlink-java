@@ -82,6 +82,8 @@ public class OpenlinkClientIntegrationBatchTest extends XmlTest {
 	private int maxUsers = 0;
 	private int startIndex = 0;
 
+	private boolean debug = false;
+	
 	public OpenlinkClientIntegrationBatchTest() throws JAXBException, XMLStreamException {
 		super(Property.class, net.gltd.gtms.extension.openlink.properties.Property.class, Headers.class, Header.class, Event.class, Command.class,
 				Note.class, Message.class, IQ.class, IoData.class, Profiles.class, Profile.class, Action.class, Interests.class, Interest.class,
@@ -101,14 +103,15 @@ public class OpenlinkClientIntegrationBatchTest extends XmlTest {
 		this.clientProperties = TestUtil.getProperties(this.getClass(), CLIENT_PROPERTIES);
 		this.username = clientProperties.getProperty("client.xmpp.username");
 		this.domain = clientProperties.getProperty("client.xmpp.domain");
-
+		this.debug = Boolean.valueOf(clientProperties.getProperty("client.debug"));
+		
 		this.systemAndDomain = clientProperties.getProperty("client.xmpp.system") + "." + this.domain;
 		this.maxUsers = Integer.valueOf(clientProperties.getProperty("client.maxusers"));
 		this.startIndex = Integer.valueOf(clientProperties.getProperty("client.startindex"));
 		for (int i = this.startIndex; i < startIndex + maxUsers; i++) {
 			OpenlinkClient client = new OpenlinkClient(this.username + i, clientProperties.getProperty("client.xmpp.password") + i,
 					clientProperties.getProperty("client.xmpp.resource"), this.domain, clientProperties.getProperty("client.xmpp.host"));
-			client.setDebug(false);
+			client.setDebug(this.debug);
 			client.setSecure(false);
 			client.connect();
 			this.clients.put(this.username + i, client);
@@ -247,7 +250,7 @@ public class OpenlinkClientIntegrationBatchTest extends XmlTest {
 		}
 
 		public boolean ranHangup = false;
-		public static final int RAN_LIMIT = 2;
+		public static final int RAN_LIMIT = 10;
 
 		@Override
 		public void callEvent(Collection<Call> calls) {
@@ -257,7 +260,7 @@ public class OpenlinkClientIntegrationBatchTest extends XmlTest {
 					if (c.getState() == CallState.CallDelivered) {
 						logger.debug("CLIENT " + client.getBareJid() + " ANSWER CALL: " + c.getId());
 						try {
-							client.requestAction(systemAndDomain, c, RequestActionAction.AnswerCall, null, null);
+							client.requestAction(systemAndDomain, c, RequestActionAction.AnswerCall, null, null, 100);
 						} catch (Exception e) {
 							// don't care
 						}
@@ -269,7 +272,7 @@ public class OpenlinkClientIntegrationBatchTest extends XmlTest {
 							if (c.getState() != CallState.ConnectionCleared) {
 								logger.debug("CLIENT " + client.getBareJid() + " ANSWER CALL:" + i + ": " + c.getId());
 								try {
-									client.requestAction(systemAndDomain, c, RequestActionAction.AnswerCall, null, null);
+									client.requestAction(systemAndDomain, c, RequestActionAction.AnswerCall, null, null, 100);
 								} catch (Exception e) {
 									// don't care
 								}
@@ -278,7 +281,7 @@ public class OpenlinkClientIntegrationBatchTest extends XmlTest {
 								// if (c.getState() == CallState.CallHeld) {
 								logger.debug("CLIENT " + client.getBareJid() + " RETRIEVE CALL:" + i + ": " + c.getId());
 								try {
-									client.requestAction(systemAndDomain, c, RequestActionAction.RetrieveCall, null, null);
+									client.requestAction(systemAndDomain, c, RequestActionAction.RetrieveCall, null, null, 100);
 								} catch (Exception e) {
 									// don't care
 								}
@@ -287,7 +290,7 @@ public class OpenlinkClientIntegrationBatchTest extends XmlTest {
 								// if (c.getState() == CallState.CallEstablished) {
 								logger.debug("CLIENT " + client.getBareJid() + " CLEAR CALL:" + i + ": " + c.getId());
 								try {
-									client.requestAction(systemAndDomain, c, RequestActionAction.ClearCall, null, null);
+									client.requestAction(systemAndDomain, c, RequestActionAction.ClearCall, null, null, 100);
 								} catch (Exception e) {
 									// don't care
 								}
