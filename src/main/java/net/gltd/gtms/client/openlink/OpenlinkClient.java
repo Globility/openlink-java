@@ -1,6 +1,5 @@
 package net.gltd.gtms.client.openlink;
 
-import java.io.IOException;
 import java.net.Proxy;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
@@ -16,11 +15,11 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 
+import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
-import javax.security.auth.login.FailedLoginException;
-import javax.security.auth.login.LoginException;
 
 import net.gltd.gtms.client.openlink.logging.LogFormatter;
 import net.gltd.gtms.extension.command.Command;
@@ -90,6 +89,9 @@ import rocks.xmpp.core.Jid;
 import rocks.xmpp.core.XmppException;
 import rocks.xmpp.core.roster.RosterEvent;
 import rocks.xmpp.core.roster.RosterListener;
+import rocks.xmpp.core.sasl.AuthenticationException;
+import rocks.xmpp.core.session.ConnectionException;
+import rocks.xmpp.core.session.NoResponseException;
 import rocks.xmpp.core.session.SessionStatusEvent;
 import rocks.xmpp.core.session.SessionStatusListener;
 import rocks.xmpp.core.session.TcpConnectionConfiguration;
@@ -102,9 +104,11 @@ import rocks.xmpp.core.stanza.MessageEvent;
 import rocks.xmpp.core.stanza.MessageListener;
 import rocks.xmpp.core.stanza.PresenceEvent;
 import rocks.xmpp.core.stanza.PresenceListener;
-import rocks.xmpp.core.stanza.model.StanzaException;
+import rocks.xmpp.core.stanza.StanzaException;
 import rocks.xmpp.core.stanza.model.client.IQ;
 import rocks.xmpp.core.stanza.model.client.Presence;
+import rocks.xmpp.core.stream.StreamErrorException;
+import rocks.xmpp.core.stream.StreamNegotiationException;
 import rocks.xmpp.extensions.pubsub.PubSubManager;
 import rocks.xmpp.extensions.pubsub.PubSubNode;
 import rocks.xmpp.extensions.pubsub.PubSubService;
@@ -147,13 +151,27 @@ public class OpenlinkClient {
 
 	private GtxProfile profile;
 
+	/**
+	 * Creates the Openlink Client which authenticates with an XMPP server using the given credentials.
+	 * 
+	 * @param username
+	 *            XMPP username.
+	 * @param password
+	 *            XMPP user password.
+	 * @param resource
+	 *            OPTIONAL XMPP resource.
+	 * @param domain
+	 *            the XMPP service domain (eg. example.com).
+	 * @param host
+	 *            OPTIONAL - the XMPP server hostname or IP.
+	 */
 	public OpenlinkClient(String username, String password, String resource, String domain, String host) {
 		this.username = username;
 		this.password = password;
 		this.resource = resource;
 		this.domain = domain;
 		this.host = host;
-		if (resource == null) {
+		if (resource == null || "".equals(resource)) {
 			this.jid = Jid.valueOf(username + "@" + domain);
 		} else {
 			this.jid = Jid.valueOf(username + "@" + domain + "/" + resource);
@@ -290,9 +308,30 @@ public class OpenlinkClient {
 	}
 
 	/**
-	 * Connect to the server.
+	 * Connects to the XMPP server.
+	 *
+	 * @throws KeyManagementException
+	 *             If the SSL Context fails to initialize.
+	 * @throws NoSuchAlgorithmException
+	 *             If no such algorithm found by the SSLContext.
+	 * @throws ConnectionException
+	 *             If a connection error occurred on the transport layer, e.g. the socket could not connect.
+	 * @throws StreamNegotiationException
+	 *             If any exception occurred during stream feature negotiation.
+	 * @throws NoResponseException
+	 *             If the server didn't return a response during stream establishment.
+	 * @throws IllegalStateException
+	 *             If the session is in a wrong state, e.g. closed or already connected.
+	 * @throws AuthenticationException
+	 *             If the login failed, due to a SASL error reported by the server.
+	 * @throws StreamErrorException
+	 *             If the server returned a stream error.
+	 * @throws StanzaException
+	 *             If the server returned a stanza error during resource binding or roster retrieval.
+	 * @throws XmppException
+	 *             If the login failed, due to any other XMPP exception.
 	 */
-	public void connect() throws IOException, KeyManagementException, LoginException, FailedLoginException, NoSuchAlgorithmException {
+	public void connect() throws KeyManagementException, NoSuchAlgorithmException, XmppException {
 
 		SSLContext sslContext = SSLContext.getInstance("TLS");
 		sslContext.init(null, new TrustManager[] { new X509TrustManager() {
@@ -310,8 +349,15 @@ public class OpenlinkClient {
 			}
 		} }, new SecureRandom());
 
+		HostnameVerifier hostnameVerifier = new HostnameVerifier() {
+			@Override
+			public boolean verify(String hostname, SSLSession session) {
+				return true;
+			}
+		};
+
 		TcpConnectionConfiguration tcpConfiguration = TcpConnectionConfiguration.builder().hostname(this.host).port(OpenlinkClient.PORT)
-				.proxy(Proxy.NO_PROXY).secure(isSecure()).build();
+				.proxy(Proxy.NO_PROXY).secure(isSecure()).hostnameVerifier(hostnameVerifier).build();
 
 		this.setXmppSession(new XmppSession(this.domain, getSessionConfiguration(), tcpConfiguration));
 
@@ -539,15 +585,14 @@ public class OpenlinkClient {
 
 	/**
 	 * Disconnect from the server
+	 * 
+	 * @throws XmppException
+	 *             If an exception occurs while closing the connection, e.g. the underlying socket connection.
 	 */
-	public void disconnect() {
+	public void disconnect() throws XmppException {
 		logger.debug("DISCONNECT");
 		if (xmppSession != null && isConnected()) {
-			try {
-				xmppSession.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			xmppSession.close();
 		}
 	}
 

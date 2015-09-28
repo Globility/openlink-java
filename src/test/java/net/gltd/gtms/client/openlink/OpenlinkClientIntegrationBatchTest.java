@@ -82,8 +82,9 @@ public class OpenlinkClientIntegrationBatchTest extends XmlTest {
 	private int maxUsers = 0;
 	private int startIndex = 0;
 
-	private boolean debug = false;
-	
+	private boolean debug = true;
+	private boolean secure = false;
+
 	public OpenlinkClientIntegrationBatchTest() throws JAXBException, XMLStreamException {
 		super(Property.class, net.gltd.gtms.extension.openlink.properties.Property.class, Headers.class, Header.class, Event.class, Command.class,
 				Note.class, Message.class, IQ.class, IoData.class, Profiles.class, Profile.class, Action.class, Interests.class, Interest.class,
@@ -104,7 +105,8 @@ public class OpenlinkClientIntegrationBatchTest extends XmlTest {
 		this.username = clientProperties.getProperty("client.xmpp.username");
 		this.domain = clientProperties.getProperty("client.xmpp.domain");
 		this.debug = Boolean.valueOf(clientProperties.getProperty("client.debug"));
-		
+		this.secure = Boolean.valueOf(clientProperties.getProperty("client.secure"));
+
 		this.systemAndDomain = clientProperties.getProperty("client.xmpp.system") + "." + this.domain;
 		this.maxUsers = Integer.valueOf(clientProperties.getProperty("client.maxusers"));
 		this.startIndex = Integer.valueOf(clientProperties.getProperty("client.startindex"));
@@ -112,7 +114,7 @@ public class OpenlinkClientIntegrationBatchTest extends XmlTest {
 			OpenlinkClient client = new OpenlinkClient(this.username + i, clientProperties.getProperty("client.xmpp.password") + i,
 					clientProperties.getProperty("client.xmpp.resource"), this.domain, clientProperties.getProperty("client.xmpp.host"));
 			client.setDebug(this.debug);
-			client.setSecure(false);
+			client.setSecure(this.secure);
 			client.connect();
 			this.clients.put(this.username + i, client);
 			logger.debug("CLIENT " + client.getBareJid() + " CONNECTING");
@@ -132,7 +134,11 @@ public class OpenlinkClientIntegrationBatchTest extends XmlTest {
 					}
 				}
 				logger.debug("CLIENT " + client.getBareJid() + " DISCONNECTING");
-				client.disconnect();
+				try {
+					client.disconnect();
+				} catch (XmppException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 		LogManager.shutdown();
